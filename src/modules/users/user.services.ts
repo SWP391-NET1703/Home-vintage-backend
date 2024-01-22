@@ -169,6 +169,21 @@ class UserServices {
     await databaseServices.refreshTokens.deleteOne({ refresh_token })
     return { message: USERS_MESSAGES.LOGOUT_SUCCESS }
   }
+
+  async getMe(user_id: string) {
+    const user = await databaseServices.users.findOne(
+      { _id: new ObjectId(user_id) },
+      {
+        projection: {
+          password: 0,
+          created_at: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        }
+      }
+    )
+    return user
+  }
 }
 
 const userServices = new UserServices()
