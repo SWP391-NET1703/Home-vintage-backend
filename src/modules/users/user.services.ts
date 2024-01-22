@@ -1,5 +1,5 @@
 import { signToken, verifyToken } from './../../utils/jwt'
-import databaseServices from '../database/database.services'
+import databaseService from '../database/database.services'
 import { RegisterReqBody } from './User.request'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
@@ -113,12 +113,12 @@ class UserServices {
   }
 
   async checkEmailExist(email: string) {
-    const user = await databaseServices.users.findOne({ email })
+    const user = await databaseService.users.findOne({ email })
     return Boolean(user)
   }
 
   async checkPhoneNumberExist(phone_number: string) {
-    const user = await databaseServices.users.findOne({ phone_number })
+    const user = await databaseService.users.findOne({ phone_number })
     return Boolean(user)
   }
 
@@ -130,7 +130,7 @@ class UserServices {
       role: UserRole.User
     })
     const { full_name, email, phone_number, password } = payload
-    const result = await databaseServices.users.insertOne(
+    const result = await databaseService.users.insertOne(
       new User({
         _id: user_id,
         full_name,
@@ -154,7 +154,7 @@ class UserServices {
     })
     //tạo xong thì lưu vào db
     const { exp, iat } = await this.decodeRefreshToken(refresh_token)
-    await databaseServices.refreshTokens.insertOne(
+    await databaseService.refreshTokens.insertOne(
       new RefreshToken({
         token: refresh_token,
         user_id: new ObjectId(user_id),
@@ -166,12 +166,12 @@ class UserServices {
   }
 
   async logout(refresh_token: string) {
-    await databaseServices.refreshTokens.deleteOne({ refresh_token })
+    await databaseService.refreshTokens.deleteOne({ refresh_token })
     return { message: USERS_MESSAGES.LOGOUT_SUCCESS }
   }
 
   async getMe(user_id: string) {
-    const user = await databaseServices.users.findOne(
+    const user = await databaseService.users.findOne(
       { _id: new ObjectId(user_id) },
       {
         projection: {
