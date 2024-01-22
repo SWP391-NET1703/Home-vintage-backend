@@ -208,7 +208,7 @@ export const accessTokenValidator = validate(
               })
             }
             // có rồi thì decode
-            // const sercet_access_token = process.env.JWT_SECRET_ACCESS_TOKEN
+            // const secret_access_token = process.env.JWT_SECRET_ACCESS_TOKEN
 
             try {
               const decoded_authorization = await verifyToken({

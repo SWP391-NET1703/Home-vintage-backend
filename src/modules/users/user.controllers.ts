@@ -2,7 +2,7 @@ import { UserVerifyStatus, UserRole } from './user.enum'
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import userServices from './user.services'
-import { LoginReqBody, LogoutReqBody, RegisterReqBody } from './User.request'
+import { LoginReqBody, LogoutReqBody, RegisterReqBody, TokenPayload } from './User.request'
 import { USERS_MESSAGES } from './user.message'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
@@ -34,4 +34,13 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
   const { refresh_token } = req.body
   const result = await userServices.logout(refresh_token)
   res.json(result)
+}
+
+export const getProfileController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const result = await userServices.getMe(user_id)
+  res.json({
+    message: USERS_MESSAGES.GET_ME_SUCCESS,
+    result
+  })
 }
