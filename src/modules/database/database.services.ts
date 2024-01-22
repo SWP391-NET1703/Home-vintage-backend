@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import { MongoClient, Db, Collection } from 'mongodb'
 import User from '../users/user.schema'
 import RefreshToken from '../refresh_tokens/RefreshToken.schema'
+import Category from '../category/category.schema'
 
 dotenv.config() // là để đọc file .env
 //chúng ta cần mã hóa password với username của database
@@ -33,6 +34,10 @@ class DatabaseService {
 
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
+  }
+
+  get categorys(): Collection<Category> {
+    return this.db.collection(process.env.DB_CATEGORYS_COLLECTION as string)
   }
 }
 
