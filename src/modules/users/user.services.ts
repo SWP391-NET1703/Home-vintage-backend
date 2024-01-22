@@ -171,7 +171,7 @@ class UserServices {
   }
 
   async getMe(user_id: string) {
-    const user = await databaseServices.users.findOne(
+    const user = await databaseService.users.findOne(
       { _id: new ObjectId(user_id) },
       {
         projection: {
