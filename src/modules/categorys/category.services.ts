@@ -21,6 +21,11 @@ class CategoryServices {
     const category = await databaseService.categorys.findOne({ _id: new ObjectId(category_id) })
     return Boolean(category)
   }
+
+  async getListCategory() {
+    const result = await databaseService.categorys.find({}).toArray()
+    return result
+  }
 }
 const categoryServices = new CategoryServices()
 export default categoryServices
