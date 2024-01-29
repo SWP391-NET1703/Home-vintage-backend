@@ -37,25 +37,32 @@ class CategoryServices {
       if (item.category_parent_id === '') {
         return {
           category_id: item._id,
-          category_parent_id: item.category_parent_id
+          category_name: item.category_name
         }
       }
     })
 
-    const ListCategory: { category_parent: object; category_child: object[] }[] = []
+    const ListCategory: {
+      category_id: ObjectId
+      category_name: string
+      category_child: object[]
+    }[] = []
 
     for (let i = 0; i < categoryParent.length; i++) {
-      const categoryChild = result.filter((item) => {
-        if (item.category_parent_id === String(categoryParent[i]._id)) {
+      const categoryChild = result
+        .filter((item) => {
+          return item.category_parent_id === String(categoryParent[i]._id)
+        })
+        .map((item) => {
           return {
             category_id: item._id,
-            category_parent_id: item.category_parent_id
+            category_name: item.category_name
           }
-        }
-      })
+        })
 
       ListCategory.push({
-        category_parent: categoryParent[i],
+        category_id: categoryParent[i]._id,
+        category_name: categoryParent[i].category_name,
         category_child: categoryChild
       })
     }
