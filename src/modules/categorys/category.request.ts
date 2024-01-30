@@ -1,4 +1,4 @@
 export interface CreateCategoryReqBody {
-  name: string
+  category_name: string
   parent_id?: string
 }

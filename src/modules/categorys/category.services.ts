@@ -7,11 +7,11 @@ import Category from './category.schema'
 class CategoryServices {
   async createCategory(payload: CreateCategoryReqBody) {
     const category_id = new ObjectId()
-    const { name, parent_id } = payload
+    const { category_name, parent_id } = payload
     const result = await databaseService.categorys.insertOne(
       new Category({
         _id: category_id,
-        category_name: name,
+        category_name: category_name,
         category_parent_id: parent_id
       })
     )
@@ -71,6 +71,16 @@ class CategoryServices {
     )
     return result.value
   }
+
+  // async deleteCategory(payload: { category_id: string }) {
+  //   const { category_id } = payload
+  //   const category = await databaseService.categorys.find({}).toArray()
+  //   const categoryNeedDelete = await databaseService.categorys.findOneAndDelete({ _id: new ObjectId(category_id) })
+  //   const categoryChildNeedDelete = category.filter((item) => {
+  //     return item.category_parent_id === category_id
+  //   }).deleteMany()
+  //   return result.value
+  // }
 }
 const categoryServices = new CategoryServices()
 export default categoryServices
