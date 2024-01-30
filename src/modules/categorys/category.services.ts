@@ -1,5 +1,5 @@
 import { check } from 'express-validator'
-import { ObjectId, WithId } from 'mongodb'
+import { ObjectId, ReturnDocument, WithId } from 'mongodb'
 import { CreateCategoryReqBody } from './category.request'
 import databaseService from '../database/database.services'
 import Category from './category.schema'
@@ -24,14 +24,11 @@ class CategoryServices {
 
   async getListCategory() {
     const result = await databaseService.categorys.find({}).toArray()
-    const categoryChild = result.filter((item) => {
-      if (item.category_parent_id !== '') {
-        return {
-          category_id: item._id,
-          category_parent_id: item.category_parent_id
-        }
-      }
-    })
+    const ListCategory: {
+      category_id: ObjectId
+      category_name: string
+      category_child: object[]
+    }[] = []
 
     const categoryParent = result.filter((item) => {
       if (item.category_parent_id === '') {
@@ -41,12 +38,6 @@ class CategoryServices {
         }
       }
     })
-
-    const ListCategory: {
-      category_id: ObjectId
-      category_name: string
-      category_child: object[]
-    }[] = []
 
     for (let i = 0; i < categoryParent.length; i++) {
       const categoryChild = result
@@ -67,6 +58,18 @@ class CategoryServices {
       })
     }
     return ListCategory
+  }
+
+  async updateCategory(payload: { category_id: string; category_name: string; category_parent_id: string }) {
+    const { category_id, category_name, category_parent_id } = payload
+    const result = await databaseService.categorys.findOneAndUpdate(
+      { _id: new ObjectId(category_id) },
+      [{ $set: { category_name: category_name, category_parent_id: category_parent_id } }],
+      {
+        returnDocument: 'after'
+      }
+    )
+    return result.value
   }
 }
 const categoryServices = new CategoryServices()

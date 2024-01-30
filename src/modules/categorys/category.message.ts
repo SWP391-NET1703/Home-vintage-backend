@@ -3,5 +3,6 @@ export const CATEGORY_MESSAGES = {
   NAME_CATEGORY_IS_REQUIRED: 'Name category is required',
   CATEGORY_IS_NOT_EXIST: 'Category is not exist',
   CATEGORY_PARENT_ID_MUST_BE_STRING: 'Category parent id must be string',
-  GET_LIST_CATEGORY_SUCCESSFULLY: 'Get list category successfully'
+  GET_LIST_CATEGORY_SUCCESSFULLY: 'Get list category successfully',
+  UPDATE_CATEGORY_SUCCESSFULLY: 'Update category successfully'
 }

@@ -23,3 +23,11 @@ export const getListCategoryController = async (req: Request, res: Response) => 
     result
   })
 }
+
+export const updateCategoryController = async (req: Request, res: Response) => {
+  const result = await categoryServices.updateCategory(req.body)
+  res.json({
+    message: CATEGORY_MESSAGES.UPDATE_CATEGORY_SUCCESSFULLY,
+    result
+  })
+}
