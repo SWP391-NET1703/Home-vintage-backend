@@ -18,3 +18,18 @@ export default class Category {
     this.category_parent_id = category.category_parent_id || ''
   }
 }
+
+// interface listCategoryType {
+//   category_parent: Category[]
+//   category_child?: Category[]
+// }
+
+// export class ListCategory {
+//   category_parent: Category[]
+//   category_child?: Category[]
+
+//   constructor(listCategory: listCategoryType) {
+//     this.category_parent = listCategory.category_parent
+//     this.category_child = listCategory.category_child
+//   }
+// }
