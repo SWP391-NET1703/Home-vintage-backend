@@ -7,12 +7,12 @@ import Category from './category.schema'
 class CategoryServices {
   async createCategory(payload: CreateCategoryReqBody) {
     const category_id = new ObjectId()
-    const { name, parent_id } = payload
+    const { category_name, category_parent_id } = payload
     const result = await databaseService.categorys.insertOne(
       new Category({
         _id: category_id,
-        category_name: name,
-        category_parent_id: parent_id
+        category_name: category_name,
+        category_parent_id: category_parent_id
       })
     )
   }
