@@ -70,22 +70,3 @@ export const updateCategoryValidator = validate(
     ['body']
   )
 )
-
-export const deleteCategoryValidator = validate(
-  checkSchema(
-    {
-      category_id: {
-        custom: {
-          options: async (value, { req }) => {
-            const isExist = await categoryServices.checkCategoryExist(value)
-            if (!isExist) {
-              throw new Error(CATEGORY_MESSAGES.CATEGORY_IS_NOT_EXIST)
-            }
-            return true
-          }
-        }
-      }
-    },
-    ['body']
-  )
-)

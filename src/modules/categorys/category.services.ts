@@ -71,38 +71,6 @@ class CategoryServices {
     )
     return result.value
   }
-
-  async deleteCategory(payload: { category_id: string }) {
-    const { category_id } = payload
-    const ListCategoryDelete: {
-      category_parent: object
-      category_child: object[]
-    }[] = []
-    const category = await databaseService.categorys.find({}).toArray()
-    const categoryDelete = await databaseService.categorys.findOneAndDelete(
-      { _id: new ObjectId(category_id) },
-      {
-        projection: {
-          category_name: 1,
-          category_parent_id: 1
-        }
-      }
-    )
-    const categoryChildDelete = category.filter((item) => {
-      return item.category_parent_id === category_id
-    })
-
-    categoryChildDelete.forEach(async (item) => {
-      await databaseService.categorys.findOneAndDelete({ _id: item._id })
-    })
-
-    ListCategoryDelete.push({
-      category_parent: categoryDelete,
-      category_child: categoryChildDelete
-    })
-
-    return ListCategoryDelete
-  }
 }
 const categoryServices = new CategoryServices()
 export default categoryServices

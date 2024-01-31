@@ -31,11 +31,3 @@ export const updateCategoryController = async (req: Request, res: Response) => {
     result
   })
 }
-
-export const deleteCategoryController = async (req: Request, res: Response) => {
-  const result = await categoryServices.deleteCategory(req.body)
-  res.json({
-    message: CATEGORY_MESSAGES.DELETE_CATEGORY_SUCCESSFULLY,
-    result
-  })
-}
