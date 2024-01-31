@@ -16,11 +16,12 @@ class InteriorService {
         price: price,
         material: material as string,
         color: color as string,
-        size: size as string
+        size: size as string,
+        image: []
       })
     )
 
-    return
+    return result
   }
 }
 

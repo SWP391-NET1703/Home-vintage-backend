@@ -66,8 +66,8 @@ const priceSchema: ParamSchema = {
   notEmpty: {
     errorMessage: INTERIOR_MESSAGES.INTERIOR_PRICE_IS_REQUIRED
   },
-  isNumeric: {
-    errorMessage: INTERIOR_MESSAGES.INTERIOR_PRICE_MUST_BE_NUMBER
+  isString: {
+    errorMessage: INTERIOR_MESSAGES.INTERIOR_PRICE_MUST_BE_STRING
   }
 }
 

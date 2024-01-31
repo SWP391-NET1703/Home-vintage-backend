@@ -17,5 +17,7 @@ export const INTERIOR_MESSAGES = {
   INTERIOR_COLOR_MUST_BE_STRING: 'Interior color must be string',
   INTERIOR_COLOR_MUST_BE_FROM_1_TO_50: 'Interior color must be from 1 to 50',
   INTERIOR_MATERIAL_MUST_BE_STRING: 'Interior material must be string',
-  CREATE_INTERIOR_SUCCESS: 'Create new interior success'
+  CREATE_INTERIOR_SUCCESS: 'Create new interior success',
+  UPLOAD_IMAGE_SUCCESS: 'Upload image success',
+  INTERIOR_PRICE_MUST_BE_STRING: 'Interior price must be string'
 } as const
