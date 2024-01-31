@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import { MongoClient, Db, Collection } from 'mongodb'
 import User from '../users/user.schema'
 import RefreshToken from '../refresh_tokens/RefreshToken.schema'
-import Category from '../category/category.schema'
+import Category from '../categorys/category.schema'
 import Interior from '../interiors/interior.schema'
 
 dotenv.config() // là để đọc file .env

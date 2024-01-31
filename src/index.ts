@@ -4,7 +4,7 @@ import { config } from 'dotenv'
 import databaseService from './modules/database/database.services'
 import { defaultErrorHandler } from './modules/errors/error.middlewares'
 import usersRouter from './modules/users/user.routes'
-import categoryRouter from './modules/category/category.routes'
+import categoryRouter from './modules/categorys/category.routes'
 import interiorRouter from './modules/interiors/interior.routes'
 
 const port = process.env.PORT
