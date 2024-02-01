@@ -13,6 +13,13 @@ export const createCategoryValidator = validate(
         trim: true
       },
       parent_id: {
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: CATEGORY_MESSAGES.CATEGORY_PARENT_ID_MUST_BE_STRING
+        },
         custom: {
           options: async (value, { req }) => {
             if (value) {

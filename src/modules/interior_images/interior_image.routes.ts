@@ -5,6 +5,6 @@ import { accessTokenAdminValidator } from '../users/user.middlewares'
 
 const interiorImageRouter = Router()
 
-interiorImageRouter.post('/upload-interior-image', accessTokenAdminValidator, wrapAsync(uploadImageController))
+interiorImageRouter.post('/upload-interior-image/:id', accessTokenAdminValidator, wrapAsync(uploadImageController))
 
 export default interiorImageRouter

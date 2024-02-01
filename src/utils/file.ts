@@ -17,11 +17,11 @@ export const initFolder = () => {
 }
 
 //hàm xử lý file từ client gửi lên
-export const handleUploadImage = (req: Request) => {
+export const handleUploadImage = (req: Request, size: number) => {
   const form = formidable({
     uploadDir: path.resolve(UPLOAD_IMAGE_TEMP_DIR),
     maxFileSize: 500 * 1024,
-    maxFiles: 4,
+    maxFiles: size,
     keepExtensions: true,
     filter: function ({ name, originalFilename, mimetype }) {
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))

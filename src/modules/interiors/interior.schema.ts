@@ -12,6 +12,7 @@ interface InteriorTpye {
   size: string
   color: string
   warranty?: InteriorWarranty
+  thumbnail?: string
   sale?: boolean
   created_at?: Date
   status?: InteriorStatus

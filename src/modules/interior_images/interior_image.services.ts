@@ -5,14 +5,15 @@ import { getNameFormFullName, handleUploadImage } from '~/utils/file'
 import fs from 'fs'
 import { isProduction } from '~/constants/config'
 import databaseService from '../database/database.services'
-import { InteriorImage } from './interior_images.schema'
 import { ObjectId } from 'mongodb'
-import { InteriorImageStatus } from './interior_image.enum'
 
 class InteriorImageServices {
   async handleUploadImage(req: Request) {
+    const { type } = req.query
+    const size = type ? 1 : 4
+    const { id } = req.params
     //lưu ảnh vào trong upload
-    const files = await handleUploadImage(req)
+    const files = await handleUploadImage(req, size as number)
     //xử lý file bằng sharp giúp tối ưu hình ảnh
     // const info = await sharp(file.filepath)
     const result = await Promise.all(
@@ -23,18 +24,27 @@ class InteriorImageServices {
         fs.unlinkSync(file.filepath)
         // return isProduction
         //   ? `${process.env.HOST}/static/images/${newFileName}`
-        //   : `http://localhost:${process.env.PORT}/static/images/${newFileName}`
-        const data = await databaseService.interiorImages.insertOne(
-          new InteriorImage({
-            _id: new ObjectId(),
-            image_name: newFileName,
-            interior_id: new ObjectId().toString(),
-            thumbnail: true
-          })
-        )
+        const url = `http://localhost:${process.env.PORT}/static/images/${newFileName}`
+        if (type) {
+          const interiorThumbnail = await databaseService.interiors.findOneAndUpdate({ _id: new ObjectId(id) }, [
+            {
+              $set: {
+                thumbnail: url
+              }
+            }
+          ])
+        } else {
+          const interiorImage = await databaseService.interiors.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            {
+              $push: {
+                images: url
+              }
+            }
+          )
+        }
       })
     )
-    return
   }
 }
 
