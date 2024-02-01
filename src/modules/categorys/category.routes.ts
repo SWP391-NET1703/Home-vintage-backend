@@ -13,7 +13,7 @@ categoryRouter.post(
   wrapAsync(createCategoryController)
 )
 
-categoryRouter.get('/get-list-category', accessTokenValidator, wrapAsync(getListCategoryController))
+categoryRouter.get('/', wrapAsync(getListCategoryController))
 
 categoryRouter.patch(
   '/update-category',
