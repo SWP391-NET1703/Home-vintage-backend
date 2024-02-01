@@ -2,6 +2,8 @@ import { ParamSchema, checkSchema } from 'express-validator'
 import databaseService from '../database/database.services'
 import { validate } from '~/utils/validation'
 import { INTERIOR_MESSAGES } from './interior.messages'
+import categoryServices from '../categorys/category.services'
+import { CATEGORY_MESSAGES } from '../categorys/category.message'
 
 const interiorNameSchema: ParamSchema = {
   notEmpty: {
@@ -19,23 +21,30 @@ const interiorNameSchema: ParamSchema = {
   }
 }
 
-// const category_id: ParamSchema = {
-//   notEmpty: {
-//     errorMessage: 'Category id is required'
-//   },
-//   isString: {
-//     errorMessage: 'Category id must be string'
-//   },
-//   custom: {
-//     options: async (value, { req }) => {
-//       const isExist = await databaseService.categorys.findOne({ value })
-//       if (!isExist) {
-//         throw new Error('Category is not exist')
-//       }
-//       return true
-//     }
-//   }
-// }
+const categoryIdSchema: ParamSchema = {
+  notEmpty: {
+    errorMessage: CATEGORY_MESSAGES.CATEGORY_ID_IS_REQUIRED
+  },
+  isString: {
+    errorMessage: CATEGORY_MESSAGES.CATEGORY_ID_MUST_BE_STRING
+  },
+  isLength: {
+    options: {
+      min: 24,
+      max: 24
+    },
+    errorMessage: CATEGORY_MESSAGES.CATEGORY_ID_MUST_BE_24_CHARACTERS
+  },
+  custom: {
+    options: async (value, { req }) => {
+      const isExist = await categoryServices.checkCategoryExist(value)
+      if (!isExist) {
+        throw new Error(CATEGORY_MESSAGES.CATEGORY_IS_NOT_EXIST)
+      }
+      return true
+    }
+  }
+}
 
 const descriptionSchema: ParamSchema = {
   notEmpty: {
@@ -66,8 +75,8 @@ const priceSchema: ParamSchema = {
   notEmpty: {
     errorMessage: INTERIOR_MESSAGES.INTERIOR_PRICE_IS_REQUIRED
   },
-  isNumeric: {
-    errorMessage: INTERIOR_MESSAGES.INTERIOR_PRICE_MUST_BE_NUMBER
+  isString: {
+    errorMessage: INTERIOR_MESSAGES.INTERIOR_PRICE_MUST_BE_STRING
   }
 }
 
@@ -116,6 +125,7 @@ export const createInteriorValidator = validate(
   checkSchema(
     {
       interior_name: interiorNameSchema,
+      category_id: categoryIdSchema,
       description: descriptionSchema,
       quantity: quantitySchema,
       price: priceSchema,
