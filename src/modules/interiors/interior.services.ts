@@ -16,11 +16,22 @@ class InteriorService {
         price: price,
         material: material as string,
         color: color as string,
-        size: size as string
+        size: size as string,
+        image: []
       })
     )
 
-    return
+    return result
+  }
+
+  async checkInteriorExist(id: string) {
+    let interior = null
+    if (id.length !== 24) {
+      interior = null
+      return interior
+    }
+    interior = await databaseService.interiors.findOne({ _id: new ObjectId(id) })
+    return interior
   }
 }
 
