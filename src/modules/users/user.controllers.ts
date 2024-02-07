@@ -10,7 +10,8 @@ import { ObjectId } from 'mongodb'
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response) => {
   const result = await userServices.register(req.body)
   res.json({
-    message: USERS_MESSAGES.REGISTER_SUCCESS
+    message: USERS_MESSAGES.REGISTER_SUCCESS,
+    result
   })
 }
 

@@ -20,5 +20,5 @@ app.get('/', (req, res) => {
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {
-  console.log(`server này đang chạy trên post ${port}`)
+  console.log(`server này đang chạy trên port:${port}`)
 })
