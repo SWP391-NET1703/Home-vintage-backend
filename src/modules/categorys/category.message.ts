@@ -8,5 +8,8 @@ export const CATEGORY_MESSAGES = {
   CATEGORY_PARENT_ID_MUST_BE_STRING: 'Category parent id must be string',
   GET_LIST_CATEGORY_SUCCESSFULLY: 'Get list category successfully',
   UPDATE_CATEGORY_SUCCESSFULLY: 'Update category successfully',
-  DELETE_CATEGORY_SUCCESSFULLY: 'Delete category successfully'
+  DELETE_CATEGORY_SUCCESSFULLY: 'Delete category successfully',
+  NAME_CATEGORY_MUST_BE_STRING: 'Name category must be string',
+  CATEGORY_NAME_IS_NOT_VALID: 'Category name is not valid',
+  CATEGORY_ID_IS_NOT_VALID: 'Category name is not valid'
 }

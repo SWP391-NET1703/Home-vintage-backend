@@ -20,5 +20,18 @@ export const INTERIOR_MESSAGES = {
   CREATE_INTERIOR_SUCCESS: 'Create new interior success',
   UPLOAD_IMAGE_SUCCESS: 'Upload image success',
   INTERIOR_PRICE_MUST_BE_STRING: 'Interior price must be string',
-  INTERIOR_NOT_FOUND: 'Interior not found'
+  INTERIOR_NOT_FOUND: 'Interior not found',
+  INTERIOR_WARRANTY_IS_REQUIRED: 'Interior warranty is required',
+  INTERIOR_STATUS_IS_REQUIRED: 'Interior status is required',
+  UPDATE_INTERIOR_SUCCESS: 'Update interior success',
+  UPDATE_IMAGE_SUCCESS: 'Update image success',
+  INTERIOR_ID_MUST_BE_24_CHARACTERS: 'Interior id must be 24 characters',
+  DELETE_IMAGE_SUCCESS: 'Delete image success',
+  DISABLE_INTERIOR_SUCCESS: 'Disable interior success',
+  GET_INTERRIOR_SUCCESS: 'Get interior success',
+  IMAGE_NOT_FOUND: 'Image not found',
+  INTERIOR_ID_NOT_VALID: 'Interior id not valid',
+  THUMBNAIL_IS_EXISTED: 'Thumbnail is existed',
+  MAX_IMAGE_IS_5: 'Max image is 5',
+  THUMBNAIL_IS_NOT_EXIST: 'Thumbnail is not exist'
 } as const
