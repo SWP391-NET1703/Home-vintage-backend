@@ -36,8 +36,9 @@ class UserServices {
       privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
     })
   }
-  //viết hàm nhận vào user_id để bỏ vào payload tạo refesh token
-  private signRefeshToken({
+
+  //viết hàm nhận vào user_id để bỏ vào payload tạo refresh token
+  private signRefreshToken({
     user_id,
     verify_status,
     exp,
@@ -51,12 +52,13 @@ class UserServices {
     if (exp) {
       return signToken({
         payload: { user_id, token_type: TokenType.RefreshToken, verify_status, exp, role },
+        // options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_IN },
         privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
       })
     } else {
       return signToken({
         payload: { user_id, token_type: TokenType.RefreshToken, verify_status, role },
-        options: { expiresIn: process.env.REFESH_TOKEN_EXPIRE_IN },
+        options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_IN },
         privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
       })
     }
@@ -108,7 +110,7 @@ class UserServices {
   }) {
     return Promise.all([
       this.signAccessToken({ user_id, verify_status, role }),
-      this.signRefeshToken({ user_id, verify_status, role })
+      this.signRefreshToken({ user_id, verify_status, role })
     ])
   }
 
@@ -133,16 +135,33 @@ class UserServices {
     const result = await databaseService.users.insertOne(
       new User({
         _id: user_id,
+        email_verify_token,
         full_name,
-        email: email,
-        phone_number: phone_number,
+        email,
+        phone_number,
         password: hashPassword(password),
         role: UserRole.User
       })
     )
 
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+      user_id: user_id.toString(),
+      verify_status: UserVerifyStatus.Unverified,
+      role: UserRole.User
+    })
+
+    // lưu refresh_token vào db
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(user_id),
+        exp: 0,
+        iat: 0
+      })
+    )
+
     console.log(email_verify_token) //giả lập gửi email verify =))
-    return
+    return { access_token, refresh_token }
   }
 
   async login({ user_id, verify_status, role }: { user_id: string; verify_status: UserVerifyStatus; role: UserRole }) {
@@ -152,6 +171,7 @@ class UserServices {
       verify_status,
       role
     })
+
     //tạo xong thì lưu vào db
     const { exp, iat } = await this.decodeRefreshToken(refresh_token)
     await databaseService.refreshTokens.insertOne(
