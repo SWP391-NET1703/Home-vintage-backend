@@ -5,23 +5,23 @@ interface OrderType {
   _id?: ObjectId
   customer_id: ObjectId
   date_order: Date
-  staff_id?: ObjectId
+  staff_id?: string
   payment_method: PaymentMethod
-  total_payment: number
+  total_payment: string
   status_of_order: OrderStatus
   detail: OrderDetailType[]
 }
 
 interface OrderDetailType {
   interior_id: ObjectId
-  price: number
-  quantity: number
+  price: string
+  quantity: string
 }
 
 export class OrderDetail {
   interior_id: ObjectId
-  price: number
-  quantity: number
+  price: string
+  quantity: string
 
   constructor(orderDetail: OrderDetailType) {
     this.interior_id = orderDetail.interior_id
@@ -33,10 +33,10 @@ export class OrderDetail {
 export default class Order {
   _id?: ObjectId
   customer_id: ObjectId
-  staff_id?: ObjectId
+  staff_id?: string
   date_order?: Date
-  payment_method?: PaymentMethod
-  total_payment: number
+  payment_method: PaymentMethod
+  total_payment: string
   status_of_order: OrderStatus
   detail: OrderDetail[]
 

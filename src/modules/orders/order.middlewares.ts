@@ -3,11 +3,12 @@ import { validate } from '~/utils/validation'
 import { INTERIOR_MESSAGES } from '../interiors/interior.messages'
 import interiorService from '../interiors/interior.services'
 import { OrderDetail } from './order.schema'
+import { ObjectId } from 'mongodb'
 
 export const createOrderValidator = validate(
   checkSchema(
     {
-      '*interior_id': {
+      'detail.*.interior_id': {
         notEmpty: true,
         isLength: {
           options: {
@@ -26,14 +27,8 @@ export const createOrderValidator = validate(
           }
         }
       },
-      '*quantity': {
-        notEmpty: true,
-        custom: {
-          options: async (value, { req }) => {
-            const { detail } = req.body as { detail: OrderDetail }
-            const { interior_id } = detail
-          }
-        }
+      'detail.*.quantity': {
+        notEmpty: true
       }
     },
     ['body']

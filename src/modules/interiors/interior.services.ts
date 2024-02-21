@@ -31,6 +31,19 @@ class InteriorService {
       return interior
     }
     interior = await databaseService.interiors.findOne({ _id: new ObjectId(id) })
+    return Boolean(interior)
+  }
+
+  async getInteriorById(id: string) {
+    const interior = await databaseService.interiors.findOne(
+      { _id: new ObjectId(id) },
+      {
+        projection: {
+          create_at: 0,
+          update_at: 0
+        }
+      }
+    )
     return interior
   }
 }
