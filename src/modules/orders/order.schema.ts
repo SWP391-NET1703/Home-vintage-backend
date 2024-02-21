@@ -1,0 +1,54 @@
+import { ObjectId } from 'mongodb'
+import { OrderStatus, PaymentMethod } from './order.enum'
+
+interface OrderType {
+  _id?: ObjectId
+  customer_id: ObjectId
+  date_order: Date
+  staff_id?: ObjectId
+  payment_method: PaymentMethod
+  total_payment: number
+  status_of_order: OrderStatus
+  detail: OrderDetailType[]
+}
+
+interface OrderDetailType {
+  interior_id: ObjectId
+  price: number
+  quantity: number
+}
+
+export class OrderDetail {
+  interior_id: ObjectId
+  price: number
+  quantity: number
+
+  constructor(orderDetail: OrderDetailType) {
+    this.interior_id = orderDetail.interior_id
+    this.price = orderDetail.price
+    this.quantity = orderDetail.quantity
+  }
+}
+
+export default class Order {
+  _id?: ObjectId
+  customer_id: ObjectId
+  staff_id?: ObjectId
+  date_order?: Date
+  payment_method?: PaymentMethod
+  total_payment: number
+  status_of_order: OrderStatus
+  detail: OrderDetail[]
+
+  constructor(order: OrderType) {
+    const date = new Date()
+    this._id = order._id || new ObjectId()
+    this.customer_id = order.customer_id
+    this.staff_id = order.staff_id
+    this.date_order = order.date_order || date
+    this.payment_method = order.payment_method || PaymentMethod.COD
+    this.total_payment = order.total_payment
+    this.status_of_order = order.status_of_order || OrderStatus.Wait_for_confirm
+    this.detail = order.detail
+  }
+}

@@ -47,7 +47,7 @@ export default class Interior {
     this.size = interior.size
     this.color = interior.color
     this.images = interior.image || []
-    this.warranty = interior.warranty || InteriorWarranty.six_months
+    this.warranty = interior.warranty || InteriorWarranty.Six_months
     this.created_at = interior.created_at || date
     this.sale = interior.sale || false
     this.status = interior.status || InteriorStatus.Stock
