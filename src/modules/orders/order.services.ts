@@ -1,10 +1,11 @@
 import { Request } from 'express'
-import Order from './order.schema'
+import Order, { OrderDetail } from './order.schema'
 import databaseService from '../database/database.services'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '../users/User.request'
 import { OrderStatus, PaymentMethod } from './order.enum'
 import { CreateOrderRequest } from './order.request'
+import interiorService from '../interiors/interior.services'
 
 class OrderServices {
   async createOrder(req: Request) {
@@ -23,6 +24,15 @@ class OrderServices {
         status_of_order: OrderStatus.Wait_for_confirm
       })
     )
+
+    detail.foreach(async (orderDetail: OrderDetail) => {
+      const { interior_id, quantity } = detail
+      const interior = await interiorService.getInteriorById(interior_id)
+      if (interior) {
+        const newQuantity = parseInt(interior.quantity) - parseInt(quantity)
+        // const result = await interiorService.
+      }
+    })
 
     const orderInfor = await this.getOrderById(result.insertedId.toString())
     return orderInfor

@@ -5,26 +5,23 @@ import { orderService } from './order.services'
 import { ORDER_MESSAGES } from './order.messages'
 import interiorService from '../interiors/interior.services'
 import { INTERIOR_MESSAGES } from '../interiors/interior.messages'
+import { quantityValidator } from './order.middlewares'
 
 export const createOrderController = async (req: Request<ParamsDictionary, any, CreateOrderRequest>, res: Response) => {
   const { detail } = req.body
-  detail.forEach(async (item) => {
-    const { quantity } = item
-    const interior = await interiorService.getInteriorById(item.interior_id.toString())
-    if (interior !== null) {
-      if (interior.quantity < quantity || parseInt(quantity) === 0) {
-        return res.status(422).json({
-          message: 'Validation error',
-          errors: {
-            Quantity: ORDER_MESSAGES.QUANTITY_IS_NOT_VALID
-          }
-        })
-      }
-    }
-  })
+  //check quantity
+  //cho chạy for rồi lưu các lỗi vào error message
+  const errorMessages: string[] = quantityValidator(detail)
+
+  //check error message array
+  if (errorMessages.length > 0) {
+    return res.status(422).json({
+      message: errorMessages
+    })
+  }
 
   const result = await orderService.createOrder(req)
-  return res.json({
+  res.json({
     message: ORDER_MESSAGES.ORDER_SUCCESSFULL,
     orderInfor: result
   })
