@@ -1,6 +1,5 @@
 import express from 'express'
-import { config } from 'dotenv'
-
+import SwaggerUI from 'swagger-ui'
 import databaseService from './modules/database/database.services'
 import { defaultErrorHandler } from './modules/errors/error.middlewares'
 import usersRouter from './modules/users/user.routes'
@@ -13,13 +12,21 @@ const app = express()
 //app handler
 app.use(express.json())
 
+//config
 databaseService.connect()
+
+//API Router
 app.use('/users', usersRouter)
 app.use('/interiors', interiorRouter)
 app.use('/categories', categoryRouter)
-app.get('/', (req, res) => {
-  res.send('hello world')
-})
+
+//Swagger Cofig
+// SwaggerUI({
+//   dom_id: '#myDomId'
+// })
+// app.get('/', (req, res) => {
+//   res.send('hello world')
+// })
 
 app.use(defaultErrorHandler)
 

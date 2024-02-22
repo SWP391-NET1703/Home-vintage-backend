@@ -3,16 +3,18 @@ import { ObjectId, ReturnDocument, WithId } from 'mongodb'
 import { CreateCategoryReqBody } from './category.request'
 import databaseService from '../database/database.services'
 import Category from './category.schema'
+import { get } from 'lodash'
 
 class CategoryServices {
   async createCategory(payload: CreateCategoryReqBody) {
     const category_id = new ObjectId()
-    const { category_name, category_parent_id } = payload
+    const { category_name, category_parent_id, category_status } = payload
     const result = await databaseService.categorys.insertOne(
       new Category({
         _id: category_id,
         category_name: category_name,
-        category_parent_id: category_parent_id
+        category_parent_id: category_parent_id,
+        category_status: true
       })
     )
   }
@@ -23,7 +25,7 @@ class CategoryServices {
   }
 
   async getListCategory() {
-    const result = await databaseService.categorys.find({}).toArray()
+    const result = await databaseService.categorys.find({ category_status: true }).toArray()
     const ListCategory: {
       category_id: ObjectId
       category_name: string
@@ -70,6 +72,44 @@ class CategoryServices {
       }
     )
     return result.value
+  }
+
+  async deleteCategory(payload: { category_id: string; category_status: boolean }) {
+    const { category_id } = payload
+    const ListCategoryDelete: {
+      category_parent: object
+      category_child: object[]
+    }[] = []
+    const category = await databaseService.categorys.find({}).toArray()
+
+    const categoryDelete = await databaseService.categorys.findOneAndUpdate(
+      { _id: new ObjectId(category_id) },
+      [{ $set: { category_status: false } }],
+      {
+        returnDocument: 'after'
+      }
+    )
+
+    const categoryChildDelete = category.filter((item) => {
+      return item.category_parent_id === category_id
+    })
+
+    categoryChildDelete.forEach(async (item) => {
+      await databaseService.categorys.findOneAndUpdate(
+        { _id: new ObjectId(item._id) },
+        [{ $set: { category_status: false } }],
+        {
+          returnDocument: 'after'
+        }
+      )
+    })
+
+    ListCategoryDelete.push({
+      category_parent: categoryDelete.value as object,
+      category_child: categoryChildDelete
+    })
+
+    return ListCategoryDelete
   }
 }
 const categoryServices = new CategoryServices()
