@@ -151,7 +151,7 @@ class UserServices {
     })
 
     // lưu refresh_token vào db
-    await databaseServices.refreshTokens.insertOne(
+    await databaseService.refreshTokens.insertOne(
       new RefreshToken({
         token: refresh_token,
         user_id: new ObjectId(user_id),
@@ -186,7 +186,7 @@ class UserServices {
   }
 
   async logout(refresh_token: string) {
-    await databaseService.refreshTokens.deleteOne({ refresh_token })
+    await databaseService.refreshTokens.deleteOne({ token: refresh_token })
     return { message: USERS_MESSAGES.LOGOUT_SUCCESS }
   }
 
