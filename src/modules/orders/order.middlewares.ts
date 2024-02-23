@@ -41,7 +41,6 @@ export const quantityValidator = (detail: OrderDetail[]) => {
   detail.forEach(async (item, index) => {
     const { quantity, interior_id } = item
     const interior = await interiorService.getInteriorById(new Object(interior_id).toString())
-    console.log(interior)
     if (interior !== null) {
       if (parseInt(interior.quantity) < parseInt(quantity) || parseInt(quantity) === 0) {
         const message = `Detail[${index}].quantity : ${ORDER_MESSAGES.QUANTITY_IS_NOT_VALID}`

@@ -9,7 +9,11 @@ import interiorService from '../interiors/interior.services'
 
 class OrderServices {
   async createOrder(req: Request) {
-    const { total_payment, payment_method, detail } = req.body
+    const {
+      total_payment,
+      payment_method,
+      detail
+    }: { total_payment: string; payment_method: PaymentMethod; detail: OrderDetail[] } = req.body
     const { user_id } = req.decoded_authorization as TokenPayload
     const order_id = new ObjectId()
     const result = await databaseService.orders.insertOne(
@@ -25,12 +29,13 @@ class OrderServices {
       })
     )
 
-    detail.foreach(async (orderDetail: OrderDetail) => {
-      const { interior_id, quantity } = detail
-      const interior = await interiorService.getInteriorById(interior_id)
+    detail.forEach(async (orderDetail: OrderDetail) => {
+      const { interior_id, quantity } = orderDetail
+      const interior = await interiorService.getInteriorById(interior_id.toString())
       if (interior) {
         const newQuantity = parseInt(interior.quantity) - parseInt(quantity)
-        // const result = await interiorService.
+        console.log(newQuantity)
+        const result = await interiorService.updateInteriorQuantity(newQuantity, interior_id.toString())
       }
     })
 

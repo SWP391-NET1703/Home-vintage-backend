@@ -46,6 +46,17 @@ class InteriorService {
     )
     return interior
   }
+
+  async updateInteriorQuantity(quantity: number, id: string) {
+    const result = await databaseService.interiors.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          quantity: quantity.toString()
+        }
+      }
+    )
+  }
 }
 
 const interiorService = new InteriorService()
