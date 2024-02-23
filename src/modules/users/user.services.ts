@@ -204,6 +204,37 @@ class UserServices {
     )
     return user
   }
+
+  async verifyEmail(user_id: string) {
+    // update lại user đó
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          verify_email: UserVerifyStatus.Verified,
+          email_verify_token: '',
+          created_at: '$$NOW'
+        }
+      }
+    ])
+
+    // tạo ra acess_token và refresh_token
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+      user_id,
+      verify_status: UserVerifyStatus.Verified,
+      role: UserRole.User
+    })
+
+    // Lưu refresh_token vào db
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(user_id),
+        exp: 0,
+        iat: 0
+      })
+    )
+    return { access_token, refresh_token }
+  }
 }
 
 const userServices = new UserServices()

@@ -6,6 +6,9 @@ import { LoginReqBody, LogoutReqBody, RegisterReqBody, TokenPayload } from './Us
 import { USERS_MESSAGES } from './user.message'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
+import databaseService from '../database/database.services'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { ErrorWithStatus } from '../errors/error.model'
 
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response) => {
   const result = await userServices.register(req.body)
@@ -45,6 +48,35 @@ export const getProfileController = async (req: Request, res: Response) => {
   const result = await userServices.getMe(user_id)
   res.json({
     message: USERS_MESSAGES.GET_ME_SUCCESS,
+    result
+  })
+}
+
+export const emailVerifyTokenController = async (req: Request, res: Response) => {
+  // nếu code vào đc  đây thì nghĩa là email_verify_token hợp lệ
+  // và mình đã lấy đc decoded_email_verify_token
+  const { user_id } = req.decoded_email_verify_token as TokenPayload
+  // dựa vào user_id tìm user và xem thử nó đã verify email chưa ?
+  const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+
+  if (user === null) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.USER_NOT_FOUND,
+      status: HTTP_STATUS.NOT_FOUND // 404
+    })
+  }
+
+  if (user.verify_status === UserVerifyStatus.Verified && user.email_verify_token === '') {
+    return res.json({
+      message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
+    })
+  }
+
+  // nếu mà xuống đc đây thì nghĩa là user chưa verify email
+  // mình sẽ update lại user đó
+  const result = await userServices.verifyEmail(user_id)
+  return res.json({
+    message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS,
     result
   })
 }
