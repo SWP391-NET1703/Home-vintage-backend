@@ -34,7 +34,10 @@ export const loginController = async (req: Request<ParamsDictionary, any, LoginR
 export const logoutController = async (req: Request<ParamsDictionary, any, LogoutReqBody>, res: Response) => {
   const { refresh_token } = req.body
   const result = await userServices.logout(refresh_token)
-  res.json(result)
+  res.json({
+    message: USERS_MESSAGES.LOGOUT_SUCCESS,
+    result
+  })
 }
 
 export const getProfileController = async (req: Request, res: Response) => {
