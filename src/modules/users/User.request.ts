@@ -26,3 +26,7 @@ export interface TokenPayload extends JwtPayload {
   exp: number
   iat: number
 }
+
+export interface VerifyEmailReqBody {
+  email_verify_token: string
+}
