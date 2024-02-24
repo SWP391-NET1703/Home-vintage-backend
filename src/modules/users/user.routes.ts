@@ -6,7 +6,8 @@ import {
   getProfileController,
   loginController,
   logoutController,
-  registerController
+  registerController,
+  resendEmailVerifyController
 } from './user.controllers'
 import {
   accessTokenValidator,
@@ -57,6 +58,15 @@ usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsy
   Body: { email_verify_token: string }
 */
 usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
+
+/*
+  Des: Resend email verify token
+  Method: POST
+  Path: users/resend-verify-email
+  Headers: { Authorization: "Bearer <access_token>" } (đăng nhập mới được resend)
+  Body: {}
+*/
+usersRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendEmailVerifyController))
 
 /*
   Des: get profile của user

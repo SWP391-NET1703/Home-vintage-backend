@@ -69,6 +69,7 @@ export const emailVerifyTokenController = async (
     })
   }
 
+  // nếu verified rồi thì k cần verify nữa
   if (user.verify_status === UserVerifyStatus.Verified && user.email_verify_token === '') {
     return res.json({
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
@@ -90,4 +91,30 @@ export const emailVerifyTokenController = async (
     message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS,
     result
   })
+}
+
+export const resendEmailVerifyController = async (req: Request, res: Response) => {
+  // nếu vào dc đây thì nghĩa là access token hợp lệ
+  // và mình đã lấy đc decoded_authorization
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  // dựa vào user_id để tìm user và xem thử nó đã verify email chưa ?
+  const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+  if (user === null) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.USER_NOT_FOUND,
+      status: HTTP_STATUS.NOT_FOUND // 404
+    })
+  }
+
+  if (user.verify_status === UserVerifyStatus.Banned) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.USER_BANNED,
+      status: HTTP_STATUS.FORBIDDEN // 403
+    })
+  }
+
+  // nếu mà xuống đc đây thì nghĩa là user chưa verify email
+  const result = await userServices.resendEmailVerify(user_id)
+  return res.json(result)
 }

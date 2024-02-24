@@ -210,9 +210,9 @@ class UserServices {
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
         $set: {
-          verify_email: UserVerifyStatus.Verified,
+          verify_status: UserVerifyStatus.Verified,
           email_verify_token: '',
-          created_at: '$$NOW'
+          update_at: '$$NOW'
         }
       }
     ])
@@ -234,6 +234,28 @@ class UserServices {
       })
     )
     return { access_token, refresh_token }
+  }
+
+  async resendEmailVerify(user_id: string) {
+    // tạo ra email_verify_token
+    const email_verify_token = await this.signEmailVerifyToken({
+      user_id,
+      verify_status: UserVerifyStatus.Verified,
+      role: UserRole.User
+    })
+    // update lại user đó
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          email_verify_token,
+          update_at: '$$NOW'
+        }
+      }
+    ])
+
+    // giả lập gửi email verify token
+    console.log(email_verify_token)
+    return { message: USERS_MESSAGES.RESEND_verify_status_SUCCESS }
   }
 }
 
