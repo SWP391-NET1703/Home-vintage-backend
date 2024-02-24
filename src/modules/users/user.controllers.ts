@@ -2,7 +2,7 @@ import { UserVerifyStatus, UserRole } from './user.enum'
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import userServices from './user.services'
-import { LoginReqBody, LogoutReqBody, RegisterReqBody, TokenPayload } from './User.request'
+import { LoginReqBody, LogoutReqBody, RegisterReqBody, TokenPayload, VerifyEmailReqBody } from './User.request'
 import { USERS_MESSAGES } from './user.message'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
@@ -52,7 +52,10 @@ export const getProfileController = async (req: Request, res: Response) => {
   })
 }
 
-export const emailVerifyTokenController = async (req: Request, res: Response) => {
+export const emailVerifyTokenController = async (
+  req: Request<ParamsDictionary, any, VerifyEmailReqBody>,
+  res: Response
+) => {
   // nếu code vào đc  đây thì nghĩa là email_verify_token hợp lệ
   // và mình đã lấy đc decoded_email_verify_token
   const { user_id } = req.decoded_email_verify_token as TokenPayload
@@ -69,6 +72,14 @@ export const emailVerifyTokenController = async (req: Request, res: Response) =>
   if (user.verify_status === UserVerifyStatus.Verified && user.email_verify_token === '') {
     return res.json({
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
+    })
+  }
+
+  // nếu mà không khớp email_verify_token thì trả về lỗi
+  if (user.email_verify_token !== req.body.email_verify_token) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.EMAIL_VERIFY_TOKEN_IS_INCORRECT,
+      status: HTTP_STATUS.UNAUTHORIZED // 401
     })
   }
 
