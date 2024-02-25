@@ -5,7 +5,7 @@ export enum InteriorStatus {
 }
 
 export enum InteriorWarranty {
-  three_months,
-  six_months,
-  twelve_months
+  Three_months,
+  Six_months,
+  Twelve_months
 }

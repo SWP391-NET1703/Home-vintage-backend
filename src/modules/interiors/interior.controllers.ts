@@ -16,3 +16,12 @@ export const createInteriorController = async (
     interior_id: result.insertedId
   })
 }
+
+export const getInteriorById = async (req: Request, res: Response) => {
+  const { id } = req.params
+  const result = await interiorService.getInteriorById(id)
+  res.json({
+    message: INTERIOR_MESSAGES.GET_INTERRIOR_SUCCESS,
+    interior: result
+  })
+}

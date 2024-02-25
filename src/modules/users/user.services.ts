@@ -32,7 +32,7 @@ class UserServices {
     return signToken({
       //chưa muốn xài nên ko dùng await
       payload: { user_id, token_type: TokenType.AccessToken, verify_status, role },
-      options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_IN },
+      options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_IN as string },
       privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
     })
   }
@@ -52,13 +52,13 @@ class UserServices {
     if (exp) {
       return signToken({
         payload: { user_id, token_type: TokenType.RefreshToken, verify_status, exp, role },
-        // options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_IN },
+        options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_IN as string },
         privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
       })
     } else {
       return signToken({
         payload: { user_id, token_type: TokenType.RefreshToken, verify_status, role },
-        options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_IN },
+        options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_IN as string },
         privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
       })
     }
@@ -76,7 +76,7 @@ class UserServices {
   }) {
     return signToken({
       payload: { user_id, token_type: TokenType.EmailVerificationToken, verify_status, role },
-      options: { expiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRE_IN },
+      options: { expiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRE_IN as string },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
     })
   }
@@ -93,7 +93,7 @@ class UserServices {
   }) {
     return signToken({
       payload: { user_id, token_type: TokenType.ForgotPasswordToken, verify_status, role },
-      options: { expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRE_IN },
+      options: { expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRE_IN as string },
       privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
     })
   }
@@ -151,7 +151,7 @@ class UserServices {
     })
 
     // lưu refresh_token vào db
-    await databaseServices.refreshTokens.insertOne(
+    await databaseService.refreshTokens.insertOne(
       new RefreshToken({
         token: refresh_token,
         user_id: new ObjectId(user_id),

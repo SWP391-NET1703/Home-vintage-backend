@@ -216,6 +216,14 @@ export const accessTokenValidator = validate(
                 secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
               })
 
+              const { role } = decoded_authorization
+              if (role !== UserRole.User) {
+                throw new ErrorWithStatus({
+                  message: USERS_MESSAGES.ACCESS_TOKEN_IS_INVALID,
+                  status: HTTP_STATUS.FORBIDDEN
+                })
+              }
+
               // lấy ra decoded_authorization để đưa vào req
               ;(req as Request).decoded_authorization = decoded_authorization
             } catch (error) {
