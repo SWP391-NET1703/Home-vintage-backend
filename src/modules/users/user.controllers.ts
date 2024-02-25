@@ -2,7 +2,14 @@ import { UserVerifyStatus, UserRole } from './user.enum'
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import userServices from './user.services'
-import { LoginReqBody, LogoutReqBody, RegisterReqBody, TokenPayload, VerifyEmailReqBody } from './User.request'
+import {
+  LoginReqBody,
+  LogoutReqBody,
+  RegisterReqBody,
+  ResetPasswordReqBody,
+  TokenPayload,
+  VerifyEmailReqBody
+} from './User.request'
 import { USERS_MESSAGES } from './user.message'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
@@ -129,4 +136,16 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
 
 export const verifyForgotPasswordTokenController = async (req: Request, res: Response) => {
   return res.json({ message: USERS_MESSAGES.VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS })
+}
+
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
+  res: Response
+) => {
+  // muốn đổi mật khẩu thì cần user_id và pasword mới
+  const { user_id } = req.decoded_forgot_password_token as TokenPayload
+  const { password } = req.body
+  // cập nhật
+  const result = await userServices.resetPassword({ user_id, password })
+  return res.json(result)
 }
