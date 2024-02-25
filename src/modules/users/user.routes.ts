@@ -8,7 +8,8 @@ import {
   loginController,
   logoutController,
   registerController,
-  resendEmailVerifyController
+  resendEmailVerifyController,
+  verifyForgotPasswordTokenController
 } from './user.controllers'
 import {
   accessTokenValidator,
@@ -16,7 +17,8 @@ import {
   forgotPasswordValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator
+  registerValidator,
+  verifyForgotPasswordTokenValidator
 } from './user.middlewares'
 
 const usersRouter = Router()
@@ -86,5 +88,20 @@ usersRouter.get('/me', accessTokenValidator, wrapAsync(getProfileController))
   Body: { email: string }
 */
 usersRouter.post('/forgot-password', forgotPasswordValidator, wrapAsync(forgotPasswordController))
+
+/*
+  Des: khi user nhấn vào link trong email để reset password
+  Họ sẽ gửi 1 req kèm theo forgot_password_token lên server
+  server sẽ kiểm tra forgot_password_token có hợp lệ không? nếu hợp lệ thì sẽ cho phép user reset password
+  sau đó chuyến hướng user đến trang reset password
+  Path: /users/verify-forgot-password
+  Method: POST
+  Body: { forgot_password_token: string }
+*/
+usersRouter.post(
+  '/verify-forgot-password',
+  verifyForgotPasswordTokenValidator,
+  wrapAsync(verifyForgotPasswordTokenController)
+)
 
 export default usersRouter
