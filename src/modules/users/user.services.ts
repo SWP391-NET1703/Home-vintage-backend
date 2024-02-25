@@ -211,8 +211,8 @@ class UserServices {
       {
         $set: {
           verify_status: UserVerifyStatus.Verified,
-          email_verify_token: '',
-          update_at: '$$NOW'
+          email_verify_token: ''
+          // update_at: '$$NOW'
         }
       }
     ])
@@ -247,8 +247,8 @@ class UserServices {
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
         $set: {
-          email_verify_token,
-          update_at: '$$NOW'
+          email_verify_token
+          // update_at: '$$NOW'
         }
       }
     ])
@@ -256,6 +256,28 @@ class UserServices {
     // giả lập gửi email verify token
     console.log(email_verify_token)
     return { message: USERS_MESSAGES.RESEND_verify_status_SUCCESS }
+  }
+
+  async forgotPassword(user_id: string) {
+    // tạo ra forgot_password_token
+    const forgot_password_token = await this.signForgotPasswordToken({
+      user_id,
+      verify_status: UserVerifyStatus.Verified,
+      role: UserRole.User
+    })
+    // update lại user đó
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          forgot_password_token
+          // updated_at: '$$NOW'
+        }
+      }
+    ])
+
+    // giả lập gửi mail
+    console.log(forgot_password_token)
+    return { message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD }
   }
 }
 
