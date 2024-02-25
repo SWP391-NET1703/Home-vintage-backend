@@ -501,3 +501,13 @@ export const verifyForgotPasswordTokenValidator = validate(
     ['body']
   )
 )
+
+export const resetPasswordValidator = validate(
+  checkSchema(
+    {
+      password: passwordSchema,
+      confirm_password: confirmPasswordSchema
+    },
+    ['body']
+  )
+)

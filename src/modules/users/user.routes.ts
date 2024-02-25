@@ -9,6 +9,7 @@ import {
   logoutController,
   registerController,
   resendEmailVerifyController,
+  resetPasswordController,
   verifyForgotPasswordTokenController
 } from './user.controllers'
 import {
@@ -18,6 +19,7 @@ import {
   loginValidator,
   refreshTokenValidator,
   registerValidator,
+  resetPasswordValidator,
   verifyForgotPasswordTokenValidator
 } from './user.middlewares'
 
@@ -102,6 +104,20 @@ usersRouter.post(
   '/verify-forgot-password',
   verifyForgotPasswordTokenValidator,
   wrapAsync(verifyForgotPasswordTokenController)
+)
+
+/*
+  Des: reset password
+  Path: '/reset-password'
+  Method: POST
+  Header: không cần, vì ngta quên password rồi, thì sao mà login để có authen đc
+  Body: {forgot_password_token: string, password: string, confirm_password: string}
+*/
+usersRouter.post(
+  '/reset-password',
+  resetPasswordValidator,
+  verifyForgotPasswordTokenValidator,
+  wrapAsync(resetPasswordController)
 )
 
 export default usersRouter
