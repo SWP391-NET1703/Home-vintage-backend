@@ -9,6 +9,7 @@ import interiorService from '../interiors/interior.services'
 
 class OrderServices {
   async createOrder(req: Request) {
+    const ValueTotalPayment = 20000000
     const {
       total_payment,
       payment_method,
@@ -25,19 +26,21 @@ class OrderServices {
         total_payment: total_payment,
         payment_method: payment_method,
         detail: detail,
-        status_of_order: OrderStatus.Wait_for_confirm
+        status_of_order:
+          parseInt(total_payment) >= ValueTotalPayment ? OrderStatus.Wait_for_confirm : OrderStatus.Pack_products
       })
     )
 
-    detail.forEach(async (orderDetail: OrderDetail) => {
-      const { interior_id, quantity } = orderDetail
-      const interior = await interiorService.getInteriorById(interior_id.toString())
-      if (interior) {
-        const newQuantity = parseInt(interior.quantity) - parseInt(quantity)
-        console.log(newQuantity)
-        const result = await interiorService.updateInteriorQuantity(newQuantity, interior_id.toString())
-      }
-    })
+    if (parseInt(total_payment) < ValueTotalPayment) {
+      detail.forEach(async (orderDetail: OrderDetail) => {
+        const { interior_id, quantity } = orderDetail
+        const interior = await interiorService.getInteriorById(interior_id.toString())
+        if (interior) {
+          const newQuantity = parseInt(interior.quantity) - parseInt(quantity)
+          const result = await interiorService.updateInteriorQuantity(newQuantity, interior_id.toString())
+        }
+      })
+    }
 
     const orderInfor = await this.getOrderById(result.insertedId.toString())
     return orderInfor

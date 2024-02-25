@@ -36,18 +36,19 @@ export const createOrderValidator = validate(
   )
 )
 
-export const quantityValidator = (detail: OrderDetail[]) => {
+export const quantityValidator = async (detail: OrderDetail[]) => {
   const errorMessages: string[] = []
-  detail.forEach(async (item, index) => {
-    const { quantity, interior_id } = item
-    const interior = await interiorService.getInteriorById(new Object(interior_id).toString())
-    if (interior !== null) {
-      if (parseInt(interior.quantity) < parseInt(quantity) || parseInt(quantity) === 0) {
-        const message = `Detail[${index}].quantity : ${ORDER_MESSAGES.QUANTITY_IS_NOT_VALID}`
-        errorMessages.push(message)
-      }
+  for (let index = 0; index < detail.length; index++) {
+    const item = detail[index]
+    const errorMessagesLocal: string[] = []
+    const { interior_id, quantity } = item
+    const idString = new ObjectId(interior_id).toString()
+    const interior = await interiorService.getInteriorById(idString)
+    if (interior && parseInt(interior.quantity) < parseInt(quantity)) {
+      errorMessagesLocal.push(`Detail[${index}].quantity : ${ORDER_MESSAGES.QUANTITY_IS_NOT_VALID}`)
+      errorMessages.push(errorMessagesLocal.join(', '))
     }
-  })
+  }
   console.log(errorMessages)
   return errorMessages
 }

@@ -6,14 +6,14 @@ import { ORDER_MESSAGES } from './order.messages'
 import interiorService from '../interiors/interior.services'
 import { INTERIOR_MESSAGES } from '../interiors/interior.messages'
 import { quantityValidator } from './order.middlewares'
+import { OrderDetail } from './order.schema'
 
 export const createOrderController = async (req: Request<ParamsDictionary, any, CreateOrderRequest>, res: Response) => {
-  const { detail } = req.body
+  const { detail } = req.body as { detail: OrderDetail[] }
   //check quantity
   //cho chạy for rồi lưu các lỗi vào error message
-  const errorMessages: string[] = quantityValidator(detail)
-
-  //check error message array
+  //check error message array\
+  const errorMessages = await quantityValidator(detail)
   if (errorMessages.length > 0) {
     return res.status(422).json({
       message: errorMessages
