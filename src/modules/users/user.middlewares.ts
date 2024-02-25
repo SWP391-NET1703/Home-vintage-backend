@@ -411,3 +411,32 @@ export const emailVerifyTokenValidator = validate(
     ['body']
   )
 )
+
+export const forgotPasswordValidator = validate(
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USERS_MESSAGES.EMAIL_IS_REQUIRED
+      },
+      isEmail: {
+        errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID
+      },
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          // dựa vào email tìm đối tượng user tương ứng
+          const user = await databaseService.users.findOne({ email: value })
+
+          if (user === null) {
+            throw new ErrorWithStatus({
+              message: USERS_MESSAGES.USER_NOT_FOUND,
+              status: HTTP_STATUS.NOT_FOUND // 404
+            })
+          }
+          req.user = user // gán user vào req.user để sử dụng ở middleware tiếp theo
+          return true
+        }
+      }
+    }
+  })
+)
