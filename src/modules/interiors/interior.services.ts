@@ -52,7 +52,7 @@ class InteriorService {
         }
       },
       {
-        addFields: {
+        $addFields: {
           category_detail: {
             $arrayElemAt: ['$category_detail', 0]
           }
