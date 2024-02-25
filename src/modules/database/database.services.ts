@@ -4,6 +4,7 @@ import User from '../users/user.schema'
 import RefreshToken from '../refresh_tokens/RefreshToken.schema'
 import Category from '../categorys/category.schema'
 import Interior from '../interiors/interior.schema'
+import Order from '../orders/order.schema'
 
 dotenv.config() // là để đọc file .env
 //chúng ta cần mã hóa password với username của database
@@ -43,6 +44,10 @@ class DatabaseService {
 
   get interiors(): Collection<Interior> {
     return this.db.collection(process.env.DB_INTERIORS_COLLECTION as string)
+  }
+
+  get orders(): Collection<Order> {
+    return this.db.collection(process.env.DB_ORDERS_COLLECTION as string)
   }
 }
 
