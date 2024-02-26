@@ -10,6 +10,7 @@ import {
   registerController,
   resendEmailVerifyController,
   resetPasswordController,
+  updateMeController,
   verifyForgotPasswordTokenController
 } from './user.controllers'
 import {
@@ -20,8 +21,12 @@ import {
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  updateMeValidator,
+  verifiedUserValidator,
   verifyForgotPasswordTokenValidator
 } from './user.middlewares'
+import { UpdateMeReqBody } from './User.request'
+import { filterMiddleware } from '~/utils/common'
 
 const usersRouter = Router()
 
@@ -75,30 +80,21 @@ usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVeri
 usersRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendEmailVerifyController))
 
 /*
-  Des: get profile của user
-  Path: '/me'
-  Method: get
-  Header: {Authorization: Bearer <access_token>}
-  Body: {}
-*/
-usersRouter.get('/me', accessTokenValidator, wrapAsync(getProfileController))
-
-/*
-  Des: khi user quên mật khẩu, họ gửi email lên server để xin tạo cho họ forgot_password_token
-  Path: /users/forgot-password
-  Method: POST
-  Body: { email: string }
+Des: khi user quên mật khẩu, họ gửi email lên server để xin tạo cho họ forgot_password_token
+Path: /users/forgot-password
+Method: POST
+Body: { email: string }
 */
 usersRouter.post('/forgot-password', forgotPasswordValidator, wrapAsync(forgotPasswordController))
 
 /*
-  Des: khi user nhấn vào link trong email để reset password
-  Họ sẽ gửi 1 req kèm theo forgot_password_token lên server
-  server sẽ kiểm tra forgot_password_token có hợp lệ không? nếu hợp lệ thì sẽ cho phép user reset password
-  sau đó chuyến hướng user đến trang reset password
-  Path: /users/verify-forgot-password
-  Method: POST
-  Body: { forgot_password_token: string }
+Des: khi user nhấn vào link trong email để reset password
+Họ sẽ gửi 1 req kèm theo forgot_password_token lên server
+server sẽ kiểm tra forgot_password_token có hợp lệ không? nếu hợp lệ thì sẽ cho phép user reset password
+sau đó chuyến hướng user đến trang reset password
+Path: /users/verify-forgot-password
+Method: POST
+Body: { forgot_password_token: string }
 */
 usersRouter.post(
   '/verify-forgot-password',
@@ -112,12 +108,30 @@ usersRouter.post(
   Method: POST
   Header: không cần, vì ngta quên password rồi, thì sao mà login để có authen đc
   Body: {forgot_password_token: string, password: string, confirm_password: string}
-*/
+  */
 usersRouter.post(
   '/reset-password',
   resetPasswordValidator,
   verifyForgotPasswordTokenValidator,
   wrapAsync(resetPasswordController)
+)
+
+/*
+     Des: get profile của user
+     Path: '/me'
+     Method: get
+     Header: {Authorization: Bearer <access_token>}
+     Body: {}
+   */
+usersRouter.get('/me', accessTokenValidator, wrapAsync(getProfileController))
+
+usersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  filterMiddleware<UpdateMeReqBody>(['full_name', 'date_of_birth', 'cccd', 'phone_number', 'user_avatar']),
+  updateMeValidator,
+  wrapAsync(updateMeController)
 )
 
 export default usersRouter

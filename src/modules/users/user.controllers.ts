@@ -8,6 +8,7 @@ import {
   RegisterReqBody,
   ResetPasswordReqBody,
   TokenPayload,
+  UpdateMeReqBody,
   VerifyEmailReqBody
 } from './User.request'
 import { USERS_MESSAGES } from './user.message'
@@ -148,4 +149,16 @@ export const resetPasswordController = async (
   // cập nhật
   const result = await userServices.resetPassword({ user_id, password })
   return res.json(result)
+}
+
+export const updateMeController = async (req: Request<ParamsDictionary, any, UpdateMeReqBody>, res: Response) => {
+  // muốn update profile thì cần user_id và các thông tin cần update
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { body } = req
+  // update lại user
+  const result = await userServices.updateMe(user_id, body)
+  return res.json({
+    message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
+    result
+  })
 }
