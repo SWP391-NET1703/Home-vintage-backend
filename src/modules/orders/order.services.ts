@@ -32,14 +32,7 @@ class OrderServices {
     )
 
     if (parseInt(total_payment) < ValueTotalPayment) {
-      detail.forEach(async (orderDetail: OrderDetail) => {
-        const { interior_id, quantity } = orderDetail
-        const interior = await interiorService.getInteriorById(interior_id.toString())
-        if (interior) {
-          const newQuantity = parseInt(interior.quantity) - parseInt(quantity)
-          const result = await interiorService.updateInteriorQuantity(newQuantity, interior_id.toString())
-        }
-      })
+      updateInteriorQuantity(detail)
     }
 
     const orderInfor = await this.getOrderById(result.insertedId.toString())
@@ -50,6 +43,36 @@ class OrderServices {
     const result = await databaseService.orders.findOne({ _id: new ObjectId(id) })
     return result
   }
+
+  async changeStatusOrder(id: string, status: OrderStatus) {
+    const result = await databaseService.orders.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          status_of_order: OrderStatus.Pack_products
+        }
+      }
+    )
+    return result
+  }
+
+  async getListOrderHistory(user_id: string) {
+    //vì user_id là string nên phải chuyển về ObjectId
+    const result = await databaseService.orders.find({ customer_id: new ObjectId(user_id) }).toArray()
+    return result
+  }
+}
+
+//tách hàm này ra để còn sử dụng lại
+export const updateInteriorQuantity = (detail: OrderDetail[]) => {
+  detail.forEach(async (orderDetail: OrderDetail) => {
+    const { interior_id, quantity } = orderDetail
+    const interior = await interiorService.getInteriorById(interior_id.toString())
+    if (interior) {
+      const newQuantity = parseInt(interior.quantity) - parseInt(quantity)
+      const result = await interiorService.updateInteriorQuantity(newQuantity, interior_id.toString())
+    }
+  })
 }
 
 export const orderService = new OrderServices()
