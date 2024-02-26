@@ -587,3 +587,44 @@ export const updateMeValidator = validate(
     ['body']
   )
 )
+
+export const changePasswordValidator = validate(
+  checkSchema(
+    {
+      old_password: {
+        ...passwordSchema,
+        custom: {
+          options: async (value, { req }) => {
+            //sau khi qua accestokenValidator thì ta đã có req.decoded_authorization chứa user_id
+            //lấy user_id đó để tìm user trong db
+            const { user_id } = req.decoded_authorization as TokenPayload
+            const user = await databaseService.users.findOne({
+              _id: new ObjectId(user_id)
+            })
+
+            // nếu user k tồn tai thì throw error
+            if (user === null) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND // 404
+              })
+            }
+
+            // nếu user tồn tại thì check xem old_password có đúng với password trong db hay k
+            const { password } = user
+            if (password !== hashPassword(value)) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.OLD_PASSWORD_NOT_MATCH,
+                status: HTTP_STATUS.UNAUTHORIZED // 401
+              })
+            }
+            return true
+          }
+        }
+      },
+      password: passwordSchema,
+      confirm_password: confirmPasswordSchema
+    },
+    ['body']
+  )
+)

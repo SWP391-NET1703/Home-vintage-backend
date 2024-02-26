@@ -1,8 +1,9 @@
 import { UserVerifyStatus, UserRole } from './user.enum'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import userServices from './user.services'
 import {
+  ChangePasswordReqBody,
   LoginReqBody,
   LogoutReqBody,
   RegisterReqBody,
@@ -161,4 +162,18 @@ export const updateMeController = async (req: Request<ParamsDictionary, any, Upd
     message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
     result
   })
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  //lấy user_id từ decoded_authorization của access_token
+  const { user_id } = req.decoded_authorization as TokenPayload
+  //lấy old_password, new_password, confirm_new_password từ req.body
+  const { password } = req.body
+  //gọi hàm changePassword
+  const result = await userServices.changePassword(user_id, password)
+  return res.json(result)
 }
