@@ -1,6 +1,6 @@
 import { signToken, verifyToken } from './../../utils/jwt'
 import databaseService from '../database/database.services'
-import { RegisterReqBody } from './User.request'
+import { RegisterReqBody, UpdateMeReqBody } from './User.request'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus, TokenType, UserRole } from './user.enum'
@@ -291,6 +291,31 @@ class UserServices {
       }
     ])
     return { message: USERS_MESSAGES.RESET_PASSWORD_SUCCESS }
+  }
+
+  async updateMe(user_id: string, payload: UpdateMeReqBody) {
+    const _payload = payload.date_of_birth ? { ...payload, date_of_birth: new Date(payload.date_of_birth) } : payload
+
+    // update _payload lên db
+    const user = await databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      [
+        {
+          $set: {
+            ..._payload
+          }
+        }
+      ],
+      {
+        returnDocument: 'after', // sau khi update user có nhu cầu xem lại thông tin của mình vừa update
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        }
+      }
+    )
+    return user.value
   }
 }
 

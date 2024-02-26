@@ -8,12 +8,13 @@ import { hashPassword } from '~/utils/crypto'
 import { ErrorWithStatus } from '../errors/error.model'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { verifyToken } from '~/utils/jwt'
-import { Request } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { capitalize } from 'lodash'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { config } from 'dotenv'
 import { UserRole, UserVerifyStatus } from './user.enum'
 import { ObjectId } from 'mongodb'
+import { TokenPayload } from './User.request'
 
 config()
 
@@ -120,6 +121,21 @@ const phoneNumberSchema: ParamSchema = {
       }
       return true
     }
+  }
+}
+
+const imageSchema: ParamSchema = {
+  optional: true,
+  isString: {
+    errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_A_STRING
+  },
+  trim: true,
+  isLength: {
+    options: {
+      min: 1,
+      max: 400
+    },
+    errorMessage: USERS_MESSAGES.IMAGE_URL_LENGTH_MUST_BE_LESS_THAN_400
   }
 }
 
@@ -515,6 +531,58 @@ export const resetPasswordValidator = validate(
     {
       password: passwordSchema,
       confirm_password: confirmPasswordSchema
+    },
+    ['body']
+  )
+)
+
+export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { verify_status } = req.decoded_authorization as TokenPayload
+  if (verify_status !== UserVerifyStatus.Verified) {
+    //muốn update thì user phải verify trước đó mới được update nhá
+    return next(
+      new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_VERIFIED,
+        status: HTTP_STATUS.FORBIDDEN // 403
+      })
+    )
+  }
+  next()
+}
+
+export const updateMeValidator = validate(
+  checkSchema(
+    {
+      full_name: {
+        optional: true, //đc phép có hoặc k
+        ...nameSchema, //phân rã nameSchema ra
+        notEmpty: undefined //ghi đè lên notEmpty của nameSchema
+      },
+      date_of_birth: {
+        optional: true, //đc phép có hoặc k
+        ...dateOfBirthSchema, //phân rã nameSchema ra
+        notEmpty: undefined //ghi đè lên notEmpty của nameSchema
+      },
+      phone_number: {
+        optional: true, //đc phép có hoặc k
+        ...phoneNumberSchema, //phân rã nameSchema ra
+        notEmpty: undefined //ghi đè lên notEmpty của nameSchema
+      },
+      cccd: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.CCCD_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 1,
+            max: 12
+          },
+          errorMessage: USERS_MESSAGES.CCCD_LENGTH_MUST_BE_12
+        }
+      },
+      user_avatar: imageSchema
     },
     ['body']
   )
