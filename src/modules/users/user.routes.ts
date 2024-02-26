@@ -8,6 +8,7 @@ import {
   getProfileController,
   loginController,
   logoutController,
+  refreshTokenController,
   registerController,
   resendEmailVerifyController,
   resetPasswordController,
@@ -152,5 +153,15 @@ usersRouter.put(
   wrapAsync(changePasswordController)
 )
 //changePasswordValidator check các giá trị truyền lên body có valid k ?
+
+/*
+  Des: refresh token
+  Path: '/refresh-token'
+  Method: POST
+  Body: { refresh_token: string }
+*/
+// Ques: Why dont check access-token here?
+// Ans: Because access-token is expired, so we need to use refresh-token to get new access-token
+usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshTokenController))
 
 export default usersRouter
