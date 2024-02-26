@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import { wrapAsync } from '~/utils/handlers'
 import {
+  changePasswordController,
   emailVerifyTokenController,
   forgotPasswordController,
   getProfileController,
@@ -15,6 +16,7 @@ import {
 } from './user.controllers'
 import {
   accessTokenValidator,
+  changePasswordValidator,
   emailVerifyTokenValidator,
   forgotPasswordValidator,
   loginValidator,
@@ -133,5 +135,22 @@ usersRouter.patch(
   updateMeValidator,
   wrapAsync(updateMeController)
 )
+
+// change password
+/*
+  Des: change password
+  Path: '/change-password'
+  Method: PUT
+  Headers: { Authorization: Bearer <access_token> }
+  Body: { old_password: string, new_password: string, confirm_new_password: string }
+*/
+usersRouter.put(
+  '/change-password',
+  accessTokenValidator,
+  verifiedUserValidator,
+  changePasswordValidator,
+  wrapAsync(changePasswordController)
+)
+//changePasswordValidator check các giá trị truyền lên body có valid k ?
 
 export default usersRouter
