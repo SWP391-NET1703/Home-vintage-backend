@@ -1,3 +1,4 @@
+import { getListInterior } from './interior.controllers'
 import { ObjectId } from 'mongodb'
 import databaseService from '../database/database.services'
 import { CreateInteriorReqBody } from './interior.request'
@@ -58,6 +59,12 @@ class InteriorService {
             $arrayElemAt: ['$category_detail', 0]
           }
         }
+      },
+      {
+        //bỏ đi trường category_id
+        $project: {
+          category_id: 0
+        }
       }
     ])
     const interior = await interiorCursor.toArray()
@@ -92,6 +99,33 @@ class InteriorService {
         }
       )
     }
+  }
+
+  async getListInterior() {
+    const listInteriorCursor = await databaseService.interiors.aggregate<InteriorResponse>([
+      {
+        $lookup: {
+          from: process.env.DB_CATEGORYS_COLLECTION as string,
+          localField: 'category_id',
+          foreignField: '_id',
+          as: 'category_detail'
+        }
+      },
+      {
+        $addFields: {
+          category_detail: {
+            $arrayElemAt: ['$category_detail', 0]
+          }
+        }
+      },
+      {
+        //bỏ đi trường category_id
+        $project: {
+          category_id: 0
+        }
+      }
+    ])
+    return listInteriorCursor.toArray()
   }
 }
 
