@@ -1,7 +1,7 @@
 import { ValidationChain, check, checkSchema } from 'express-validator'
 import { validate } from '~/utils/validation'
 import { INTERIOR_MESSAGES } from '../interiors/interior.messages'
-import interiorService from '../interiors/interior.services'
+
 import Order, { OrderDetail } from './order.schema'
 import { ObjectId } from 'mongodb'
 import { ORDER_MESSAGES } from './order.messages'
@@ -15,6 +15,7 @@ import { USERS_MESSAGES } from '~/constants/message'
 import { NextFunction, Request, Response } from 'express'
 import { callOrderValidator, convertQueryStringToStatusOrder } from './order.helper'
 import { RunnableValidationChains } from 'express-validator/src/middlewares/schema'
+import interiorService from '../interiors/interior.services'
 
 export const createOrderValidator = validate(
   checkSchema(
@@ -124,6 +125,7 @@ export const shippingOrderValidator = validate(
             if (order.status_of_order !== OrderStatus.Pack_products) {
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_VALID_TO_DELIVERY)
             }
+            req.order = order
             return true
           }
         }
@@ -166,6 +168,8 @@ export const deleteOrderValidator = validate(
                 status: HTTP_STATUS.FORBIDDEN
               })
             }
+
+            req.order = order
             return true
           }
         }
@@ -197,6 +201,7 @@ export const rejectOrderValidator = validate(
             if (order.status_of_order !== OrderStatus.Wait_for_confirm) {
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_VALID_TO_REJECT)
             }
+            req.order = order
             return true
           }
         }

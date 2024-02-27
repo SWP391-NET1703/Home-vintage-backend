@@ -3,18 +3,20 @@ import Order, { OrderDetail } from './order.schema'
 import databaseService from '../database/database.services'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '../users/User.request'
-import { OrderStatus, PaymentMethod } from './order.enum'
+import { OrderStatus, PaymentMethod, PaymentStatus } from './order.enum'
 import { CreateOrderRequest } from './order.request'
 import interiorService from '../interiors/interior.services'
 
 class OrderServices {
-  async createOrder(req: Request, order_status: OrderStatus) {
-    const {
-      total_payment,
-      payment_method,
-      detail
-    }: { total_payment: string; payment_method: PaymentMethod; detail: OrderDetail[] } = req.body
+  async createOrder(
+    req: Request,
+    order_status: OrderStatus,
+    payment_method: PaymentMethod,
+    status_payment: PaymentStatus
+  ) {
+    const { total_payment, detail }: { total_payment: string; detail: OrderDetail[] } = req.body
     const { user_id } = req.decoded_authorization as TokenPayload
+
     const order_id = new ObjectId()
     const result = await databaseService.orders.insertOne(
       new Order({
@@ -25,7 +27,8 @@ class OrderServices {
         total_payment: total_payment,
         payment_method: payment_method,
         detail: detail,
-        status_of_order: order_status
+        status_of_order: order_status,
+        status_payment: status_payment
       })
     )
     //kiểm tra status mà khác wait for confirm thì sẽ thay đổi hàng tồn kho của sản phẩm
@@ -64,6 +67,19 @@ class OrderServices {
   async checkBuyFirstTime(user_id: string) {
     const result = await databaseService.orders.findOne({ customer_id: new ObjectId(user_id) })
     return Boolean(result)
+  }
+
+  async changeStatusPayment(id: string, payment_status: PaymentStatus) {
+    const result = await databaseService.orders.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          payment_status: payment_status
+        }
+      }
+    )
+    const order = this.getOrderById(id)
+    return order
   }
 }
 

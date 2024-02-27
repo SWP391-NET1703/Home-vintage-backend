@@ -1,4 +1,4 @@
-import { OrderStatus, PaymentMethod } from './order.enum'
+import { OrderStatus, PaymentMethod, PaymentStatus } from './order.enum'
 import { OrderDetail } from './order.schema'
 
 export interface CreateOrderRequest {
