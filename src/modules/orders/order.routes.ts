@@ -40,4 +40,6 @@ orderRouter.post(
 orderRouter.delete('/:id', accessTokenValidator, deleteOrderValidator, wrapAsync(deleteOrderController))
 
 orderRouter.get('/history', accessTokenValidator, wrapAsync(getListOrderHistoryController))
+//get list order status wait_to_confirm , staff hoặc admin
+//get list order status pack_product , staff hoặc admin
 export default orderRouter

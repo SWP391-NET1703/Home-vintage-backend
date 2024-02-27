@@ -3,6 +3,7 @@ import databaseService from '../database/database.services'
 import { CreateInteriorReqBody } from './interior.request'
 import Interior from './interior.schema'
 import { InteriorResponse } from './interior.response'
+import { InteriorStatus } from './interior.enums'
 class InteriorService {
   async createInterior(payload: CreateInteriorReqBody) {
     const { interior_name, description, quantity, price, material, category_id, color, size } = payload
@@ -71,14 +72,26 @@ class InteriorService {
   }
 
   async updateInteriorQuantity(quantity: number, id: string) {
-    const result = await databaseService.interiors.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          quantity: quantity.toString()
+    if (quantity === 0) {
+      const result = await databaseService.interiors.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            status: InteriorStatus.Sold_out,
+            quantity: quantity.toString()
+          }
         }
-      }
-    )
+      )
+    } else {
+      const result = await databaseService.interiors.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            quantity: quantity.toString()
+          }
+        }
+      )
+    }
   }
 }
 
