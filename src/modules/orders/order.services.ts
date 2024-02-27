@@ -8,8 +8,7 @@ import { CreateOrderRequest } from './order.request'
 import interiorService from '../interiors/interior.services'
 
 class OrderServices {
-  async createOrder(req: Request) {
-    const ValueTotalPayment = 20000000
+  async createOrder(req: Request, order_status: OrderStatus) {
     const {
       total_payment,
       payment_method,
@@ -26,13 +25,12 @@ class OrderServices {
         total_payment: total_payment,
         payment_method: payment_method,
         detail: detail,
-        status_of_order:
-          parseInt(total_payment) >= ValueTotalPayment ? OrderStatus.Wait_for_confirm : OrderStatus.Pack_products
+        status_of_order: order_status
       })
     )
-
-    if (parseInt(total_payment) < ValueTotalPayment) {
-      updateInteriorQuantity(detail)
+    //kiểm tra status mà khác wait for confirm thì sẽ thay đổi hàng tồn kho của sản phẩm
+    if (order_status !== OrderStatus.Wait_for_confirm) {
+      updateInteriorQuantity(detail, order_status)
     }
 
     const orderInfor = await this.getOrderById(result.insertedId.toString())
@@ -49,11 +47,12 @@ class OrderServices {
       { _id: new ObjectId(id) },
       {
         $set: {
-          status_of_order: OrderStatus.Pack_products
+          status_of_order: status
         }
       }
     )
-    return result
+    const order = this.getOrderById(id)
+    return order
   }
 
   async getListOrderHistory(user_id: string) {
@@ -61,15 +60,23 @@ class OrderServices {
     const result = await databaseService.orders.find({ customer_id: new ObjectId(user_id) }).toArray()
     return result
   }
+
+  async checkBuyFirstTime(user_id: string) {
+    const result = await databaseService.orders.findOne({ customer_id: new ObjectId(user_id) })
+    return Boolean(result)
+  }
 }
 
 //tách hàm này ra để còn sử dụng lại
-export const updateInteriorQuantity = (detail: OrderDetail[]) => {
+export const updateInteriorQuantity = (detail: OrderDetail[], order_status: OrderStatus) => {
   detail.forEach(async (orderDetail: OrderDetail) => {
     const { interior_id, quantity } = orderDetail
     const interior = await interiorService.getInteriorById(interior_id.toString())
-    if (interior) {
+    if (interior && order_status === OrderStatus.Pack_products) {
       const newQuantity = parseInt(interior.quantity) - parseInt(quantity)
+      const result = await interiorService.updateInteriorQuantity(newQuantity, interior_id.toString())
+    } else if (interior && order_status === OrderStatus.Cancel) {
+      const newQuantity = parseInt(interior.quantity) + parseInt(quantity)
       const result = await interiorService.updateInteriorQuantity(newQuantity, interior_id.toString())
     }
   })

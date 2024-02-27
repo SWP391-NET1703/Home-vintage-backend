@@ -1,4 +1,4 @@
-import { check, checkSchema } from 'express-validator'
+import { ValidationChain, check, checkSchema } from 'express-validator'
 import { validate } from '~/utils/validation'
 import { INTERIOR_MESSAGES } from '../interiors/interior.messages'
 import interiorService from '../interiors/interior.services'
@@ -12,11 +12,15 @@ import { decode } from 'punycode'
 import { ErrorWithStatus } from '../errors/error.model'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/message'
+import { NextFunction, Request, Response } from 'express'
+import { callOrderValidator, convertQueryStringToStatusOrder } from './order.helper'
+import { RunnableValidationChains } from 'express-validator/src/middlewares/schema'
 
 export const createOrderValidator = validate(
   checkSchema(
     {
       'detail.*.interior_id': {
+        //check id sản phẩm nha
         notEmpty: true,
         isLength: {
           options: {
@@ -29,6 +33,7 @@ export const createOrderValidator = validate(
           options: async (value, { req }) => {
             const isExist = await interiorService.checkInteriorExist(value)
             if (!isExist) {
+              //check xem tồn tại ko
               throw new Error(INTERIOR_MESSAGES.INTERIOR_NOT_FOUND)
             }
             return true
@@ -36,6 +41,7 @@ export const createOrderValidator = validate(
         }
       },
       'detail.*.quantity': {
+        //check quantity có không
         notEmpty: true
       }
     },
@@ -73,21 +79,19 @@ export const acceptOrderValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
+            //check order tồn tại trước khi accept
             const order = await orderService.getOrderById(value)
             if (!order) {
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_EXIST)
             }
 
             if (
-              [OrderStatus.Pack_products, OrderStatus.Pack_products, OrderStatus.Success].includes(
-                order.status_of_order
-              )
+              //check status of order có đúng không
+              order.status_of_order !== OrderStatus.Wait_for_confirm
             ) {
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_VALID_TO_ACCEPT)
             }
 
-            // quantityValidator(order.detail)
-            updateInteriorQuantity(order.detail)
             return true
           }
         }
@@ -113,9 +117,10 @@ export const shippingOrderValidator = validate(
           options: async (value, { req }) => {
             const order = await orderService.getOrderById(value)
             if (!order) {
+              //check order tồn tại không này
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_EXIST)
             }
-
+            //check xem đúng status là shipping không
             if (order.status_of_order !== OrderStatus.Pack_products) {
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_VALID_TO_DELIVERY)
             }
@@ -144,14 +149,16 @@ export const deleteOrderValidator = validate(
           options: async (value, { req }) => {
             const order = await orderService.getOrderById(value)
             if (!order) {
+              //kiểm tra order tồn tại hay không
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_EXIST)
             }
 
-            if (order.status_of_order === OrderStatus.Cancel) {
+            //nếu là status là 1 trong 2 dạng dưới thì chửi
+            if ([OrderStatus.Delivery, OrderStatus.Cancel].includes(order.status_of_order)) {
               throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_VALID_TO_DELETE)
             }
 
-            const { decoded_authorization } = req.headers as { decoded_authorization: TokenPayload }
+            const { decoded_authorization } = req as { decoded_authorization: TokenPayload }
             const { user_id } = decoded_authorization
             if (user_id !== order.customer_id.toString()) {
               throw new ErrorWithStatus({
@@ -167,3 +174,48 @@ export const deleteOrderValidator = validate(
     ['params']
   )
 )
+
+export const rejectOrderValidator = validate(
+  checkSchema(
+    {
+      id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: ORDER_MESSAGES.ORDER_IS_NOT_EXIST
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const order = await orderService.getOrderById(value)
+            if (!order) {
+              throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_EXIST)
+            }
+
+            if (order.status_of_order !== OrderStatus.Wait_for_confirm) {
+              throw new Error(ORDER_MESSAGES.ORDER_IS_NOT_VALID_TO_REJECT)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['params']
+  )
+)
+
+//đoạn này để tối ưu mà khó quá :<
+// export const orderValidatorTotal = async (req: Request, res: Response, next: NextFunction) => {
+//   console.log(1)
+//   const { status } = req.query
+//   const status_string = status as string
+//   const status_order = convertQueryStringToStatusOrder(status_string)
+//   if (status_order === null) {
+//     return res.status(422).json({
+//       message: ORDER_MESSAGES.STATUS_IS_NOT_VALID
+//     })
+//   }
+//   const validator = callOrderValidator(status_order)
+// }
