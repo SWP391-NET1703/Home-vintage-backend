@@ -8,7 +8,7 @@ import interiorService from '../interiors/interior.services'
 import { INTERIOR_MESSAGES } from '../interiors/interior.messages'
 import { quantityValidator } from './order.middlewares'
 import Order, { OrderDetail } from './order.schema'
-import { OrderStatus } from './order.enum'
+import { OrderStatus, PaymentMethod, PaymentStatus } from './order.enum'
 import { TokenPayload } from '../users/User.request'
 import { callOrderController, convertQueryStringToStatusOrder } from './order.helper'
 
@@ -29,13 +29,20 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
   const user_id = (req.decoded_authorization as TokenPayload).user_id
   const isBuyFirstTime = await orderService.checkBuyFirstTime(user_id) //
   let order_status: OrderStatus = OrderStatus.Pack_products
-  const { total_payment } = req.body
+  let payment_method_real: PaymentMethod = PaymentMethod.COD
+  let payment_status: PaymentStatus = PaymentStatus.do_not_pay
+  const { total_payment, payment_method } = req.body
   if (!isBuyFirstTime || parseInt(total_payment) > ValueNeedToConfirmOfOrder) {
     //check xem mua lần nào chưa và giá trị đơn hàng có lớn hơn giá trị quy định của doanh nghiệp không
     order_status = OrderStatus.Wait_for_confirm
   }
 
-  const result = await orderService.createOrder(req, order_status)
+  if (payment_method.toString() === PaymentMethod.Paypal.toString()) {
+    payment_method_real = PaymentMethod.Paypal
+    payment_status = PaymentStatus.did_pay
+  }
+
+  const result = await orderService.createOrder(req, order_status, payment_method_real, payment_status)
   res.json({
     message: ORDER_MESSAGES.ORDER_SUCCESSFULL,
     orderInfor: result
@@ -68,7 +75,12 @@ export const acceptOrderController = async (req: Request, res: Response) => {
 
 export const shippingOrderController = async (req: Request, res: Response) => {
   const { id } = req.params
-  //chỉ cần thay đổi trạng thái
+  const { order } = req as { order: Order }
+  for (let i = 0; i < order.detail.length; i++) {
+    const { interior_id, quantity } = order.detail[i]
+    const result = await interiorService.updateNumberOfSale(quantity, interior_id.toString())
+  }
+  //chỉ cần thay đổi trạng thái và update number of sale của interiors
   const result = await orderService.changeStatusOrder(id, OrderStatus.Delivery)
   res.json({
     message: ORDER_MESSAGES.ORDER_IS_DELIVERIED,
@@ -78,12 +90,24 @@ export const shippingOrderController = async (req: Request, res: Response) => {
 
 export const deleteOrderController = async (req: Request, res: Response) => {
   const { id } = req.params as { id: string }
-  const order = await orderService.getOrderById(id)
-  if (order && order.status_of_order === OrderStatus.Pack_products) {
+  const order = req.order as Order
+  updateInteriorQuantity(order.detail, OrderStatus.Cancel)
+  if (order.status_of_order === OrderStatus.Pack_products && order.payment_method === PaymentMethod.Paypal) {
     //nếu status là pack product thì sẽ update lại quantity của interior
-    updateInteriorQuantity(order.detail, OrderStatus.Pack_products)
+
+    const result = await Promise.all([
+      orderService.changeStatusOrder(id, OrderStatus.Cancel),
+      orderService.changeStatusPayment(id, PaymentStatus.refunds)
+    ])
+
+    return res.json({
+      message: ORDER_MESSAGES.ORDER_IS_CANCEL,
+      orderInfor: result
+    })
   }
+
   const result = await orderService.changeStatusOrder(id, OrderStatus.Cancel)
+
   res.json({
     message: ORDER_MESSAGES.ORDER_IS_CANCEL,
     orderInfor: result
@@ -102,9 +126,24 @@ export const getListOrderHistoryController = async (req: Request, res: Response)
 
 export const rejectOrderController = async (req: Request, res: Response) => {
   const { id } = req.params
+  const { order } = req as { order: Order }
+  if (order.payment_method === PaymentMethod.Paypal) {
+    const result = await Promise.all([
+      orderService.changeStatusOrder(id, OrderStatus.Cancel),
+      orderService.changeStatusPayment(id, PaymentStatus.refunds)
+    ])
+
+    return res.json({
+      message: ORDER_MESSAGES.ORDER_IS_CANCEL,
+      orderInfor: result
+    })
+  }
+
   const result = await orderService.changeStatusOrder(id, OrderStatus.Cancel)
+
   res.json({
-    message: ORDER_MESSAGES.REJECT_ORDER_SUCCESS
+    message: ORDER_MESSAGES.ORDER_IS_CANCEL,
+    orderInfor: result
   })
 }
 

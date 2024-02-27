@@ -8,6 +8,11 @@ export enum OrderStatus {
 
 export enum PaymentMethod {
   COD,
-  Banking,
   Paypal
+}
+
+export enum PaymentStatus {
+  do_not_pay,
+  did_pay,
+  refunds
 }

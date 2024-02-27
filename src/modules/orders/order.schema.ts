@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { OrderStatus, PaymentMethod } from './order.enum'
+import { OrderStatus, PaymentMethod, PaymentStatus } from './order.enum'
 
 interface OrderType {
   _id?: ObjectId
@@ -8,6 +8,7 @@ interface OrderType {
   staff_id?: string
   payment_method: PaymentMethod
   total_payment: string
+  status_payment: PaymentStatus
   status_of_order: OrderStatus
   detail: OrderDetailType[]
 }
@@ -37,6 +38,7 @@ export default class Order {
   date_order?: Date
   payment_method: PaymentMethod
   total_payment: string
+  status_payment: PaymentStatus
   status_of_order: OrderStatus
   detail: OrderDetail[]
 
@@ -44,11 +46,12 @@ export default class Order {
     const date = new Date()
     this._id = order._id || new ObjectId()
     this.customer_id = order.customer_id
-    this.staff_id = order.staff_id
+    this.staff_id = order.staff_id || ''
     this.date_order = order.date_order || date
-    this.payment_method = order.payment_method || PaymentMethod.COD
+    this.payment_method = order.payment_method
     this.total_payment = order.total_payment
-    this.status_of_order = order.status_of_order || OrderStatus.Wait_for_confirm
+    this.status_payment = order.status_payment
+    this.status_of_order = order.status_of_order
     this.detail = order.detail
   }
 }

@@ -5,6 +5,7 @@ import { CreateInteriorReqBody } from './interior.request'
 import Interior from './interior.schema'
 import { InteriorResponse } from './interior.response'
 import { InteriorStatus } from './interior.enums'
+import { OrderDetail } from '../orders/order.schema'
 class InteriorService {
   async createInterior(payload: CreateInteriorReqBody) {
     const { interior_name, description, quantity, price, material, category_id, color, size } = payload
@@ -126,6 +127,17 @@ class InteriorService {
       }
     ])
     return listInteriorCursor.toArray()
+  }
+
+  async updateNumberOfSale(number_of_sale: string, id: string) {
+    const result = await databaseService.interiors.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          number_of_sale: number_of_sale
+        }
+      }
+    )
   }
 }
 
