@@ -36,6 +36,7 @@ orderRouter.post(
   wrapAsync(shippingOrderController)
 )
 
+//này của staff
 orderRouter.post(
   '/reject/:id',
   accessTokenStaffOrAdminValidator,
