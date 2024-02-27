@@ -16,6 +16,7 @@ import {
   createOrderController,
   deleteOrderController,
   getListOrderHistoryController,
+  orderControllerTotal,
   rejectOrderController,
   shippingOrderController
 } from './order.controllers'
@@ -24,7 +25,6 @@ import { wrapAsync } from '~/utils/handlers'
 const orderRouter = Router()
 
 orderRouter.post('/checkout', accessTokenValidator, createOrderValidator, wrapAsync(createOrderController))
-
 orderRouter.post(
   '/accept/:id',
   accessTokenStaffOrAdminValidator,
