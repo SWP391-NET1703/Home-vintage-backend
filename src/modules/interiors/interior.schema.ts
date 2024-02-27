@@ -13,6 +13,7 @@ interface InteriorTpye {
   color: string
   warranty?: InteriorWarranty
   thumbnail?: string
+  number_of_sale?: string
   sale?: boolean
   created_at?: Date
   status?: InteriorStatus
@@ -31,6 +32,7 @@ export default class Interior {
   color: string
   images: string[]
   warranty?: InteriorWarranty
+  number_of_sale?: string
   sale?: boolean
   created_at?: Date
   status?: InteriorStatus
@@ -46,6 +48,7 @@ export default class Interior {
     this.material = interior.material
     this.size = interior.size
     this.color = interior.color
+    this.number_of_sale = interior.number_of_sale || '0'
     this.images = interior.image || []
     this.warranty = interior.warranty || InteriorWarranty.Six_months
     this.created_at = interior.created_at || date

@@ -8,11 +8,13 @@ import { hashPassword } from '~/utils/crypto'
 import { ErrorWithStatus } from '../errors/error.model'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { verifyToken } from '~/utils/jwt'
-import { Request } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { capitalize } from 'lodash'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { config } from 'dotenv'
 import { UserRole, UserVerifyStatus } from './user.enum'
+import { ObjectId } from 'mongodb'
+import { TokenPayload } from './User.request'
 
 config()
 
@@ -122,6 +124,21 @@ const phoneNumberSchema: ParamSchema = {
   }
 }
 
+const imageSchema: ParamSchema = {
+  optional: true,
+  isString: {
+    errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_A_STRING
+  },
+  trim: true,
+  isLength: {
+    options: {
+      min: 1,
+      max: 400
+    },
+    errorMessage: USERS_MESSAGES.IMAGE_URL_LENGTH_MUST_BE_LESS_THAN_400
+  }
+}
+
 //validate middlewares
 export const registerValidator = validate(
   checkSchema(
@@ -197,20 +214,16 @@ export const accessTokenValidator = validate(
         trim: true, //nó truyền khoảng trắng bụp liền
         custom: {
           options: async (value, { req }) => {
-            // console.log('bug1')
-            //định dạng token Bearer <token> => split để lấy access ra
             const access_token = value.split(' ')[1]
             if (!access_token) {
-              //ko có thì ăn chửi
               throw new ErrorWithStatus({
                 message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
                 status: HTTP_STATUS.UNAUTHORIZED
               })
             }
-            // có rồi thì decode
-            // const secret_access_token = process.env.JWT_SECRET_ACCESS_TOKEN
 
             try {
+              // nếu có accessToken thì kiểm tra xem accessToken có hợp lệ không, tức là verify accessToken
               const decoded_authorization = await verifyToken({
                 token: access_token,
                 secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
@@ -255,8 +268,9 @@ export const refreshTokenValidator = validate(
               const refresh_token = await databaseService.refreshTokens.findOne({
                 token: value
               })
+
               //check xem token này có tồn tại trong db ko ha
-              if (!refresh_token) {
+              if (refresh_token === null) {
                 throw new ErrorWithStatus({
                   message: USERS_MESSAGES.USED_REFRESH_TOKEN_OR_NOT_EXIST,
                   status: HTTP_STATUS.UNAUTHORIZED

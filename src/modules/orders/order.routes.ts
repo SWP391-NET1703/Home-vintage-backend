@@ -1,9 +1,6 @@
+import { accessTokenStaffOrAdminValidator } from './../users/user.middlewares'
 import { Router } from 'express'
-import {
-  accessTokenStaffOrAdminValidator,
-  accessTokenStaffValidator,
-  accessTokenValidator
-} from '../users/user.middlewares'
+import { accessTokenStaffValidator, accessTokenValidator } from '../users/user.middlewares'
 import {
   acceptOrderValidator,
   createOrderValidator,
