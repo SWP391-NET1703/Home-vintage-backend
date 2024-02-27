@@ -5,6 +5,7 @@ import {
   acceptOrderValidator,
   createOrderValidator,
   deleteOrderValidator,
+  rejectOrderValidator,
   shippingOrderValidator
 } from './order.middlewares'
 import {
@@ -12,6 +13,7 @@ import {
   createOrderController,
   deleteOrderController,
   getListOrderHistoryController,
+  rejectOrderController,
   shippingOrderController
 } from './order.controllers'
 import { wrapAsync } from '~/utils/handlers'
@@ -28,13 +30,23 @@ orderRouter.post(
 )
 
 orderRouter.post(
-  '/shipping/:id',
+  '/delivery/:id',
   accessTokenStaffOrAdminValidator,
   shippingOrderValidator,
   wrapAsync(shippingOrderController)
 )
 
+orderRouter.post(
+  '/reject/:id',
+  accessTokenStaffOrAdminValidator,
+  rejectOrderValidator,
+  wrapAsync(rejectOrderController)
+)
+
+// orderRouter.post('/:id', accessTokenStaffOrAdminValidator, orderValidatorTotal, wrapAsync(orderControllerTotal))
+//route này là của customer
 orderRouter.delete('/:id', accessTokenValidator, deleteOrderValidator, wrapAsync(deleteOrderController))
 
 orderRouter.get('/history', accessTokenValidator, wrapAsync(getListOrderHistoryController))
+
 export default orderRouter

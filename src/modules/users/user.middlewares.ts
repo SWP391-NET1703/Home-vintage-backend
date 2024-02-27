@@ -228,7 +228,6 @@ export const accessTokenValidator = validate(
                 token: access_token,
                 secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
               })
-
               const { role } = decoded_authorization
               if (role !== UserRole.User) {
                 throw new ErrorWithStatus({
