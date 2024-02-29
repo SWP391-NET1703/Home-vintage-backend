@@ -15,6 +15,7 @@ import { config } from 'dotenv'
 import { UserRole, UserVerifyStatus } from './user.enum'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from './User.request'
+import { log } from 'console'
 
 config()
 
@@ -403,8 +404,9 @@ export const emailVerifyTokenValidator = validate(
         trim: true,
         custom: {
           options: async (value: string, { req }) => {
+            const token = req.query?.token
             // kiểm tra user có truyền lên email_verify_token không ?
-            if (!value) {
+            if (!token) {
               throw new ErrorWithStatus({
                 message: USERS_MESSAGES.EMAIL_VERIFY_TOKEN_IS_REQUIRED,
                 status: HTTP_STATUS.UNAUTHORIZED // 401
@@ -413,7 +415,7 @@ export const emailVerifyTokenValidator = validate(
 
             try {
               const decoded_email_verify_token = await verifyToken({
-                token: value,
+                token,
                 secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
               })
 

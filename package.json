@@ -27,6 +27,7 @@
     "minimist": "^1.2.8",
     "mongodb": "^5.7.0",
     "node-red": "^3.1.0",
+    "nodemailer": "^6.9.10",
     "sharp": "^0.33.2"
   },
   "devDependencies": {
@@ -38,6 +39,7 @@
     "@types/lodash": "^4.14.197",
     "@types/minimist": "^1.2.3",
     "@types/node": "^20.4.2",
+    "@types/nodemailer": "^6.4.14",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "dotenv": "^16.3.1",

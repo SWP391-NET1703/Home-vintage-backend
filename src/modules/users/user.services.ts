@@ -8,6 +8,7 @@ import { hashPassword } from '~/utils/crypto'
 import RefreshToken from '../refresh_tokens/RefreshToken.schema'
 import { USERS_MESSAGES } from './user.message'
 import { config } from 'dotenv'
+import { sendEmail } from '~/sendMails/sendMail.services'
 
 config()
 
@@ -161,6 +162,7 @@ class UserServices {
     )
 
     console.log(email_verify_token) //giả lập gửi email verify =))
+    await sendEmail(email, email_verify_token)
     return { access_token, refresh_token }
   }
 

@@ -71,7 +71,7 @@ usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsy
   Method: POST
   Body: { email_verify_token: string }
 */
-usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
+usersRouter.get('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
 
 /*
   Des: Resend email verify token
