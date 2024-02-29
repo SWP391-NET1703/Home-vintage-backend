@@ -71,7 +71,7 @@ usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsy
   Method: POST
   Body: { email_verify_token: string }
 */
-usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
+usersRouter.get('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
 
 /*
   Des: Resend email verify token
@@ -160,7 +160,7 @@ usersRouter.put(
   Method: POST
   Body: { refresh_token: string }
 */
-// Ques: Why dont check access-token here?
+// Ques: Why dont check access-token here
 // Ans: Because access-token is expired, so we need to use refresh-token to get new access-token
 usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshTokenController))
 
