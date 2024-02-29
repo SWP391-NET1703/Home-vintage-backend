@@ -3,5 +3,7 @@ export const CUSTOMER_REPORT = {
   INTERIOR_IS_NOT_EXIST: 'Interior is not exist',
   ORDER_IS_NOT_VALID_TO_REPORT: 'Order is not valid to report',
   THIS_IS_NOT_YOUR_ORDER: 'This is not your order',
-  INTERIOR_IS_NOT_EXIST_IN_ORDER: 'Interior is not exist in order'
+  INTERIOR_IS_NOT_EXIST_IN_ORDER: 'Interior is not exist in order',
+  CREATE_REPORT_IMAGE_SUCCESS: 'Create report image success',
+  DELETE_REPORT_IMAGE_SUCCESS: 'Delete report image success'
 } as const
