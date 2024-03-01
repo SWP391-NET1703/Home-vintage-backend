@@ -11,6 +11,8 @@ import interiorImageRouter from './modules/interior_images/interior_image.routes
 import argv from 'minimist'
 import staticRouter from './modules/static/static.routes'
 import orderRouter from './modules/orders/order.routes'
+import customerReportRouter from './modules/customer-report/customer-report/customer-report.routes'
+import customerReportImageRouter from './modules/customer-report/customer-report-image/customer-report-image.routes'
 
 const options = argv(process.argv.slice(2))
 console.log(options.production)
@@ -34,6 +36,8 @@ app.use('/categories', categoryRouter)
 app.use('/interior-images', interiorImageRouter)
 app.use('/static', staticRouter)
 app.use('/orders', orderRouter)
+app.use('/customer-report', customerReportRouter)
+app.use('/customer-report-image', customerReportImageRouter)
 app.use(defaultErrorHandler)
 // app.use('/send', sendEmailRouter)
 
