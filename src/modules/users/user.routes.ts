@@ -160,7 +160,7 @@ usersRouter.get('/me', accessTokenValidator, wrapAsync(getProfileController))
   Method: POST
   Body: { refresh_token: string }
 */
-// Ques: Why dont check access-token here?
+// Ques: Why dont check access-token here
 // Ans: Because access-token is expired, so we need to use refresh-token to get new access-token
 usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshTokenController))
 
