@@ -62,7 +62,8 @@ class CustomerReportImageService {
     return data
   }
 
-  async cancelCustomerReport(id: string) {
+  async cancelCustomerReport(id: string, images: string[]) {
+    await this.handleDeleteAllImage(images)
     const result = await databaseService.reportImage.deleteOne({ report_id: new ObjectId(id) })
     return result
   }
@@ -70,6 +71,13 @@ class CustomerReportImageService {
   async getReportImageByReportId(id: string) {
     const result = await databaseService.reportImage.findOne({ report_id: new ObjectId(id) })
     return result
+  }
+
+  async handleDeleteAllImage(images: string[]) {
+    images.forEach((image) => {
+      const filePath = UPLOAD_IMAGE_REPORT_DIR + '/' + image
+      fs.unlinkSync(filePath)
+    })
   }
 }
 
