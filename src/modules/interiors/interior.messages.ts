@@ -22,5 +22,6 @@ export const INTERIOR_MESSAGES = {
   INTERIOR_PRICE_MUST_BE_STRING: 'Interior price must be string',
   INTERIOR_NOT_FOUND: 'Interior not found',
   INTERIOR_QUANTITY_IS_NOT_ENOUGH: 'Interior quantity is not enough',
-  GET_INTERRIOR_SUCCESS: 'Get interior success'
+  GET_INTERRIOR_SUCCESS: 'Get interior success',
+  GET_LIST_INTERIOR_SUCCESS: 'Get list interior success'
 } as const
