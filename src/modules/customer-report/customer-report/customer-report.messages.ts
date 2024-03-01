@@ -9,5 +9,12 @@ export const CUSTOMER_REPORT = {
   REPORT_IMAGE_IS_NOT_EXIST: 'Report image is not exist',
   NAME_IMAGE_IS_REQUIRED: 'Name image is required',
   NAME_IMAGE_IS_NOT_EXIST: 'Name image is not exist',
-  REPORT_IMAGE_IS_NOT_VALID: 'Report image is not valid'
+  REPORT_IMAGE_IS_NOT_VALID: 'Report image is not valid',
+  CREATE_RERPORT_SUCCESS: 'Create report success',
+  REPORT_IS_NOT_VALID: 'Report is not valid',
+  INTERIOR_IS_NOT_VALID: 'Interior is not valid',
+  DESCRIPTION_MUST_BE_FORM_5_TO_100_CHARACTERS: 'Description must be form 5 to 100 characters',
+  CANCEL_SUCCESS: 'cancel success',
+  DELETE_CUSTOMER_REPORT_SUCCESS: 'Delete customer report success',
+  REPORT_IS_NOT_EXIST: 'Report is not exist'
 } as const

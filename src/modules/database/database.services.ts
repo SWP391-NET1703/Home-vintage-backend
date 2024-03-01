@@ -5,7 +5,8 @@ import RefreshToken from '../refresh_tokens/RefreshToken.schema'
 import Category from '../categorys/category.schema'
 import Interior from '../interiors/interior.schema'
 import Order from '../orders/order.schema'
-import { CustomerReportImage } from '~/customer-report/customer-report-image/customer-report-image.schema'
+import { CustomerReport } from '../customer-report/customer-report/customer-report.schema'
+import { CustomerReportImage } from '../customer-report/customer-report-image/customer-report-image.schema'
 
 dotenv.config() // là để đọc file .env
 //chúng ta cần mã hóa password với username của database
@@ -53,6 +54,10 @@ class DatabaseService {
 
   get reportImage(): Collection<CustomerReportImage> {
     return this.db.collection(process.env.DB_REPORT_IMAGE_COLLECTION as string)
+  }
+
+  get customerReport(): Collection<CustomerReport> {
+    return this.db.collection(process.env.DB_CUSTOMER_REPORT_COLLECTION as string)
   }
 }
 

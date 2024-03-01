@@ -61,6 +61,16 @@ class CustomerReportImageService {
     if (data && data.images.length === 0) await databaseService.reportImage.deleteOne({ _id: new ObjectId(id) })
     return data
   }
+
+  async cancelCustomerReport(id: string) {
+    const result = await databaseService.reportImage.deleteOne({ report_id: new ObjectId(id) })
+    return result
+  }
+
+  async getReportImageByReportId(id: string) {
+    const result = await databaseService.reportImage.findOne({ report_id: new ObjectId(id) })
+    return result
+  }
 }
 
 const customerReportImageService = new CustomerReportImageService()

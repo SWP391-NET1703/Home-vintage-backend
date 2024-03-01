@@ -1,4 +1,3 @@
-import { CustomerReportImage } from '~/customer-report/customer-report-image/customer-report-image.schema'
 import { checkSchema } from 'express-validator'
 import { CUSTOMER_REPORT } from '../customer-report/customer-report.messages'
 import { validate } from '~/utils/validation'
