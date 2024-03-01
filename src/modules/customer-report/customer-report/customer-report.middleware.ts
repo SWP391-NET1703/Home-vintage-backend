@@ -1,4 +1,4 @@
-import { checkSchema } from 'express-validator'
+import { check, checkSchema } from 'express-validator'
 import { validate } from '~/utils/validation'
 import { CUSTOMER_REPORT } from './customer-report.messages'
 import customerReportService from './customer-report.services'
@@ -102,6 +102,7 @@ export const deleteOrCancelCustomerReportValidator = validate(
             if (!isExist) {
               throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
             }
+            req.images = isExist.images
             return true
           }
         }
@@ -110,3 +111,5 @@ export const deleteOrCancelCustomerReportValidator = validate(
     ['params']
   )
 )
+
+export const manageCustomerReportvalidator = validate(checkSchema({}, ['params']))

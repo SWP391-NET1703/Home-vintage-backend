@@ -11,3 +11,7 @@ export interface CreateCustomerReportReqBody {
   images?: string[]
   status: CustomerReportStatus
 }
+
+export interface ManageCustomerReportReqBody {
+  reason_not_valid?: string
+}

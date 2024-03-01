@@ -17,5 +17,6 @@ declare module 'express' {
     order?: Order
     reportImage?: CustomerReportImage
     report?: CustomerReport
+    images?: string[]
   }
 }
