@@ -397,6 +397,56 @@ export const accessTokenStaffValidator = validate(
   )
 )
 
+export const accessTokenStaffOrAdminValidator = validate(
+  checkSchema(
+    {
+      Authorization: {
+        trim: true, //nó truyền khoảng trắng bụp liền
+        custom: {
+          options: async (value, { req }) => {
+            // console.log('bug1')
+            //định dạng token Bearer <token> => split để lấy access ra
+            const access_token = value.split(' ')[1]
+            if (!access_token) {
+              //ko có thì ăn chửi
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+            // có rồi thì decode
+            // const sercet_access_token = process.env.JWT_SECRET_ACCESS_TOKEN
+
+            try {
+              const decoded_authorization = await verifyToken({
+                token: access_token,
+                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+              })
+
+              const { role } = decoded_authorization
+              if (role === UserRole.User) {
+                throw new ErrorWithStatus({
+                  message: USERS_MESSAGES.ACCESS_TOKEN_IS_INVALID,
+                  status: HTTP_STATUS.FORBIDDEN
+                })
+              }
+
+              ;(req as Request).decoded_authorization = decoded_authorization
+            } catch (error) {
+              throw new ErrorWithStatus({
+                message: capitalize((error as JsonWebTokenError).message),
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['headers']
+  )
+)
+
 export const emailVerifyTokenValidator = validate(
   checkSchema(
     {
