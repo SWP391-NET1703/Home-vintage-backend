@@ -18,7 +18,7 @@ console.log(options.production)
 config()
 
 initFolder()
-const port = process.env.PORT || 4000
+const PORT = process.env.PORT || 4000
 const app = express()
 
 //app handler
@@ -35,7 +35,8 @@ app.use('/interior-images', interiorImageRouter)
 app.use('/static', staticRouter)
 app.use('/orders', orderRouter)
 app.use(defaultErrorHandler)
+// app.use('/send', sendEmailRouter)
 
-app.listen(port, () => {
-  console.log(`server này đang chạy trên port:${port}`)
+app.listen(PORT, () => {
+  console.log(`server này đang chạy trên port:${PORT}`)
 })

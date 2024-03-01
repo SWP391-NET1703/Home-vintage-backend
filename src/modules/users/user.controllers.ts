@@ -87,7 +87,7 @@ export const emailVerifyTokenController = async (
   }
 
   // nếu mà không khớp email_verify_token thì trả về lỗi
-  if (user.email_verify_token !== req.body.email_verify_token) {
+  if (user.email_verify_token !== req.query?.token) {
     throw new ErrorWithStatus({
       message: USERS_MESSAGES.EMAIL_VERIFY_TOKEN_IS_INCORRECT,
       status: HTTP_STATUS.UNAUTHORIZED // 401

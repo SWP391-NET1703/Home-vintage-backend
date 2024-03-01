@@ -15,6 +15,7 @@ import { config } from 'dotenv'
 import { UserRole, UserVerifyStatus } from './user.enum'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from './User.request'
+import { log } from 'console'
 
 config()
 
@@ -401,12 +402,10 @@ export const accessTokenStaffOrAdminValidator = validate(
       Authorization: {
         trim: true, //nó truyền khoảng trắng bụp liền
         custom: {
-          options: async (value, { req }) => {
-            // console.log('bug1')
-            //định dạng token Bearer <token> => split để lấy access ra
-            const access_token = value.split(' ')[1]
-            if (!access_token) {
-              //ko có thì ăn chửi
+          options: async (value: string, { req }) => {
+            const token = req.query?.token
+            // kiểm tra user có truyền lên email_verify_token không ?
+            if (!token) {
               throw new ErrorWithStatus({
                 message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
                 status: HTTP_STATUS.UNAUTHORIZED
@@ -416,9 +415,9 @@ export const accessTokenStaffOrAdminValidator = validate(
             // const sercet_access_token = process.env.JWT_SECRET_ACCESS_TOKEN
 
             try {
-              const decoded_authorization = await verifyToken({
-                token: access_token,
-                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+              const decoded_email_verify_token = await verifyToken({
+                token,
+                secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
               })
 
               const { role } = decoded_authorization
