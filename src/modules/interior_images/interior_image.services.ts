@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import sharp from 'sharp'
-import { UPLOAD_DIR } from '~/constants/dir'
+import { UPLOAD_DIR, UPLOAD_IMAGE_DIR } from '~/constants/dir'
 import { getNameFormFullName, handleUploadImage } from '~/utils/file'
 import fs from 'fs'
 import { isProduction } from '~/constants/config'
@@ -13,13 +13,13 @@ class InteriorImageServices {
     const size = type ? 1 : 4
     const { id } = req.params
     //lưu ảnh vào trong upload
-    const files = await handleUploadImage(req, size as number)
+    const files = await handleUploadImage(req, size, UPLOAD_IMAGE_DIR)
     //xử lý file bằng sharp giúp tối ưu hình ảnh
     // const info = await sharp(file.filepath)
     const result = await Promise.all(
       files.map(async (file) => {
         const newFileName = getNameFormFullName(file.newFilename) + '.jpg'
-        const newFilePath = UPLOAD_DIR + '/' + newFileName
+        const newFilePath = UPLOAD_IMAGE_DIR + '/' + newFileName
         await sharp(file.filepath).jpeg().toFile(newFilePath)
         fs.unlinkSync(file.filepath)
         // return isProduction

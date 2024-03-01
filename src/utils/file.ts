@@ -3,23 +3,24 @@ import fs from 'fs'
 import { Request } from 'express'
 import formidable from 'formidable'
 import { Files, File } from 'formidable'
-import { UPLOAD_IMAGE_DIR, UPLOAD_IMAGE_TEMP_DIR } from '~/constants/dir'
+import { UPLOAD_DIR, UPLOAD_IMAGE_REPORT_TEMP_DIR, UPLOAD_IMAGE_TEMP_DIR } from '~/constants/dir'
 import { isProduction } from '~/constants/config'
 
 export const initFolder = () => {
-  //sử dụng fs để thao tác với đường dẫn
-  if (!fs.existsSync(UPLOAD_IMAGE_TEMP_DIR)) {
-    //kiểm tra xem đường dẫn đã tồn tại hay chưa
-    fs.mkdirSync(UPLOAD_IMAGE_TEMP_DIR, {
-      recursive: true //cho phép tạo các folder nested vào nhau
-    })
-  }
+  ;[UPLOAD_IMAGE_TEMP_DIR, UPLOAD_IMAGE_REPORT_TEMP_DIR].forEach((dir) => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, {
+        recursive: true //cho phép tạo folder nested vào nhau
+        //uploads/image/bla bla bla
+      }) //mkdirSync: giúp tạo thư mục
+    }
+  })
 }
 
 //hàm xử lý file từ client gửi lên
-export const handleUploadImage = (req: Request, size: number) => {
+export const handleUploadImage = (req: Request, size: number, nameDir: string) => {
   const form = formidable({
-    uploadDir: path.resolve(UPLOAD_IMAGE_TEMP_DIR),
+    uploadDir: path.resolve(nameDir),
     maxFileSize: 500 * 1024,
     maxFiles: size,
     keepExtensions: true,
