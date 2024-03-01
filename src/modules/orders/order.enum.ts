@@ -2,11 +2,17 @@ export enum OrderStatus {
   Wait_for_confirm,
   Pack_products,
   Delivery,
-  Success
+  Success,
+  Cancel
 }
 
 export enum PaymentMethod {
   COD,
-  Banking,
   Paypal
+}
+
+export enum PaymentStatus {
+  do_not_pay,
+  did_pay,
+  refunds
 }

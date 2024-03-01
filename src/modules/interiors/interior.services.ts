@@ -1,8 +1,11 @@
+import { getListInterior } from './interior.controllers'
 import { ObjectId } from 'mongodb'
 import databaseService from '../database/database.services'
 import { CreateInteriorReqBody } from './interior.request'
 import Interior from './interior.schema'
 import { InteriorResponse } from './interior.response'
+import { InteriorStatus } from './interior.enums'
+import { OrderDetail } from '../orders/order.schema'
 class InteriorService {
   async createInterior(payload: CreateInteriorReqBody) {
     const { interior_name, description, quantity, price, material, category_id, color, size } = payload
@@ -57,6 +60,12 @@ class InteriorService {
             $arrayElemAt: ['$category_detail', 0]
           }
         }
+      },
+      {
+        //bỏ đi trường category_id
+        $project: {
+          category_id: 0
+        }
       }
     ])
     const interior = await interiorCursor.toArray()
@@ -71,11 +80,61 @@ class InteriorService {
   }
 
   async updateInteriorQuantity(quantity: number, id: string) {
+    if (quantity === 0) {
+      const result = await databaseService.interiors.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            status: InteriorStatus.Sold_out,
+            quantity: quantity.toString()
+          }
+        }
+      )
+    } else {
+      const result = await databaseService.interiors.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            quantity: quantity.toString()
+          }
+        }
+      )
+    }
+  }
+
+  async getListInterior() {
+    const listInteriorCursor = await databaseService.interiors.aggregate<InteriorResponse>([
+      {
+        $lookup: {
+          from: process.env.DB_CATEGORYS_COLLECTION as string,
+          localField: 'category_id',
+          foreignField: '_id',
+          as: 'category_detail'
+        }
+      },
+      {
+        $addFields: {
+          category_detail: {
+            $arrayElemAt: ['$category_detail', 0]
+          }
+        }
+      },
+      {
+        //bỏ đi trường category_id
+        $project: {
+          category_id: 0
+        }
+      }
+    ])
+    return listInteriorCursor.toArray()
+  }
+
+  async updateNumberOfSale(number_of_sale: string, id: string) {
     const result = await databaseService.interiors.updateOne(
       { _id: new ObjectId(id) },
       {
         $set: {
-          quantity: quantity.toString()
+          number_of_sale: number_of_sale
         }
       }
     )

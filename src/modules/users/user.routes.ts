@@ -17,16 +17,16 @@ import {
 } from './user.controllers'
 import {
   accessTokenValidator,
-  changePasswordValidator,
-  emailVerifyTokenValidator,
-  forgotPasswordValidator,
+  // changePasswordValidator,
+  // emailVerifyTokenValidator,
+  // forgotPasswordValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator,
-  resetPasswordValidator,
-  updateMeValidator,
-  verifiedUserValidator,
-  verifyForgotPasswordTokenValidator
+  registerValidator
+  // resetPasswordValidator,
+  // updateMeValidator,
+  // verifiedUserValidator,
+  // verifyForgotPasswordTokenValidator
 } from './user.middlewares'
 import { UpdateMeReqBody } from './User.request'
 import { filterMiddleware } from '~/utils/common'
@@ -88,7 +88,7 @@ Path: /users/forgot-password
 Method: POST
 Body: { email: string }
 */
-usersRouter.post('/forgot-password', forgotPasswordValidator, wrapAsync(forgotPasswordController))
+// usersRouter.post('/forgot-password', forgotPasswordValidator, wrapAsync(forgotPasswordController))
 
 /*
 Des: khi user nhấn vào link trong email để reset password
@@ -99,11 +99,11 @@ Path: /users/verify-forgot-password
 Method: POST
 Body: { forgot_password_token: string }
 */
-usersRouter.post(
-  '/verify-forgot-password',
-  verifyForgotPasswordTokenValidator,
-  wrapAsync(verifyForgotPasswordTokenController)
-)
+// usersRouter.post(
+//   '/verify-forgot-password',
+//   verifyForgotPasswordTokenValidator,
+//   wrapAsync(verifyForgotPasswordTokenController)
+// )
 
 /*
   Des: reset password
@@ -112,12 +112,12 @@ usersRouter.post(
   Header: không cần, vì ngta quên password rồi, thì sao mà login để có authen đc
   Body: {forgot_password_token: string, password: string, confirm_password: string}
   */
-usersRouter.post(
-  '/reset-password',
-  resetPasswordValidator,
-  verifyForgotPasswordTokenValidator,
-  wrapAsync(resetPasswordController)
-)
+// usersRouter.post(
+//   '/reset-password',
+//   resetPasswordValidator,
+//   verifyForgotPasswordTokenValidator,
+//   wrapAsync(resetPasswordController)
+// )
 
 /*
      Des: get profile của user
@@ -128,14 +128,14 @@ usersRouter.post(
    */
 usersRouter.get('/me', accessTokenValidator, wrapAsync(getProfileController))
 
-usersRouter.patch(
-  '/me',
-  accessTokenValidator,
-  verifiedUserValidator,
-  filterMiddleware<UpdateMeReqBody>(['full_name', 'date_of_birth', 'cccd', 'phone_number', 'user_avatar']),
-  updateMeValidator,
-  wrapAsync(updateMeController)
-)
+// usersRouter.patch(
+//   '/me',
+//   accessTokenValidator,
+//   verifiedUserValidator,
+//   filterMiddleware<UpdateMeReqBody>(['full_name', 'date_of_birth', 'cccd', 'phone_number', 'user_avatar']),
+//   updateMeValidator,
+//   wrapAsync(updateMeController)
+// )
 
 // change password
 /*
@@ -145,13 +145,13 @@ usersRouter.patch(
   Headers: { Authorization: Bearer <access_token> }
   Body: { old_password: string, new_password: string, confirm_new_password: string }
 */
-usersRouter.put(
-  '/change-password',
-  accessTokenValidator,
-  verifiedUserValidator,
-  changePasswordValidator,
-  wrapAsync(changePasswordController)
-)
+// usersRouter.put(
+//   '/change-password',
+//   accessTokenValidator,
+//   verifiedUserValidator,
+//   changePasswordValidator,
+//   wrapAsync(changePasswordController)
+// )
 //changePasswordValidator check các giá trị truyền lên body có valid k ?
 
 /*

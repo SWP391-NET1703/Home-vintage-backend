@@ -4,7 +4,6 @@ import Category from '../categorys/category.schema'
 
 export interface InteriorResponse {
   _id?: ObjectId
-  category_id: ObjectId
   interior_name: string
   description: string
   quantity: string
@@ -15,6 +14,7 @@ export interface InteriorResponse {
   warranty: InteriorWarranty
   thumbnail: string
   sale: boolean
+  number_of_sale: string
   created_at?: Date
   status?: InteriorStatus
   image: string[]

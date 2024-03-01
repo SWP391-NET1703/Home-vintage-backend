@@ -69,7 +69,8 @@ export const USERS_MESSAGES = {
   CHANGE_PASSWORD_SUCCESS: 'Change password success',
   REFRESH_TOKEN_SUCCESSFULLY: 'Refresh token successfully',
   EMAIL_NOT_VERIFIED: 'Email not verified',
-  UPLOAD_SUCCESS: 'Upload success'
+  UPLOAD_SUCCESS: 'Upload success',
+  THIS_IS_NOT_YOUR_ORDER: 'This is not your order'
 } as const //để k ai chỉnh đc
 
 export const TWEETS_MESSAGES = {
