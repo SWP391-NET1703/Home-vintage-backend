@@ -1,12 +1,11 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { Request, Response } from 'express'
 import customerReportImageService from '../customer-report-image/customer-report-image.services'
-import { CreateCustomerReportReqBody } from './customer-report.request'
+import { CreateCustomerReportReqBody, ManageCustomerReportReqBody } from './customer-report.request'
 import customerReportService from './customer-report.services'
-import { JwkKeyExportOptions } from 'crypto'
-import { TokenPayload } from '~/modules/users/User.request'
 import { JwtPayload } from 'jsonwebtoken'
 import { CUSTOMER_REPORT } from './customer-report.messages'
+import { CustomerReportStatus } from './customer-report.enum'
 
 export const createCustomerReportController = async (
   req: Request<ParamsDictionary, any, CreateCustomerReportReqBody>,
@@ -24,18 +23,44 @@ export const createCustomerReportController = async (
 export const cancelOrDeleteCustomerReportController = async (req: Request, res: Response) => {
   const { id } = req.params
   const { type } = req.query
-
+  const images = req.images
   if (type) {
-    const result = await customerReportImageService.cancelCustomerReport(id)
+    const result = await customerReportImageService.cancelCustomerReport(id, images as string[])
     return res.json({
       message: CUSTOMER_REPORT.CANCEL_SUCCESS
     })
   }
   const result = await Promise.all([
-    customerReportImageService.cancelCustomerReport(id),
+    customerReportImageService.cancelCustomerReport(id, images as string[]),
     customerReportService.deleteCustomerReport(id)
   ])
   res.json({
     message: CUSTOMER_REPORT.DELETE_CUSTOMER_REPORT_SUCCESS
+  })
+}
+
+export const manageCustomerReportController = async (
+  req: Request<ParamsDictionary, any, ManageCustomerReportReqBody>,
+  res: Response
+) => {
+  const { status } = req.query as { status: string }
+  const { id } = req.params as { id: string }
+  if (status) {
+    const { reason_not_valid } = req.body
+    const result = await customerReportService.changeStatus(
+      id,
+      CustomerReportStatus.Not_Valid,
+      reason_not_valid as string
+    )
+    return res.json({
+      message: CUSTOMER_REPORT.REJECT_REPORT_SUCCESS,
+      result: result
+    })
+  }
+
+  const result = await customerReportService.changeStatus(id, CustomerReportStatus.Valid, '')
+  res.json({
+    message: CUSTOMER_REPORT.REPORT_IS_VALID,
+    result: result
   })
 }

@@ -11,6 +11,7 @@ interface CustomerReportType {
   report_date?: Date
   images?: string[]
   status?: CustomerReportStatus
+  reason_not_valid?: string
 }
 
 export class CustomerReport {
@@ -23,6 +24,7 @@ export class CustomerReport {
   report_date?: Date
   images?: string[]
   status?: CustomerReportStatus
+  reason_not_valid?: string
 
   constructor(customerReport: CustomerReportType) {
     this._id = customerReport._id
@@ -34,5 +36,6 @@ export class CustomerReport {
     this.report_date = customerReport.report_date || new Date()
     this.images = customerReport.images
     this.status = customerReport.status
+    this.reason_not_valid = customerReport.reason_not_valid || ''
   }
 }

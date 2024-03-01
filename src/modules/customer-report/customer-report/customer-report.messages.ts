@@ -16,5 +16,7 @@ export const CUSTOMER_REPORT = {
   DESCRIPTION_MUST_BE_FORM_5_TO_100_CHARACTERS: 'Description must be form 5 to 100 characters',
   CANCEL_SUCCESS: 'cancel success',
   DELETE_CUSTOMER_REPORT_SUCCESS: 'Delete customer report success',
-  REPORT_IS_NOT_EXIST: 'Report is not exist'
+  REPORT_IS_NOT_EXIST: 'Report is not exist',
+  REJECT_REPORT_SUCCESS: 'Reject report success',
+  REPORT_IS_VALID: 'Report is valid'
 } as const

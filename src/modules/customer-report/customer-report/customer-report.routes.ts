@@ -1,9 +1,17 @@
 import { Router } from 'express'
 
 import { wrapAsync } from '~/utils/handlers'
-import { createCustomerReportValidator, deleteOrCancelCustomerReportValidator } from './customer-report.middleware'
-import { accessTokenValidator } from '~/modules/users/user.middlewares'
-import { cancelOrDeleteCustomerReportController, createCustomerReportController } from './customer-report.controllers'
+import {
+  createCustomerReportValidator,
+  deleteOrCancelCustomerReportValidator,
+  manageCustomerReportvalidator
+} from './customer-report.middleware'
+import { accessTokenStaffOrAdminValidator, accessTokenValidator } from '~/modules/users/user.middlewares'
+import {
+  cancelOrDeleteCustomerReportController,
+  createCustomerReportController,
+  manageCustomerReportController
+} from './customer-report.controllers'
 import { wrap } from 'module'
 
 const customerReportRouter = Router()
@@ -29,6 +37,17 @@ customerReportRouter.delete(
   accessTokenValidator,
   deleteOrCancelCustomerReportValidator,
   wrapAsync(cancelOrDeleteCustomerReportController)
+)
+/**
+ * query : report-id
+ * params : status
+ * body : reason_not_valid
+ */
+customerReportRouter.post(
+  '/manage/:id',
+  accessTokenStaffOrAdminValidator,
+  manageCustomerReportvalidator,
+  wrapAsync(manageCustomerReportController)
 )
 
 export default customerReportRouter

@@ -17,7 +17,7 @@ class CustomerReportService {
         rate_interior,
         description,
         images,
-        status: CustomerReportStatus.Not_Valid
+        status: CustomerReportStatus.Not_check
       })
     )
     const data = await databaseService.customerReport.findOne({ _id: result.insertedId })
@@ -32,6 +32,22 @@ class CustomerReportService {
   async deleteCustomerReport(id: string) {
     const result = await databaseService.customerReport.deleteOne({ _id: new ObjectId(id) })
     return result
+  }
+
+  async changeStatus(id: string, status: CustomerReportStatus, reason_not_valid: string) {
+    const result = await databaseService.customerReport.updateOne(
+      {
+        _id: new Object(id)
+      },
+      {
+        $set: {
+          reason_not_valid,
+          status: status
+        }
+      }
+    )
+    const data = await this.getReportById(id)
+    return data
   }
 }
 
