@@ -16,6 +16,7 @@ import {
   verifyForgotPasswordTokenController
 } from './user.controllers'
 import {
+  accessTokenLogoutValidator,
   accessTokenValidator,
   changePasswordValidator,
   emailVerifyTokenValidator,
@@ -58,7 +59,7 @@ usersRouter.post('/login', loginValidator, wrapAsync(loginController))
   Headers: { Authorization: 'Bearer <access_token>' }
   Body: { refresh_token: string }
 */
-usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsync(logoutController))
+usersRouter.post('/logout', accessTokenLogoutValidator, refreshTokenValidator, wrapAsync(logoutController))
 
 /*  
   Description: Verify email
