@@ -1,9 +1,13 @@
+import { CustomerReportImage } from '~/customer-report/customer-report-image/customer-report-image.schema'
 import { checkSchema } from 'express-validator'
 import { CUSTOMER_REPORT } from '../customer-report/customer-report.messages'
 import { validate } from '~/utils/validation'
 import { orderService } from '~/modules/orders/order.services'
 import { OrderStatus } from '~/modules/orders/order.enum'
 import interiorService from '~/modules/interiors/interior.services'
+import customerReportImageService from './customer-report-image.services'
+import { forEach } from 'lodash'
+import { Request } from 'express'
 
 export const createCustomerReportImageValidator = validate(
   checkSchema(
@@ -76,4 +80,29 @@ export const createCustomerReportImageValidator = validate(
   )
 )
 
-export const deleteCustomerReportImageValidator = validate
+export const deleteCustomerReportImageValidator = validate(
+  checkSchema(
+    {
+      id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const customerReportImage = await customerReportImageService.getReportImageById(value)
+            if (!customerReportImage) {
+              throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['params', 'query']
+  )
+)

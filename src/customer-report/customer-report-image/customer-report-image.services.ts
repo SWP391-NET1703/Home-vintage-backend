@@ -43,9 +43,9 @@ class CustomerReportImageService {
     return reportImage
   }
 
-  async getReportImage(reportId: ObjectId) {
-    const result = await databaseService.reportImage.findOne({ report_id: reportId })
-    return result
+  async getReportImageById(id: string) {
+    const data = await databaseService.reportImage.findOne({ _id: new ObjectId(id) })
+    return data
   }
 
   async deleteImage(id: string, nameImage: string) {
@@ -58,6 +58,7 @@ class CustomerReportImageService {
       }
     )
     const data = await databaseService.reportImage.findOne({ _id: new ObjectId(id) })
+    if (data && data.images.length === 0) await databaseService.reportImage.deleteOne({ _id: new ObjectId(id) })
     return data
   }
 }

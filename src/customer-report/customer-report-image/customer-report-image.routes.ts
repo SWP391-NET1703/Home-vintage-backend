@@ -24,11 +24,15 @@ customerReportImageRouter.post(
   createCustomerReportImageValidator,
   wrapAsync(createCustomerReportImageController)
 )
-
+/**
+ * params : _id
+ * query : nameImage
+ * response : customerReportImage
+ */
 customerReportImageRouter.delete(
   '/:id',
   accessTokenValidator,
-  //deleteCustomerReportImageValidator,
+  deleteCustomerReportImageValidator,
   wrapAsync(deleteCustomerReportImageController)
 )
 
