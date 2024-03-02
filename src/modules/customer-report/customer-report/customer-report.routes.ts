@@ -30,7 +30,6 @@ customerReportRouter.post(
 )
 /**
  * params : report_id
- * query : type : cancel || none
  */
 customerReportRouter.delete(
   '/:id',

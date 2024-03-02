@@ -22,14 +22,8 @@ export const createCustomerReportController = async (
 
 export const deleteCustomerReportController = async (req: Request, res: Response) => {
   const { id } = req.params
-  const { type } = req.query
   const images = req.images
-  if (type) {
-    const result = await customerReportImageService.cancelCustomerReport(id, images as string[])
-    return res.json({
-      message: CUSTOMER_REPORT.CANCEL_SUCCESS
-    })
-  }
+
   const result = await Promise.all([
     customerReportImageService.cancelCustomerReport(id, images as string[]),
     customerReportService.deleteCustomerReport(id)

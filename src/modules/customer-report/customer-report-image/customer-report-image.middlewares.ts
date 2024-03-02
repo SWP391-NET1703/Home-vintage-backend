@@ -98,11 +98,59 @@ export const deleteCustomerReportImageValidator = validate(
             if (!customerReportImage) {
               throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
             }
+            req.reportImage = customerReportImage
+            return true
+          }
+        }
+      },
+      nameImage: {
+        notEmpty: true,
+        custom: {
+          options: (value, { req }) => {
+            const reportImage = req.reportImage
+            let isExistImage = false
+            for (let index = 0; index < reportImage.images.length; index++) {
+              if (value === reportImage.image[index]) {
+                isExistImage = false
+                break
+              }
+            }
+            if (!isExistImage) {
+              throw new Error(CUSTOMER_REPORT.NAME_IMAGE_IS_NOT_EXIST)
+            }
             return true
           }
         }
       }
     },
     ['params', 'query']
+  )
+)
+
+export const deleteAllImageAndInforValidator = validate(
+  checkSchema(
+    {
+      id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const customerReportImage = await customerReportImageService.getReportImageByReportId(value)
+            if (!customerReportImage) {
+              throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
+            }
+            req.reportImage = customerReportImage
+            return true
+          }
+        }
+      }
+    },
+    ['params']
   )
 )
