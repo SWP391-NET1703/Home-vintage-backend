@@ -3,13 +3,13 @@ import { Router } from 'express'
 import { wrapAsync } from '~/utils/handlers'
 import {
   createCustomerReportValidator,
-  deleteOrCancelCustomerReportValidator,
+  deleteCustomerReportValidator,
   manageCustomerReportvalidator
 } from './customer-report.middleware'
 import { accessTokenStaffOrAdminValidator, accessTokenValidator } from '~/modules/users/user.middlewares'
 import {
-  cancelOrDeleteCustomerReportController,
   createCustomerReportController,
+  deleteCustomerReportController,
   manageCustomerReportController
 } from './customer-report.controllers'
 import { wrap } from 'module'
@@ -35,8 +35,8 @@ customerReportRouter.post(
 customerReportRouter.delete(
   '/:id',
   accessTokenValidator,
-  deleteOrCancelCustomerReportValidator,
-  wrapAsync(cancelOrDeleteCustomerReportController)
+  deleteCustomerReportValidator,
+  wrapAsync(deleteCustomerReportController)
 )
 /**
  * query : report-id

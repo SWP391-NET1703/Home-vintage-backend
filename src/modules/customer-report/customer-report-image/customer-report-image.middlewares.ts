@@ -7,6 +7,7 @@ import interiorService from '~/modules/interiors/interior.services'
 import customerReportImageService from './customer-report-image.services'
 import { forEach } from 'lodash'
 import { Request } from 'express'
+import { OrderDetail } from '~/modules/orders/order.schema'
 
 export const createCustomerReportImageValidator = validate(
   checkSchema(
@@ -58,7 +59,7 @@ export const createCustomerReportImageValidator = validate(
               throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
             }
 
-            const detail = req.order.detail
+            const { detail } = req.order as { detail: OrderDetail[] }
             let isExistInteriorInOrder = false
             for (let index = 0; index < detail.length; index++) {
               if (value === detail[index].interior_id.toString()) {
@@ -82,7 +83,7 @@ export const createCustomerReportImageValidator = validate(
 export const deleteCustomerReportImageValidator = validate(
   checkSchema(
     {
-      id: {
+      reportId: {
         notEmpty: true,
         isLength: {
           options: {
@@ -93,7 +94,7 @@ export const deleteCustomerReportImageValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const customerReportImage = await customerReportImageService.getReportImageById(value)
+            const customerReportImage = await customerReportImageService.getReportImageByReportId(value)
             if (!customerReportImage) {
               throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
             }

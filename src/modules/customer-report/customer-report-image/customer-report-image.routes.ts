@@ -30,7 +30,7 @@ customerReportImageRouter.post(
  * response : customerReportImage
  */
 customerReportImageRouter.delete(
-  '/:id',
+  '/:reportId',
   accessTokenValidator,
   deleteCustomerReportImageValidator,
   wrapAsync(deleteCustomerReportImageController)

@@ -13,9 +13,9 @@ export const createCustomerReportImageController = async (req: Request, res: Res
 
 export const deleteCustomerReportImageController = async (req: Request, res: Response) => {
   const { nameImage } = req.query
-  const { id } = req.params
+  const { reportId } = req.params
   await customerReportImageService.handleDeleteFileImage(nameImage as string)
-  const result = await customerReportImageService.deleteImage(id as string, nameImage as string)
+  const result = await customerReportImageService.deleteImage(reportId as string, nameImage as string)
   res.json({
     message: CUSTOMER_REPORT.DELETE_REPORT_IMAGE_SUCCESS,
     result

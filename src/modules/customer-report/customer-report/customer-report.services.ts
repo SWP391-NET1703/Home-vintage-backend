@@ -16,7 +16,7 @@ class CustomerReportService {
         order_id: new ObjectId(order_id),
         rate_interior,
         description,
-        images,
+        images: images ? images : [],
         status: CustomerReportStatus.Not_check
       })
     )
