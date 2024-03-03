@@ -10,9 +10,9 @@ import { accessTokenStaffOrAdminValidator, accessTokenValidator } from '~/module
 import {
   createCustomerReportController,
   deleteCustomerReportController,
+  getListCustomerReportNotCheckController,
   manageCustomerReportController
 } from './customer-report.controllers'
-import { wrap } from 'module'
 
 const customerReportRouter = Router()
 
@@ -48,5 +48,7 @@ customerReportRouter.post(
   manageCustomerReportvalidator,
   wrapAsync(manageCustomerReportController)
 )
+
+customerReportRouter.get('/', accessTokenStaffOrAdminValidator, wrapAsync(getListCustomerReportNotCheckController))
 
 export default customerReportRouter

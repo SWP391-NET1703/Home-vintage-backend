@@ -24,8 +24,9 @@ export const deleteCustomerReportImageController = async (req: Request, res: Res
 
 export const deleteAllImageAndInforController = async (req: Request, res: Response) => {
   const { reportImage } = req
-  const { _id, images } = reportImage
-  const result = await customerReportImageService.cancelCustomerReport(_id.toString(), images)
+  const { images } = reportImage
+  const { id } = req.params
+  const result = await customerReportImageService.cancelCustomerReport(id.toString(), images)
   res.json({
     message: CUSTOMER_REPORT.CANCEL_SUCCESS
   })
