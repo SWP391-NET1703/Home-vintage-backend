@@ -20,16 +20,10 @@ export const createCustomerReportController = async (
   })
 }
 
-export const cancelOrDeleteCustomerReportController = async (req: Request, res: Response) => {
+export const deleteCustomerReportController = async (req: Request, res: Response) => {
   const { id } = req.params
-  const { type } = req.query
   const images = req.images
-  if (type) {
-    const result = await customerReportImageService.cancelCustomerReport(id, images as string[])
-    return res.json({
-      message: CUSTOMER_REPORT.CANCEL_SUCCESS
-    })
-  }
+
   const result = await Promise.all([
     customerReportImageService.cancelCustomerReport(id, images as string[]),
     customerReportService.deleteCustomerReport(id)
@@ -53,14 +47,12 @@ export const manageCustomerReportController = async (
       reason_not_valid as string
     )
     return res.json({
-      message: CUSTOMER_REPORT.REJECT_REPORT_SUCCESS,
-      result: result
+      message: CUSTOMER_REPORT.REJECT_REPORT_SUCCESS
     })
   }
 
   const result = await customerReportService.changeStatus(id, CustomerReportStatus.Valid, '')
   res.json({
-    message: CUSTOMER_REPORT.REPORT_IS_VALID,
-    result: result
+    message: CUSTOMER_REPORT.REPORT_IS_VALID
   })
 }

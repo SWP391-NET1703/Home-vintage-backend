@@ -3,10 +3,12 @@ import { accessTokenValidator } from '~/modules/users/user.middlewares'
 import { wrapAsync } from '~/utils/handlers'
 import {
   createCustomerReportImageController,
+  deleteAllImageAndInforController,
   deleteCustomerReportImageController
 } from './customer-report-image.controller'
 import {
   createCustomerReportImageValidator,
+  deleteAllImageAndInforValidator,
   deleteCustomerReportImageValidator
 } from './customer-report-image.middlewares'
 
@@ -30,10 +32,20 @@ customerReportImageRouter.post(
  * response : customerReportImage
  */
 customerReportImageRouter.delete(
-  '/:id',
+  '/:reportId',
   accessTokenValidator,
   deleteCustomerReportImageValidator,
   wrapAsync(deleteCustomerReportImageController)
+)
+
+/**
+ * param : id là report id nhá
+ */
+customerReportImageRouter.delete(
+  '/cancel/:id',
+  accessTokenValidator,
+  deleteAllImageAndInforValidator,
+  wrapAsync(deleteAllImageAndInforController)
 )
 
 export default customerReportImageRouter
