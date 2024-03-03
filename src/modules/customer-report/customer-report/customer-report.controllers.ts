@@ -47,12 +47,22 @@ export const manageCustomerReportController = async (
       reason_not_valid as string
     )
     return res.json({
-      message: CUSTOMER_REPORT.REJECT_REPORT_SUCCESS
+      message: CUSTOMER_REPORT.REJECT_REPORT_SUCCESS,
+      result
     })
   }
 
   const result = await customerReportService.changeStatus(id, CustomerReportStatus.Valid, '')
   res.json({
-    message: CUSTOMER_REPORT.REPORT_IS_VALID
+    message: CUSTOMER_REPORT.REPORT_IS_VALID,
+    result
+  })
+}
+
+export const getListCustomerReportNotCheckController = async (req: Request, res: Response) => {
+  const listCustomerReport = await customerReportService.getListCustomerReportNotCheck()
+  res.json({
+    message: CUSTOMER_REPORT.GET_LIST_REPORT_NOT_CHECK_SUCCESS,
+    list_customer_report: listCustomerReport
   })
 }
