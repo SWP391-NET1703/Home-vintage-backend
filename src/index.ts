@@ -1,7 +1,6 @@
 import { initFolder } from './utils/file'
 import express from 'express'
-import { config } from 'dotenv'
-
+import SwaggerUI from 'swagger-ui'
 import databaseService from './modules/database/database.services'
 import { defaultErrorHandler } from './modules/errors/error.middlewares'
 import usersRouter from './modules/users/user.routes'
@@ -30,6 +29,8 @@ app.get('/', (req, res) => {
   res.send(`hello`)
 })
 databaseService.connect()
+
+//API Router
 app.use('/users', usersRouter)
 app.use('/interiors', interiorRouter)
 app.use('/categories', categoryRouter)
