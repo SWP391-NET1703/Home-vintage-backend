@@ -38,8 +38,11 @@ customerReportImageRouter.delete(
   wrapAsync(deleteCustomerReportImageController)
 )
 
+/**
+ * param : id là report id nhá
+ */
 customerReportImageRouter.delete(
-  '/remove-all/:reportId',
+  '/cancel/:id',
   accessTokenValidator,
   deleteAllImageAndInforValidator,
   wrapAsync(deleteAllImageAndInforController)
