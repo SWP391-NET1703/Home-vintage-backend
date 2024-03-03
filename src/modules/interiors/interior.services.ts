@@ -6,6 +6,7 @@ import Interior from './interior.schema'
 import { InteriorResponse } from './interior.response'
 import { InteriorStatus } from './interior.enums'
 import { OrderDetail } from '../orders/order.schema'
+import customerReportService from '../customer-report/customer-report/customer-report.services'
 class InteriorService {
   async createInterior(payload: CreateInteriorReqBody) {
     const { interior_name, description, quantity, price, material, category_id, color, size } = payload
