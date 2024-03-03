@@ -55,6 +55,13 @@ class CustomerReportService {
     const result = await databaseService.customerReport.find({ status: CustomerReportStatus.Not_check })
     return result.toArray()
   }
+  async getListCustomerReportNotCheckAndValidByInteriorId(id: string) {
+    const list = await databaseService.customerReport.find({
+      interior_id: new ObjectId(id),
+      status: { $in: [CustomerReportStatus.Valid, CustomerReportStatus.Not_check] }
+    })
+    return list.toArray()
+  }
 }
 
 const customerReportService = new CustomerReportService()

@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { InteriorStatus, InteriorWarranty } from './interior.enums'
 import Category from '../categorys/category.schema'
+import { CustomerReport } from '../customer-report/customer-report/customer-report.schema'
 
 export interface InteriorResponse {
   _id?: ObjectId
@@ -19,4 +20,5 @@ export interface InteriorResponse {
   status?: InteriorStatus
   image: string[]
   catetogy_detail: Category
+  list_report?: CustomerReport[]
 }
