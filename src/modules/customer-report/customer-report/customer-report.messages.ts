@@ -18,5 +18,6 @@ export const CUSTOMER_REPORT = {
   DELETE_CUSTOMER_REPORT_SUCCESS: 'Delete customer report success',
   REPORT_IS_NOT_EXIST: 'Report is not exist',
   REJECT_REPORT_SUCCESS: 'Reject report success',
-  REPORT_IS_VALID: 'Report is valid'
+  REPORT_IS_VALID: 'Report is valid',
+  STATUS_IS_NOT_VALID: 'Status is not valid'
 } as const

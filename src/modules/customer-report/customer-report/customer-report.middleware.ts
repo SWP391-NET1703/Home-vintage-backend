@@ -84,7 +84,7 @@ export const createCustomerReportValidator = validate(
   )
 )
 
-export const deleteOrCancelCustomerReportValidator = validate(
+export const deleteCustomerReportValidator = validate(
   checkSchema(
     {
       id: {
@@ -98,11 +98,15 @@ export const deleteOrCancelCustomerReportValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const isExist = await customerReportImageService.getReportImageByReportId(value)
-            if (!isExist) {
+            const report = await customerReportService.getReportById(value)
+            if (!report) {
               throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
             }
-            req.images = isExist.images
+
+            if (report.images) {
+              req.images = report.images
+            }
+
             return true
           }
         }
@@ -112,4 +116,40 @@ export const deleteOrCancelCustomerReportValidator = validate(
   )
 )
 
-export const manageCustomerReportvalidator = validate(checkSchema({}, ['params']))
+export const manageCustomerReportvalidator = validate(
+  checkSchema(
+    {
+      id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: CUSTOMER_REPORT.REPORT_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const isExist = await customerReportService.getReportById(value)
+            if (!isExist) {
+              throw new Error(CUSTOMER_REPORT.REPORT_IS_NOT_EXIST)
+            }
+            return true
+          }
+        }
+      },
+      status: {
+        optional: true,
+        custom: {
+          options: (value) => {
+            if (value !== 'notValid') {
+              throw new Error(CUSTOMER_REPORT.STATUS_IS_NOT_VALID)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['params', 'query']
+  )
+)
