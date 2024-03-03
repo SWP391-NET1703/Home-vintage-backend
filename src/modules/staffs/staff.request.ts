@@ -9,3 +9,13 @@ export interface CreateStaffReqBody {
   day_off: number
   salary: number
 }
+
+// export interface UpdateStaffReqBody {
+//   full_name?: string
+//   date_of_birth?: string
+//   cccd?: string
+//   phone_number?: string
+//   day_on?: number
+//   day_off?: number
+//   salary?: number
+// }

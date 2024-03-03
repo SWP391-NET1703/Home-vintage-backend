@@ -112,6 +112,28 @@ const phoneNumberSchema: ParamSchema = {
   }
 }
 
+const cccdSchema: ParamSchema = {
+  notEmpty: {
+    errorMessage: STAFFS_MESSAGES.CCCD_IS_REQUIRED
+  },
+  isString: {
+    errorMessage: STAFFS_MESSAGES.CCCD_MUST_BE_A_STRING
+  },
+  trim: true,
+  custom: {
+    options: async (value, { req }) => {
+      if (!REGEX_CCCD_VIETNAM.test(value)) {
+        throw new Error(STAFFS_MESSAGES.CCCD_IS_INVALID)
+      }
+      const isExist = await userServices.checkCCCDExist(value)
+      if (isExist) {
+        throw new Error(STAFFS_MESSAGES.CCCD_ALREADY_EXISTS)
+      }
+      return true
+    }
+  }
+}
+
 export const createStaffValidator = validate(
   checkSchema(
     {
@@ -143,27 +165,7 @@ export const createStaffValidator = validate(
         },
         trim: true
       },
-      cccd: {
-        notEmpty: {
-          errorMessage: STAFFS_MESSAGES.CCCD_IS_REQUIRED
-        },
-        isString: {
-          errorMessage: STAFFS_MESSAGES.CCCD_MUST_BE_A_STRING
-        },
-        trim: true,
-        custom: {
-          options: async (value, { req }) => {
-            if (!REGEX_CCCD_VIETNAM.test(value)) {
-              throw new Error(STAFFS_MESSAGES.CCCD_IS_INVALID)
-            }
-            const isExist = await userServices.checkCCCDExist(value)
-            if (isExist) {
-              throw new Error(STAFFS_MESSAGES.CCCD_ALREADY_EXISTS)
-            }
-            return true
-          }
-        }
-      },
+      cccd: cccdSchema,
       phone_number: phoneNumberSchema,
       password: passwordSchema,
       confirm_password: confirmPasswordSchema

@@ -420,6 +420,11 @@ class UserServices {
       refresh_token: new_refresh_token
     }
   }
+
+  async getListStaff() {
+    const listStaff = await databaseService.users.find({ role: UserRole.Staff }).toArray()
+    return listStaff
+  }
 }
 
 const userServices = new UserServices()
