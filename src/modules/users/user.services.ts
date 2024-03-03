@@ -1,6 +1,6 @@
 import { signToken, verifyToken } from './../../utils/jwt'
 import databaseService from '../database/database.services'
-import { RegisterReqBody, UpdateMeReqBody } from './User.request'
+import { RegisterReqBody, UpdateMeReqBody, deleteAccountReqBody } from './User.request'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus, TokenType, UserRole } from './user.enum'
@@ -424,6 +424,17 @@ class UserServices {
   async getListStaff() {
     const listStaff = await databaseService.users.find({ role: UserRole.Staff }).toArray()
     return listStaff
+  }
+
+  async deleteAccount(user_id: string) {
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          verify_status: UserVerifyStatus.Banned
+        }
+      }
+    ])
+    return { message: USERS_MESSAGES.DELETE_ACCOUNT_SUCCESS }
   }
 }
 

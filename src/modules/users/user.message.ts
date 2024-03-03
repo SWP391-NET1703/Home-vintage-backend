@@ -82,5 +82,6 @@ export const USERS_MESSAGES = {
   ACCESS_TOKEN_IS_INVALID: 'Access token is invalid',
   PHONE_NUMBER_IS_REQUIRED: 'Phone number is required',
   PHONE_NUMBER_ALREADY_EXIST: 'Phone number is already exist',
-  PHONE_NUMBER_IS_INVALID: 'Phone number is invalid'
+  PHONE_NUMBER_IS_INVALID: 'Phone number is invalid',
+  DELETE_ACCOUNT_SUCCESS: 'Delete account success'
 } as const
