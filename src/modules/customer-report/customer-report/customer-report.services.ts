@@ -3,6 +3,7 @@ import { CreateCustomerReportReqBody } from './customer-report.request'
 import { CustomerReportStatus } from './customer-report.enum'
 import { ObjectId } from 'mongodb'
 import { CustomerReport } from './customer-report.schema'
+import { CUSTOMER_REPORT } from './customer-report.messages'
 
 class CustomerReportService {
   async createCustomerReport(body: CreateCustomerReportReqBody, user_id: string) {
@@ -37,17 +38,22 @@ class CustomerReportService {
   async changeStatus(id: string, status: CustomerReportStatus, reason_not_valid: string) {
     const result = await databaseService.customerReport.updateOne(
       {
-        _id: new Object(id)
+        _id: new ObjectId(id)
       },
       {
         $set: {
-          reason_not_valid,
+          reason_not_valid: reason_not_valid,
           status: status
         }
       }
     )
     const data = await this.getReportById(id)
     return data
+  }
+
+  async getListCustomerReportNotCheck() {
+    const result = await databaseService.customerReport.find({ status: CustomerReportStatus.Not_check })
+    return result.toArray()
   }
 }
 

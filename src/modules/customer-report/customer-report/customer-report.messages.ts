@@ -19,5 +19,6 @@ export const CUSTOMER_REPORT = {
   REPORT_IS_NOT_EXIST: 'Report is not exist',
   REJECT_REPORT_SUCCESS: 'Reject report success',
   REPORT_IS_VALID: 'Report is valid',
-  STATUS_IS_NOT_VALID: 'Status is not valid'
+  STATUS_IS_NOT_VALID: 'Status is not valid',
+  GET_LIST_REPORT_NOT_CHECK_SUCCESS: 'Get list report not check success'
 } as const

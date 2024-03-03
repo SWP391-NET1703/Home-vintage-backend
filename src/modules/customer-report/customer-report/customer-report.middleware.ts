@@ -5,6 +5,7 @@ import customerReportService from './customer-report.services'
 import { orderService } from '~/modules/orders/order.services'
 import interiorService from '~/modules/interiors/interior.services'
 import customerReportImageService from '../customer-report-image/customer-report-image.services'
+import { CustomerReport } from './customer-report.schema'
 
 export const createCustomerReportValidator = validate(
   checkSchema(
@@ -134,6 +135,7 @@ export const manageCustomerReportvalidator = validate(
             if (!isExist) {
               throw new Error(CUSTOMER_REPORT.REPORT_IS_NOT_EXIST)
             }
+            req.report = isExist
             return true
           }
         }
