@@ -20,10 +20,12 @@ export const createInteriorController = async (
 
 export const getInteriorById = async (req: Request, res: Response) => {
   const { id } = req.params
-  const result = await interiorService.getInteriorById(id)
+  const interior = await interiorService.getInteriorById(id)
+  const listReport = await customerReportService.getListCustomerReportNotCheckAndValidByInteriorId(id)
+  if (interior) interior.list_report = listReport
   res.json({
     message: INTERIOR_MESSAGES.GET_INTERRIOR_SUCCESS,
-    interior: result
+    interior: interior
   })
 }
 
