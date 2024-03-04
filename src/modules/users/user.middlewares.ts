@@ -726,7 +726,7 @@ export const deleteAccountValidator = validate(
       user_id: {
         custom: {
           options: async (value, { req }) => {
-            const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
+            const user = await userServices.getUserById(value)
             if (user === null) {
               throw new ErrorWithStatus({
                 message: USERS_MESSAGES.USER_NOT_FOUND,

@@ -131,6 +131,10 @@ class UserServices {
     return Boolean(user)
   }
 
+  async getUserById(user_id: string) {
+    return await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+  }
+
   async register(payload: RegisterReqBody) {
     const user_id = new ObjectId()
     const email_verify_token = await this.signEmailVerifyToken({
