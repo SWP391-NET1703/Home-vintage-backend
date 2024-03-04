@@ -5,6 +5,11 @@ import { REGEX_PHONE_NUMBER_VIETNAM } from '../users/user.regexs'
 import { USERS_MESSAGES } from '../users/user.message'
 import { STAFFS_MESSAGES } from './staff.mesage'
 import { REGEX_CCCD_VIETNAM } from './staff.regex'
+import databaseService from '../database/database.services'
+import { ErrorWithStatus } from '../errors/error.model'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { ObjectId } from 'mongodb'
+import staffService from './staff.services'
 
 const passwordSchema: ParamSchema = {
   notEmpty: {
@@ -169,6 +174,42 @@ export const createStaffValidator = validate(
       phone_number: phoneNumberSchema,
       password: passwordSchema,
       confirm_password: confirmPasswordSchema
+    },
+    ['body']
+  )
+)
+
+export const updateActivityStaffValidator = validate(
+  checkSchema(
+    {
+      user_id: {
+        notEmpty: {
+          errorMessage: USERS_MESSAGES.USER_ID_IS_REQUIRED
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = await staffService.checkIDExist(value)
+
+            if (user === null) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND // 404
+              })
+            }
+            return true
+          }
+        }
+      },
+      day_on: {
+        isInt: {
+          errorMessage: STAFFS_MESSAGES.DAY_ON_MUST_BE_AN_INTEGER
+        }
+      },
+      day_off: {
+        isInt: {
+          errorMessage: STAFFS_MESSAGES.DAY_OFF_MUST_BE_AN_INTEGER
+        }
+      }
     },
     ['body']
   )

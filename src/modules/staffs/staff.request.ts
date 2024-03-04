@@ -19,3 +19,8 @@ export interface CreateStaffReqBody {
 //   day_off?: number
 //   salary?: number
 // }
+
+export interface UpdateActivityStaff {
+  day_on?: number
+  day_off?: number
+}

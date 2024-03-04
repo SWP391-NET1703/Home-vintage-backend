@@ -132,7 +132,8 @@ class UserServices {
   }
 
   async getUserById(user_id: string) {
-    return await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    return user
   }
 
   async register(payload: RegisterReqBody) {
