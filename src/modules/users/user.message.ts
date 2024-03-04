@@ -82,5 +82,6 @@ export const USERS_MESSAGES = {
   PHONE_NUMBER_ALREADY_EXIST: 'Phone number is already exist',
   PHONE_NUMBER_IS_INVALID: 'Phone number is invalid',
   ACCOUNT_IS_BANNED: 'Account is banned',
-  ACCESS_TOKEN_IS_INVALID: 'Access token is invalid'
+  ACCESS_TOKEN_IS_INVALID: 'Access token is invalid',
+  EMAIL_OF_ACCOUNT_IS_NOT_VERIFY: 'Email of ccount is not verify'
 } as const

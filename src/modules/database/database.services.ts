@@ -7,6 +7,7 @@ import Interior from '../interiors/interior.schema'
 import Order from '../orders/order.schema'
 import { CustomerReport } from '../customer-report/customer-report/customer-report.schema'
 import { CustomerReportImage } from '../customer-report/customer-report-image/customer-report-image.schema'
+import { InteriorImage } from '../interior_images/interior_image.schema'
 
 dotenv.config() // là để đọc file .env
 //chúng ta cần mã hóa password với username của database
@@ -58,6 +59,10 @@ class DatabaseService {
 
   get customerReport(): Collection<CustomerReport> {
     return this.db.collection(process.env.DB_CUSTOMER_REPORT_COLLECTION as string)
+  }
+
+  get interiorImage(): Collection<InteriorImage> {
+    return this.db.collection(process.env.DB_INTERIOR_IMAGES_COLLECTION as string)
   }
 }
 

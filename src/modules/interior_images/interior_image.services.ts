@@ -6,6 +6,8 @@ import fs from 'fs'
 import { isProduction } from '~/constants/config'
 import databaseService from '../database/database.services'
 import { ObjectId } from 'mongodb'
+import interiorService from '../interiors/interior.services'
+import { InteriorImage } from './interior_image.schema'
 
 class InteriorImageServices {
   async handleUploadImage(req: Request) {
@@ -16,6 +18,7 @@ class InteriorImageServices {
     const files = await handleUploadImage(req, size, UPLOAD_IMAGE_DIR)
     //xử lý file bằng sharp giúp tối ưu hình ảnh
     // const info = await sharp(file.filepath)
+    const images: string[] = []
     const result = await Promise.all(
       files.map(async (file) => {
         const newFileName = getNameFormFullName(file.newFilename) + '.jpg'
@@ -24,27 +27,45 @@ class InteriorImageServices {
         fs.unlinkSync(file.filepath)
         // return isProduction
         //   ? `${process.env.HOST}/static/images/${newFileName}`
-        const url = `http://localhost:${process.env.PORT}/static/images/${newFileName}`
-        if (type) {
-          const interiorThumbnail = await databaseService.interiors.findOneAndUpdate({ _id: new ObjectId(id) }, [
-            {
-              $set: {
-                thumbnail: url
-              }
-            }
-          ])
-        } else {
-          const interiorImage = await databaseService.interiors.findOneAndUpdate(
-            { _id: new ObjectId(id) },
-            {
-              $push: {
-                images: url
-              }
-            }
-          )
-        }
+        images.push(newFileName)
+        return images
       })
     )
+    return images
+  }
+
+  //get interior image by interior id
+  async getInteriorImageByInteriorId(id: string) {
+    const interiorImage = await databaseService.interiorImage.findOne({ interior_id: new ObjectId(id) })
+    return interiorImage
+  }
+
+  //create new interior image by thumbnail
+  async createNewInteriorThumbnail(id: string, thumbnail: string) {
+    const result = await databaseService.interiorImage.insertOne(
+      new InteriorImage({
+        _id: new ObjectId(),
+        interior_id: new ObjectId(id),
+        thumbnail: thumbnail
+      })
+    )
+    const interiorImage = this.getInteriorImageByInteriorId(id)
+    return interiorImage
+  }
+  async importImageInterior(id: string, images: string[]) {
+    for (let index = 0; index < images.length; index++) {
+      const result = await databaseService.interiorImage.updateOne(
+        {
+          _id: new ObjectId(id)
+        },
+        {
+          $push: {
+            images: images[index]
+          }
+        }
+      )
+    }
+    return images
   }
 }
 

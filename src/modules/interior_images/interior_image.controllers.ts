@@ -7,17 +7,8 @@ import interiorService from '../interiors/interior.services'
 import { ErrorWithStatus } from '../errors/error.model'
 import HTTP_STATUS from '~/constants/httpStatus'
 
-export const uploadImageController = async (req: Request, res: Response) => {
+export const uploadImageThumbnailController = async (req: Request, res: Response) => {
   const { id } = req.params
-  const interior = await interiorService.checkInteriorExist(id)
-  if (!interior) {
-    return res.status(HTTP_STATUS.UNPROCESSABLE_ENTITY).json({
-      message: INTERIOR_MESSAGES.INTERIOR_NOT_FOUND
-    })
-  }
-  const url = await interiorImageServices.handleUploadImage(req)
-  res.json({
-    message: INTERIOR_MESSAGES.UPLOAD_IMAGE_SUCCESS,
-    result: url
-  })
+  const { type } = req.query
+  const images = await interiorImageServices.handleUploadImage(req)
 }
