@@ -11,7 +11,8 @@ import {
   ResetPasswordReqBody,
   TokenPayload,
   UpdateMeReqBody,
-  VerifyEmailReqBody
+  VerifyEmailReqBody,
+  deleteAccountReqBody
 } from './User.request'
 import { USERS_MESSAGES } from './user.message'
 import User from './user.schema'
@@ -19,6 +20,8 @@ import { ObjectId } from 'mongodb'
 import databaseService from '../database/database.services'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ErrorWithStatus } from '../errors/error.model'
+import exp from 'constants'
+import { log } from 'console'
 
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response) => {
   const result = await userServices.register(req.body)
@@ -189,6 +192,23 @@ export const refreshTokenController = async (
   const result = await userServices.refreshToken({ refresh_token, user_id, verify })
   return res.json({
     message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS,
+    result
+  })
+}
+
+export const deleteAccountController = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.body
+  const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+  if (user?.verify_status === UserVerifyStatus.Banned) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.USER_BANNED,
+      status: HTTP_STATUS.FORBIDDEN // 403
+    })
+  }
+
+  const result = await userServices.deleteAccount(user_id)
+  return res.json({
+    message: USERS_MESSAGES.DELETE_ACCOUNT_SUCCESS,
     result
   })
 }

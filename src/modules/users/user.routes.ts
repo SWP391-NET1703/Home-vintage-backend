@@ -3,6 +3,7 @@ import { Router } from 'express'
 import { wrapAsync } from '~/utils/handlers'
 import {
   changePasswordController,
+  deleteAccountController,
   emailVerifyTokenController,
   forgotPasswordController,
   getProfileController,
@@ -16,9 +17,11 @@ import {
   verifyForgotPasswordTokenController
 } from './user.controllers'
 import {
+  accessTokenAdminValidator,
   accessTokenLogoutValidator,
   accessTokenValidator,
   changePasswordValidator,
+  deleteAccountValidator,
   emailVerifyTokenValidator,
   forgotPasswordValidator,
   loginValidator,
@@ -164,5 +167,18 @@ usersRouter.put(
 // Ques: Why dont check access-token here
 // Ans: Because access-token is expired, so we need to use refresh-token to get new access-token
 usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshTokenController))
+
+/*
+  Des: delete account
+  Path: '/delete-account'
+  Method: patch
+  Body: 
+*/
+usersRouter.patch(
+  '/delete-account',
+  accessTokenAdminValidator,
+  deleteAccountValidator,
+  wrapAsync(deleteAccountController)
+)
 
 export default usersRouter

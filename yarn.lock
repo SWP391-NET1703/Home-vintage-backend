@@ -3132,10 +3132,10 @@ node-watch@0.7.4:
   resolved "https://registry.npmjs.org/node-watch/-/node-watch-0.7.4.tgz"
   integrity sha512-RinNxoz4W1cep1b928fuFhvAQ5ag/+1UlMDV7rbyGthBIgsiEouS4kvRayvvboxii4m8eolKOIBo3OjDqbc+uQ==
 
-nodemailer@^6.9.10:
-  version "6.9.10"
-  resolved "https://registry.npmjs.org/nodemailer/-/nodemailer-6.9.10.tgz"
-  integrity sha512-qtoKfGFhvIFW5kLfrkw2R6Nm6Ur4LNUMykyqu6n9BRKJuyQrqEGwdXXUAbwWEKt33dlWUGXb7rzmJP/p4+O+CA==
+nodemailer@^6.9.11:
+  version "6.9.11"
+  resolved "https://registry.npmjs.org/nodemailer/-/nodemailer-6.9.11.tgz"
+  integrity sha512-UiAkgiERuG94kl/3bKfE8o10epvDnl0vokNEtZDPTq9BWzIl6EFT9336SbIT4oaTBD8NmmUTLsQyXHV82eXSWg==
 
 nodemon@^3.0.1:
   version "3.0.2"

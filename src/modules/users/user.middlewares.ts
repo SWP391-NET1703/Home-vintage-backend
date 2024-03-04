@@ -728,3 +728,25 @@ export const accessTokenLogoutValidator = validate(
     ['headers']
   )
 )
+
+export const deleteAccountValidator = validate(
+  checkSchema(
+    {
+      user_id: {
+        custom: {
+          options: async (value, { req }) => {
+            const user = await userServices.getUserById(value)
+            if (user === null) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND // 404
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

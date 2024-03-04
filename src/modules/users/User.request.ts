@@ -45,6 +45,10 @@ export interface UpdateMeReqBody {
   user_avatar?: string
 }
 
+export interface deleteAccountReqBody {
+  verify_status: UserVerifyStatus
+}
+
 export interface ChangePasswordReqBody {
   old_password: string
   password: string
