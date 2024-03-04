@@ -1,10 +1,16 @@
 import { wrapAsync } from './../../utils/handlers'
 import { Router } from 'express'
-import { uploadImageController } from './interior_image.controllers'
 import { accessTokenAdminValidator } from '../users/user.middlewares'
+import { uploadImageThumbnailController } from './interior_image.controllers'
+import { uploadImageThumbnailValidator } from './interior_image.middlewares'
 
 const interiorImageRouter = Router()
 
-interiorImageRouter.post('/upload-interior-image/:id', accessTokenAdminValidator, wrapAsync(uploadImageController))
+interiorImageRouter.post(
+  '/upload-thumbnail/:id',
+  //   accessTokenAdminValidator,
+  uploadImageThumbnailValidator,
+  wrapAsync(uploadImageThumbnailController)
+)
 
 export default interiorImageRouter

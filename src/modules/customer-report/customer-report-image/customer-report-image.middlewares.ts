@@ -39,6 +39,7 @@ export const createCustomerReportImageValidator = validate(
               throw new Error(CUSTOMER_REPORT.ORDER_IS_NOT_VALID_TO_REPORT)
             }
             req.order = order
+            req.detail = order.detail
             return true
           }
         }
@@ -59,7 +60,7 @@ export const createCustomerReportImageValidator = validate(
               throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
             }
 
-            const { detail } = req.order as { detail: OrderDetail[] }
+            const { detail } = req as { detail: OrderDetail[] }
             let isExistInteriorInOrder = false
             for (let index = 0; index < detail.length; index++) {
               if (value === detail[index].interior_id.toString()) {

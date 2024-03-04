@@ -191,12 +191,21 @@ export const loginValidator = validate(
             if (!user) {
               throw new Error(USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
             }
+
             if (user.verify_status === UserVerifyStatus.Banned) {
               throw new ErrorWithStatus({
                 message: USERS_MESSAGES.ACCOUNT_IS_BANNED,
                 status: HTTP_STATUS.FORBIDDEN
               })
             }
+
+            if (user.verify_status === UserVerifyStatus.Unverified) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.EMAIL_OF_ACCOUNT_IS_NOT_VERIFY,
+                status: HTTP_STATUS.FORBIDDEN
+              })
+            }
+
             req.user = user
             return true
           }
