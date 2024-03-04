@@ -5,6 +5,7 @@ import { Request, Response, NextFunction } from 'express'
 import { STAFFS_MESSAGES } from './staff.mesage'
 import { CreateStaffReqBody } from './staff.request'
 import exp from 'constants'
+import staffService from './staff.services'
 
 export const createStaffController = async (req: Request<ParamsDictionary, any, CreateStaffReqBody>, res: Response) => {
   const result = await userServices.createStaff(req.body)
@@ -16,6 +17,13 @@ export const createStaffController = async (req: Request<ParamsDictionary, any, 
 
 export const getListStaffController = async (req: Request, res: Response) => {
   const result = await userServices.getListStaff()
+  res.json({
+    result
+  })
+}
+
+export const updateActivityStaffController = async (req: Request, res: Response) => {
+  const result = await staffService.updateActivityStaff(req.body)
   res.json({
     result
   })
