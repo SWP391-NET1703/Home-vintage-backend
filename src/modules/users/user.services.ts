@@ -1,6 +1,6 @@
 import { signToken, verifyToken } from './../../utils/jwt'
 import databaseService from '../database/database.services'
-import { RegisterReqBody, UpdateMeReqBody } from './User.request'
+import { RegisterReqBody, UpdateMeReqBody, deleteAccountReqBody } from './User.request'
 import User from './user.schema'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus, TokenType, UserRole } from './user.enum'
@@ -9,6 +9,7 @@ import RefreshToken from '../refresh_tokens/RefreshToken.schema'
 import { USERS_MESSAGES } from './user.message'
 import { config } from 'dotenv'
 import { sendEmail } from '~/sendMails/sendMail.services'
+import { CreateStaffReqBody } from '../staffs/staff.request'
 
 config()
 
@@ -125,6 +126,15 @@ class UserServices {
     return Boolean(user)
   }
 
+  async checkCCCDExist(cccd: string) {
+    const user = await databaseService.users.findOne({ cccd })
+    return Boolean(user)
+  }
+
+  async getUserById(user_id: string) {
+    return await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+  }
+
   async register(payload: RegisterReqBody) {
     const user_id = new ObjectId()
     const email_verify_token = await this.signEmailVerifyToken({
@@ -164,6 +174,50 @@ class UserServices {
     console.log(email_verify_token) //giả lập gửi email verify =))
     await sendEmail(email, email_verify_token)
     return { access_token, refresh_token }
+  }
+
+  async createStaff(payload: CreateStaffReqBody) {
+    const user_id = new ObjectId()
+    const email_verify_token = await this.signEmailVerifyToken({
+      user_id: user_id.toString(),
+      verify_status: UserVerifyStatus.Verified,
+      role: UserRole.Staff
+    })
+    const { full_name, email, phone_number, password, day_on, day_off, salary, cccd } = payload
+    const result = await databaseService.users.insertOne(
+      new User({
+        _id: user_id,
+        email_verify_token,
+        full_name,
+        email,
+        phone_number,
+        password: hashPassword(password),
+        role: UserRole.Staff,
+        day_on,
+        day_off,
+        salary,
+        cccd
+      })
+    )
+
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+      user_id: user_id.toString(),
+      verify_status: UserVerifyStatus.Unverified,
+      role: UserRole.Staff
+    })
+
+    // lưu refresh_token vào db
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(user_id),
+        exp: 0,
+        iat: 0
+      })
+    )
+
+    console.log(email_verify_token) //giả lập gửi email verify =))
+    return result
   }
 
   async login({ user_id, verify_status, role }: { user_id: string; verify_status: UserVerifyStatus; role: UserRole }) {
@@ -369,6 +423,22 @@ class UserServices {
       access_token,
       refresh_token: new_refresh_token
     }
+  }
+
+  async getListStaff() {
+    const listStaff = await databaseService.users.find({ role: UserRole.Staff }).toArray()
+    return listStaff
+  }
+
+  async deleteAccount(user_id: string) {
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          verify_status: UserVerifyStatus.Banned
+        }
+      }
+    ])
+    return { message: USERS_MESSAGES.DELETE_ACCOUNT_SUCCESS }
   }
 }
 

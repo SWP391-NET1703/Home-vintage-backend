@@ -17,6 +17,11 @@ interface UserType {
   email_verify_token?: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token?: string // jwt hoặc '' nếu đã xác thực email
   verify_status?: UserVerifyStatus
+
+  //for staff
+  day_on?: number
+  day_off?: number
+  salary?: number
 }
 
 export default class User {
@@ -34,6 +39,10 @@ export default class User {
   email_verify_token?: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token?: string // jwt hoặc '' nếu đã xác thực email
   verify_status?: UserVerifyStatus
+  //for staff
+  day_on?: number
+  day_off?: number
+  salary?: number
 
   constructor(user: UserType) {
     const date = new Date() //tạo này cho ngày created_at updated_at bằng nhau
@@ -53,5 +62,9 @@ export default class User {
     this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
     this.verify_status = user.verify_status || UserVerifyStatus.Unverified
+    //for staff
+    this.day_on = user.day_on || 0
+    this.day_off = user.day_off || 0
+    this.salary = user.salary || 0
   }
 }

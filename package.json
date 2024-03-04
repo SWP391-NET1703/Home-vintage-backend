@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/nodemailer": "^6.4.14",
     "axios": "^1.5.1",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
