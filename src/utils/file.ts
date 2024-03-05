@@ -56,7 +56,19 @@ export const getNameFormFullName = (fileName: string) => {
 
 //làm hàm lấy số lượng file ảnh được truyền lên
 export const getTotalImage = (req: Request) => {
-  const form = formidable()
+  const form = formidable({
+    maxFileSize: 500 * 1024,
+    maxFiles: 5,
+    keepExtensions: true,
+    filter: function ({ name, originalFilename, mimetype }) {
+      const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
+      //đang hỏi là cái file m đưa lên cho t có phải image không và dạng của nó có phải là image không
+      if (!valid) {
+        form.emit('error' as any, new Error('File is not an image') as any) //do đây là chuẩn xử lý lỗi của formidable nên mình ko cấu hình status
+      }
+      return valid
+    }
+  })
   return new Promise<Files>((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       if (err) {

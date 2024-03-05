@@ -1,3 +1,4 @@
+import { ParamsDictionary } from 'express-serve-static-core'
 import { checkSchema } from 'express-validator'
 import { CUSTOMER_REPORT } from '../customer-report/customer-report.messages'
 import { validate } from '~/utils/validation'
@@ -43,56 +44,39 @@ export const createCustomerReportImageValidator = validate(
           }
         }
       },
-      // interiorId: {
-      //   notEmpty: true,
-      //   isLength: {
-      //     options: {
-      //       min: 24,
-      //       max: 24
-      //     },
-      //     errorMessage: CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST
-      //   },
-      //   custom: {
-      //     options: async (value, { req }) => {
-      //       const interior = await interiorService.getInteriorById(value)
-      //       if (!interior) {
-      //         throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
-      //       }
-
-      //       const order = req.order
-      //       const detail = order.detail as OrderDetail[]
-      //       let isExistInteriorInOrder = false
-      //       for (let index = 0; index < detail.length; index++) {
-      //         if (value === detail[index].interior_id.toString()) {
-      //           isExistInteriorInOrder = true
-      //           break
-      //         }
-      //       }
-
-      //       if (!isExistInteriorInOrder) {
-      //         throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER)
-      //       }
-
-      //       return true
-      //     }
-      //   }
-      // },
-      reportId: {
-        optional: true,
+      interiorId: {
+        notEmpty: true,
         isLength: {
           options: {
             min: 24,
             max: 24
           },
-          errorMessage: CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_VALID
+          errorMessage: CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST
         },
         custom: {
           options: async (value, { req }) => {
-            const reportImage = await customerReportImageService.getReportImageByReportId(value)
-            if (!reportImage) {
-              throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
+            const interior = await interiorService.getInteriorById(value)
+            if (!interior) {
+              throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
             }
-            req.reportImage = reportImage
+
+            const orderId = req.order._id
+            const order = await orderService.getOrderById(orderId)
+            if (order) {
+              const detail = order.detail as OrderDetail[]
+              let isExistInteriorInOrder = false
+              for (let index = 0; index < detail.length; index++) {
+                if (value === detail[index].interior_id.toString()) {
+                  isExistInteriorInOrder = true
+                  break
+                }
+              }
+
+              if (!isExistInteriorInOrder) {
+                throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER)
+              }
+            }
+
             return true
           }
         }
@@ -153,6 +137,34 @@ export const deleteAllImageAndInforValidator = validate(
   checkSchema(
     {
       id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const customerReportImage = await customerReportImageService.getReportImageByReportId(value)
+            if (!customerReportImage) {
+              throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
+            }
+            req.reportImage = customerReportImage
+            return true
+          }
+        }
+      }
+    },
+    ['params']
+  )
+)
+
+export const importReportImageValidator = validate(
+  checkSchema(
+    {
+      reportId: {
         notEmpty: true,
         isLength: {
           options: {
