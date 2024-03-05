@@ -1,6 +1,5 @@
 import { initFolder } from './utils/file'
 import express from 'express'
-import SwaggerUI from 'swagger-ui'
 import databaseService from './modules/database/database.services'
 import { defaultErrorHandler } from './modules/errors/error.middlewares'
 import usersRouter from './modules/users/user.routes'
