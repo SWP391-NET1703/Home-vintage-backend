@@ -20,5 +20,7 @@ export const CUSTOMER_REPORT = {
   REJECT_REPORT_SUCCESS: 'Reject report success',
   REPORT_IS_VALID: 'Report is valid',
   STATUS_IS_NOT_VALID: 'Status is not valid',
-  GET_LIST_REPORT_NOT_CHECK_SUCCESS: 'Get list report not check success'
+  GET_LIST_REPORT_NOT_CHECK_SUCCESS: 'Get list report not check success',
+  TOTAL_IMAGE_LIMIT_IS_3: 'Total image limit is 3',
+  IMPORT_REPORT_IMAGE_SUCCESS: 'Import report image success'
 } as const

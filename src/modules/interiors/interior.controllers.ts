@@ -54,3 +54,14 @@ export const getListInterior = async (req: Request, res: Response) => {
     }
   })
 }
+
+export const getListInteriorBestSeller = async (req: Request, res: Response) => {
+  const listInterior = await interiorService.getListInterior()
+  const bestSellers = listInterior
+    .sort((interior_a, interior_b) => parseInt(interior_b.number_of_sale) - parseInt(interior_a.number_of_sale))
+    .slice(0, 20)
+  res.json({
+    message: INTERIOR_MESSAGES.GET_LIST_INTERIOR_SUCCESS,
+    list_interior: bestSellers
+  })
+}

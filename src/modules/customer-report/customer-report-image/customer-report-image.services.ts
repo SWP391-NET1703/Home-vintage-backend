@@ -7,11 +7,12 @@ import { UPLOAD_IMAGE_REPORT_DIR, UPLOAD_IMAGE_REPORT_TEMP_DIR } from '~/constan
 import databaseService from '~/modules/database/database.services'
 import { ObjectId } from 'mongodb'
 import { CustomerReportImage } from './customer-report-image.schema'
+import { totalImageCustomerReport } from './customer-report-image.constants'
 
 class CustomerReportImageService {
   async handleUploadImage(req: Request) {
     const imagesName: string[] = []
-    const files = await handleUploadImage(req, 5, UPLOAD_IMAGE_REPORT_TEMP_DIR)
+    const files = await handleUploadImage(req, totalImageCustomerReport, UPLOAD_IMAGE_REPORT_TEMP_DIR)
     const result = await Promise.all(
       files.map(async (file) => {
         const newFileName = getNameFormFullName(file.newFilename) + '.jpg'
@@ -78,6 +79,17 @@ class CustomerReportImageService {
       const filePath = UPLOAD_IMAGE_REPORT_DIR + '/' + image
       fs.unlinkSync(filePath)
     })
+  }
+
+  async importImageReport(reportId: string, imagesName: string[]) {
+    for (let index = 0; index < imagesName.length; index++) {
+      const result = await databaseService.reportImage.updateOne(
+        { report_id: new ObjectId(reportId) },
+        { $push: { images: imagesName[index] } }
+      )
+    }
+    const reportImage = await this.getReportImageByReportId(reportId)
+    return reportImage
   }
 }
 

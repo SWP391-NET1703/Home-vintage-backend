@@ -39,39 +39,60 @@ export const createCustomerReportImageValidator = validate(
               throw new Error(CUSTOMER_REPORT.ORDER_IS_NOT_VALID_TO_REPORT)
             }
             req.order = order
-            req.detail = order.detail
             return true
           }
         }
       },
-      interiorId: {
-        notEmpty: true,
+      // interiorId: {
+      //   notEmpty: true,
+      //   isLength: {
+      //     options: {
+      //       min: 24,
+      //       max: 24
+      //     },
+      //     errorMessage: CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST
+      //   },
+      //   custom: {
+      //     options: async (value, { req }) => {
+      //       const interior = await interiorService.getInteriorById(value)
+      //       if (!interior) {
+      //         throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
+      //       }
+
+      //       const order = req.order
+      //       const detail = order.detail as OrderDetail[]
+      //       let isExistInteriorInOrder = false
+      //       for (let index = 0; index < detail.length; index++) {
+      //         if (value === detail[index].interior_id.toString()) {
+      //           isExistInteriorInOrder = true
+      //           break
+      //         }
+      //       }
+
+      //       if (!isExistInteriorInOrder) {
+      //         throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER)
+      //       }
+
+      //       return true
+      //     }
+      //   }
+      // },
+      reportId: {
+        optional: true,
         isLength: {
           options: {
             min: 24,
             max: 24
           },
-          errorMessage: CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST
+          errorMessage: CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_VALID
         },
         custom: {
           options: async (value, { req }) => {
-            const exist = await interiorService.checkInteriorExist(value)
-            if (!exist) {
-              throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
+            const reportImage = await customerReportImageService.getReportImageByReportId(value)
+            if (!reportImage) {
+              throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
             }
-
-            const { detail } = req as { detail: OrderDetail[] }
-            let isExistInteriorInOrder = false
-            for (let index = 0; index < detail.length; index++) {
-              if (value === detail[index].interior_id.toString()) {
-                isExistInteriorInOrder = true
-                break
-              }
-            }
-
-            if (!isExistInteriorInOrder) {
-              throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER)
-            }
+            req.reportImage = reportImage
             return true
           }
         }
