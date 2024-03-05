@@ -94,11 +94,30 @@ class InteriorImageServices {
     return interiorImage
   }
 
+  async updateThumbnailImage(id: string, name: string) {
+    const result = await databaseService.interiorImage.updateOne(
+      { interior_id: new ObjectId(id) },
+      { $set: { thumbnail: name } }
+    )
+    const interiorImage = await this.getInteriorImageByInteriorId(id)
+    return interiorImage
+  }
+
   async deleteInteriorSeverImage(images: string[]) {
     images.forEach((image) => {
       fs.unlinkSync(UPLOAD_IMAGE_DIR + '/' + image)
     })
     return
+  }
+
+  async deleteInteriorImage(id: string, index: string) {
+    if (!index) {
+      const result = await databaseService.interiorImage.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { thumbnail: '' } }
+      )
+      return result
+    }
   }
 }
 

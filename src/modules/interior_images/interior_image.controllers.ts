@@ -54,10 +54,13 @@ export const uploadImageController = async (req: Request, res: Response) => {
   })
 }
 
-export const deleteImageInteriorController = async (req: Request, res: Response) => {
+export const deleteThumbnailInteriorController = async (req: Request, res: Response) => {
   const { id } = req.params
-  const { type, index } = req.query
-  // if (index) {
-  //   const result = await interiorImageServices.deleteInteriorImage(id, index as string)
-  // }
+  const thumbnail = req.thumbnailInterior
+  await interiorImageServices.deleteInteriorSeverImage([thumbnail as string])
+  const result = await interiorImageServices.updateThumbnailImage(id, '')
+  res.json({
+    message: INTERIOR_MESSAGES.DELETE_THUMBNAIL_SUCCESS,
+    interiorImage: result
+  })
 }
