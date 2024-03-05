@@ -53,3 +53,16 @@ export const getNameFormFullName = (fileName: string) => {
   nameArr.pop()
   return nameArr.join('.')
 }
+
+//làm hàm lấy số lượng file ảnh được truyền lên
+export const getTotalImage = (req: Request) => {
+  const form = formidable()
+  return new Promise<Files>((resolve, reject) => {
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve(files)
+    })
+  })
+}

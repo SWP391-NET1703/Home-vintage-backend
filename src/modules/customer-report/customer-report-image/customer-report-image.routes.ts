@@ -16,7 +16,7 @@ const customerReportImageRouter = Router()
 
 /**
  * params : order_id
- * query : interior_id
+ * query : interior_id , report_id
  * body : image[]
  * response : customerReportImage
  */
