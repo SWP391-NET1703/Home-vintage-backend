@@ -9,24 +9,38 @@ import { OrderDetail } from '../orders/order.schema'
 import customerReportService from '../customer-report/customer-report/customer-report.services'
 class InteriorService {
   async createInterior(payload: CreateInteriorReqBody) {
-    const { interior_name, description, quantity, price, material, category_id, color, size } = payload
-    const interior_id = new ObjectId()
+    const {
+      interior_id,
+      interior_name,
+      description,
+      quantity,
+      price,
+      material,
+      category_id,
+      color,
+      size,
+      images,
+      thumbnail
+    } = payload
+    const id = new ObjectId(interior_id)
     const result = await databaseService.interiors.insertOne(
       new Interior({
-        _id: interior_id,
+        _id: id,
         interior_name: interior_name as string,
-        category_id: new ObjectId(),
+        category_id: new ObjectId(category_id),
         description: description as string,
         quantity: quantity,
         price: price,
+        thumbnail: thumbnail as string,
         material: material as string,
         color: color as string,
         size: size as string,
-        image: []
+        image: images
       })
     )
 
-    return result
+    const interior = await this.getInteriorById(interior_id.toString())
+    return interior
   }
 
   async checkInteriorExist(id: string) {

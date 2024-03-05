@@ -14,7 +14,7 @@ export const createInteriorController = async (
 
   res.json({
     message: INTERIOR_MESSAGES.CREATE_INTERIOR_SUCCESS,
-    interior_id: result.insertedId
+    result
   })
 }
 
