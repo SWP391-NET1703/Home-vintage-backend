@@ -1,8 +1,13 @@
 import { Router } from 'express'
 import { accessTokenAdminValidator } from '../users/user.middlewares'
-import { createStaffController, getListStaffController, updateActivityStaffController } from './staff.controller'
+import {
+  createStaffController,
+  getListStaffController,
+  updateActivityStaffController,
+  updateSalaryStaffController
+} from './staff.controller'
 import { wrapAsync } from '~/utils/handlers'
-import { createStaffValidator, updateActivityStaffValidator } from './staff.middlewares'
+import { createStaffValidator, updateActivityStaffValidator, updateSalaryStaffValidator } from './staff.middlewares'
 import { filterMiddleware } from '~/utils/common'
 import { UpdateActivityStaff } from './staff.request'
 
@@ -20,7 +25,7 @@ staffRouter.post('/create-staff', accessTokenAdminValidator, createStaffValidato
   Method: POST
   Body: { ... }
 */
-staffRouter.get('/get-list-staff', accessTokenAdminValidator, wrapAsync(getListStaffController))
+staffRouter.get('/', accessTokenAdminValidator, wrapAsync(getListStaffController))
 /*
   Description: update activity staff
   Path: /update-activity-staff
@@ -32,6 +37,19 @@ staffRouter.patch(
   accessTokenAdminValidator,
   updateActivityStaffValidator,
   wrapAsync(updateActivityStaffController)
+)
+
+/*
+  Description: update salary staff
+  Path: /update-salary-staff
+  Method: patch
+  Body: { ... }
+*/
+staffRouter.patch(
+  '/update-salary-staff',
+  accessTokenAdminValidator,
+  updateSalaryStaffValidator,
+  wrapAsync(updateSalaryStaffController)
 )
 
 export default staffRouter

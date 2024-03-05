@@ -28,3 +28,10 @@ export const updateActivityStaffController = async (req: Request, res: Response)
     result
   })
 }
+
+export const updateSalaryStaffController = async (req: Request, res: Response) => {
+  const result = await staffService.updateSalaryStaff(req.body)
+  res.json({
+    result
+  })
+}
