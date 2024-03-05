@@ -20,10 +20,11 @@ export const uploadImageThumbnailController = async (req: Request, res: Response
       interiorImage
     })
   }
-  const interiorImage = await interiorImageServices.updateThumbnailImageInterior(id as string, images[0])
+
+  const newInteriorImage = await interiorImageServices.updateThumbnailImageInterior(id as string, images[0])
   res.json({
     message: INTERIOR_MESSAGES.UPLOAD_IMAGE_THUMBNAIL_SUCCESS,
-    interiorImage
+    newInteriorImage
   })
 }
 
@@ -38,9 +39,18 @@ export const uploadImageController = async (req: Request, res: Response) => {
       interiorImage
     })
   }
+
   const interiorImage = await interiorImageServices.importImageInterior(id as string, images)
   res.json({
     message: INTERIOR_MESSAGES.UPLOAD_IMAGE_SUCCESS,
     interiorImage
   })
+}
+
+export const deleteImageInteriorController = async (req: Request, res: Response) => {
+  const { id } = req.params
+  const { type, index } = req.query
+  if (index) {
+    const result = await interiorImageServices.deleteInteriorImage(id, index as string)
+  }
 }

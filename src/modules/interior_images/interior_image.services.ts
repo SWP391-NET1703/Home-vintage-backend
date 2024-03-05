@@ -93,6 +93,8 @@ class InteriorImageServices {
     const interiorImage = await this.getInteriorImageById(result.insertedId.toString())
     return interiorImage
   }
+
+  async deleteInteriorImage(id: string, index: string) {}
 }
 
 const interiorImageServices = new InteriorImageServices()

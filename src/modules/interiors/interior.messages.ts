@@ -26,5 +26,6 @@ export const INTERIOR_MESSAGES = {
   GET_LIST_INTERIOR_SUCCESS: 'Get list interior success',
   UPLOAD_IMAGE_THUMBNAIL_SUCCESS: 'Upload image thumbnail success',
   INTERIOR_ID_IS_NOT_VALID: 'Interior id is not valid',
-  INTERIOR_IS_NOT_EXIST: 'Interior is not exist'
+  INTERIOR_IS_NOT_EXIST: 'Interior is not exist',
+  INTERIOR_IMAGE_IS_NOT_VALID: 'Interior image is not valid'
 } as const

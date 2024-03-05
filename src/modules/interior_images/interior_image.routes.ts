@@ -1,8 +1,16 @@
 import { wrapAsync } from './../../utils/handlers'
 import { Router } from 'express'
 import { accessTokenAdminValidator } from '../users/user.middlewares'
-import { uploadImageController, uploadImageThumbnailController } from './interior_image.controllers'
-import { uploadImageThumbnailValidator, uploadImageValidator } from './interior_image.middlewares'
+import {
+  deleteImageInteriorController,
+  uploadImageController,
+  uploadImageThumbnailController
+} from './interior_image.controllers'
+import {
+  deleteImageInteriorValidator,
+  uploadImageThumbnailValidator,
+  uploadImageValidator
+} from './interior_image.middlewares'
 
 const interiorImageRouter = Router()
 /**
@@ -14,16 +22,29 @@ const interiorImageRouter = Router()
  */
 interiorImageRouter.post(
   '/upload-thumbnail',
-  // accessTokenAdminValidator,
+  accessTokenAdminValidator,
   uploadImageThumbnailValidator,
   wrapAsync(uploadImageThumbnailController)
 )
 
 interiorImageRouter.post(
   '/upload-image',
-  // accessTokenAdminValidator,
+  accessTokenAdminValidator,
   uploadImageValidator,
   wrapAsync(uploadImageController)
+)
+
+/**
+ * query : index || type
+ * url : /:id sản phẩm
+ * description : delete image or deletethumnail
+ */
+
+interiorImageRouter.delete(
+  '/:id',
+  // accessTokenAdminValidator,
+  deleteImageInteriorValidator,
+  wrapAsync(deleteImageInteriorController)
 )
 
 export default interiorImageRouter
