@@ -83,6 +83,7 @@ export const deleteImageInteriorValidator = validate(
           if (value !== 'thumbnail') {
             throw new Error(INTERIOR_MESSAGES.TYPE_IS_NOT_VALID)
           }
+          return true
         }
       }
     }
