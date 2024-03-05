@@ -14,6 +14,7 @@ import customerReportRouter from './modules/customer-report/customer-report/cust
 import customerReportImageRouter from './modules/customer-report/customer-report-image/customer-report-image.routes'
 import staffRouter from './modules/staffs/staff.routes'
 import { config } from 'dotenv'
+import cors from 'cors'
 
 const options = argv(process.argv.slice(2))
 console.log(options.production)
@@ -26,7 +27,14 @@ const app = express()
 
 //app handler
 app.use(express.json())
+//cors
 
+const corsOptions = {
+  origin: 'http://localhost:3000' || 'http://localhost:5173',
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200
+}
+app.use(cors(corsOptions))
 app.get('/', (req, res) => {
   res.send(`hello`)
 })
