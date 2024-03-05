@@ -70,7 +70,6 @@ class InteriorImageServices {
   }
 
   async importImageInterior(id: string, images: string[]) {
-    console.log(id)
     for (let index = 0; index < images.length; index++) {
       const result = await databaseService.interiorImage.updateOne(
         {
@@ -83,7 +82,8 @@ class InteriorImageServices {
         }
       )
     }
-    return images
+    const imageInterior = await this.getInteriorImageByInteriorId(id)
+    return imageInterior
   }
 
   async createNewInteriorImage(images: string[]) {
@@ -94,7 +94,12 @@ class InteriorImageServices {
     return interiorImage
   }
 
-  async deleteInteriorImage(id: string, index: string) {}
+  async deleteInteriorSeverImage(images: string[]) {
+    images.forEach((image) => {
+      fs.unlinkSync(UPLOAD_IMAGE_DIR + '/' + image)
+    })
+    return
+  }
 }
 
 const interiorImageServices = new InteriorImageServices()

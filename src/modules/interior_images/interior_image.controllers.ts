@@ -40,17 +40,24 @@ export const uploadImageController = async (req: Request, res: Response) => {
     })
   }
 
-  const interiorImage = await interiorImageServices.importImageInterior(id as string, images)
+  if ((isExist.images as string[]).length + images.length > totalUploadImage) {
+    await interiorImageServices.deleteInteriorSeverImage(images)
+    return res.status(HTTP_STATUS.UNPROCESSABLE_ENTITY).json({
+      message: INTERIOR_MESSAGES.TOTAL_IMAGE_PRODUCT_IS_5
+    })
+  }
+
+  const newInteriorImage = await interiorImageServices.importImageInterior(id as string, images)
   res.json({
     message: INTERIOR_MESSAGES.UPLOAD_IMAGE_SUCCESS,
-    interiorImage
+    newInteriorImage
   })
 }
 
 export const deleteImageInteriorController = async (req: Request, res: Response) => {
   const { id } = req.params
   const { type, index } = req.query
-  if (index) {
-    const result = await interiorImageServices.deleteInteriorImage(id, index as string)
-  }
+  // if (index) {
+  //   const result = await interiorImageServices.deleteInteriorImage(id, index as string)
+  // }
 }

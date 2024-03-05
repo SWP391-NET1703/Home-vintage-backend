@@ -22,14 +22,14 @@ const interiorImageRouter = Router()
  */
 interiorImageRouter.post(
   '/upload-thumbnail',
-  accessTokenAdminValidator,
+  // accessTokenAdminValidator,
   uploadImageThumbnailValidator,
   wrapAsync(uploadImageThumbnailController)
 )
 
 interiorImageRouter.post(
   '/upload-image',
-  accessTokenAdminValidator,
+  // accessTokenAdminValidator,
   uploadImageValidator,
   wrapAsync(uploadImageController)
 )
