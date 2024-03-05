@@ -4,28 +4,38 @@ import { wrapAsync } from '~/utils/handlers'
 import {
   createCustomerReportImageController,
   deleteAllImageAndInforController,
-  deleteCustomerReportImageController
+  deleteCustomerReportImageController,
+  importReportImageController
 } from './customer-report-image.controller'
 import {
   createCustomerReportImageValidator,
   deleteAllImageAndInforValidator,
-  deleteCustomerReportImageValidator
+  deleteCustomerReportImageValidator,
+  importReportImageValidator
 } from './customer-report-image.middlewares'
 
 const customerReportImageRouter = Router()
 
 /**
  * params : order_id
- * query : interior_id
+ * query : interior_id , report_id
  * body : image[]
  * response : customerReportImage
  */
 customerReportImageRouter.post(
-  '/:orderId',
+  '/new-report-image/:orderId',
   accessTokenValidator,
   createCustomerReportImageValidator,
   wrapAsync(createCustomerReportImageController)
 )
+
+customerReportImageRouter.post(
+  '/:reportId',
+  accessTokenValidator,
+  importReportImageValidator,
+  wrapAsync(importReportImageController)
+)
+
 /**
  * params : _id
  * query : nameImage

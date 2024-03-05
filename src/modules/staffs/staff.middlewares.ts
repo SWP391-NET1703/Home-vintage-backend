@@ -214,3 +214,42 @@ export const updateActivityStaffValidator = validate(
     ['body']
   )
 )
+
+export const updateSalaryStaffValidator = validate(
+  checkSchema(
+    {
+      user_id: {
+        notEmpty: {
+          errorMessage: USERS_MESSAGES.USER_ID_IS_REQUIRED
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = await staffService.checkIDExist(value)
+
+            if (user === null) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND // 404
+              })
+            }
+            return true
+          }
+        }
+      },
+      salary: {
+        isInt: {
+          errorMessage: STAFFS_MESSAGES.SALARY_MUST_BE_AN_INTEGER
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value < 0) {
+              throw new Error(STAFFS_MESSAGES.SALARY_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

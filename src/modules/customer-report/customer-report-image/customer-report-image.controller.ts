@@ -1,13 +1,34 @@
 import { Request, Response } from 'express'
 import customerReportImageService from './customer-report-image.services'
 import { CUSTOMER_REPORT } from '../customer-report/customer-report.messages'
+import { CustomerReport } from '../customer-report/customer-report.schema'
+import { getTotalImage, handleUploadImage } from '~/utils/file'
 
 export const createCustomerReportImageController = async (req: Request, res: Response) => {
   const imagesName = await customerReportImageService.handleUploadImage(req)
   const result = await customerReportImageService.createNewReportImage(imagesName)
-  res.json({
+  return res.json({
     message: CUSTOMER_REPORT.CREATE_REPORT_IMAGE_SUCCESS,
-    result: result
+    image_report: result
+  })
+}
+
+export const importReportImageController = async (req: Request, res: Response) => {
+  const { reportImage } = req
+  const imagesName = await customerReportImageService.handleUploadImage(req)
+  if (imagesName.length + reportImage.images.length > 3) {
+    for (let index = 0; index < imagesName.length; index++) {
+      customerReportImageService.handleDeleteFileImage(imagesName[index])
+    }
+    return res.status(422).json({
+      message: CUSTOMER_REPORT.TOTAL_IMAGE_LIMIT_IS_3
+    })
+  }
+
+  const result = await customerReportImageService.importImageReport(reportImage.report_id, imagesName)
+  res.json({
+    message: CUSTOMER_REPORT.IMPORT_REPORT_IMAGE_SUCCESS,
+    image_report: result
   })
 }
 

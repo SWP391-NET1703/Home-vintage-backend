@@ -9,7 +9,7 @@ import Interior from './modules/interiors/interior.schema'
 //file này dùng để định nghĩa lại những cái có sẵn
 //trong 1 request nó có thể có users
 declare module 'express' {
-  interface Request {
+  interface Request extends express.Request {
     user?: User
     decoded_authorization?: TokenPayload
     decoded_refresh_token?: TokenPayload

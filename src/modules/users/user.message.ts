@@ -83,9 +83,7 @@ export const USERS_MESSAGES = {
   PHONE_NUMBER_IS_REQUIRED: 'Phone number is required',
   PHONE_NUMBER_ALREADY_EXIST: 'Phone number is already exist',
   PHONE_NUMBER_IS_INVALID: 'Phone number is invalid',
-  USER_ID_IS_REQUIRED: 'User id is required'
-  DELETE_ACCOUNT_SUCCESS: 'Delete account success'
-  ACCOUNT_IS_BANNED: 'Account is banned',
-  ACCESS_TOKEN_IS_INVALID: 'Access token is invalid',
-  EMAIL_OF_ACCOUNT_IS_NOT_VERIFY: 'Email of ccount is not verify'
+  USER_ID_IS_REQUIRED: 'User id is required',
+  DELETE_ACCOUNT_SUCCESS: 'Delete account success',
+  EMAIL_OF_ACCOUNT_IS_NOT_VERIFY: 'Email of account is not verify'
 } as const

@@ -13,5 +13,6 @@ export const STAFFS_MESSAGES = {
   //DAY_OFF
   DAY_OFF_MUST_BE_AN_INTEGER: 'Day off must be an integer',
   //SALARY
-  SALARY_MUST_BE_AN_INTEGER: 'Salary must be an integer'
+  SALARY_MUST_BE_AN_INTEGER: 'Salary must be an integer',
+  SALARY_MUST_BE_GREATER_THAN_OR_EQUAL_TO_0: 'Salary must be greater than or equal to 0'
 }

@@ -1,6 +1,5 @@
 import { initFolder } from './utils/file'
 import express from 'express'
-import SwaggerUI from 'swagger-ui'
 import databaseService from './modules/database/database.services'
 import { defaultErrorHandler } from './modules/errors/error.middlewares'
 import usersRouter from './modules/users/user.routes'
@@ -28,6 +27,12 @@ const app = express()
 //app handler
 app.use(express.json())
 //cors
+const corsOptions = {
+  origin: 'http://localhost:3000' || 'http://localhost:5173',
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200
+}
+app.use(cors(corsOptions))
 
 const corsOptions = {
   origin: 'http://localhost:3000' || 'http://localhost:5173',
@@ -38,6 +43,7 @@ app.use(cors(corsOptions))
 app.get('/', (req, res) => {
   res.send(`hello`)
 })
+
 databaseService.connect()
 
 //API Router

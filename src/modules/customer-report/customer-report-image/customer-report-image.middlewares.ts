@@ -1,3 +1,4 @@
+import { ParamsDictionary } from 'express-serve-static-core'
 import { checkSchema } from 'express-validator'
 import { CUSTOMER_REPORT } from '../customer-report/customer-report.messages'
 import { validate } from '~/utils/validation'
@@ -39,7 +40,6 @@ export const createCustomerReportImageValidator = validate(
               throw new Error(CUSTOMER_REPORT.ORDER_IS_NOT_VALID_TO_REPORT)
             }
             req.order = order
-            req.detail = order.detail
             return true
           }
         }
@@ -55,23 +55,28 @@ export const createCustomerReportImageValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const exist = await interiorService.checkInteriorExist(value)
-            if (!exist) {
+            const interior = await interiorService.getInteriorById(value)
+            if (!interior) {
               throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
             }
 
-            const { detail } = req as { detail: OrderDetail[] }
-            let isExistInteriorInOrder = false
-            for (let index = 0; index < detail.length; index++) {
-              if (value === detail[index].interior_id.toString()) {
-                isExistInteriorInOrder = true
-                break
+            const orderId = req.order._id
+            const order = await orderService.getOrderById(orderId)
+            if (order) {
+              const detail = order.detail as OrderDetail[]
+              let isExistInteriorInOrder = false
+              for (let index = 0; index < detail.length; index++) {
+                if (value === detail[index].interior_id.toString()) {
+                  isExistInteriorInOrder = true
+                  break
+                }
+              }
+
+              if (!isExistInteriorInOrder) {
+                throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER)
               }
             }
 
-            if (!isExistInteriorInOrder) {
-              throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER)
-            }
             return true
           }
         }
@@ -132,6 +137,34 @@ export const deleteAllImageAndInforValidator = validate(
   checkSchema(
     {
       id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const customerReportImage = await customerReportImageService.getReportImageByReportId(value)
+            if (!customerReportImage) {
+              throw new Error(CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST)
+            }
+            req.reportImage = customerReportImage
+            return true
+          }
+        }
+      }
+    },
+    ['params']
+  )
+)
+
+export const importReportImageValidator = validate(
+  checkSchema(
+    {
+      reportId: {
         notEmpty: true,
         isLength: {
           options: {
