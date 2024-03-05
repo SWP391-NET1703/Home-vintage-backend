@@ -40,10 +40,12 @@ interiorImageRouter.post(
  */
 
 interiorImageRouter.delete(
-  '/:id',
+  'thumbnail/:id',
   // accessTokenAdminValidator,
   deleteThumbnailInteriorValidator,
   wrapAsync(deleteThumbnailInteriorController)
 )
+
+// interiorImageRouter.delete('/:id', accessTokenAdminValidator, wrapAsync(deleteThumbnailInteriorController))
 
 export default interiorImageRouter

@@ -55,7 +55,11 @@ export const deleteThumbnailInteriorValidator = validate(
             throw new Error(INTERIOR_MESSAGES.INTERIOR_IS_NOT_EXIST)
           }
 
-          if (interiorImage.thumbnail) req.thumbnailInterior = interiorImage.thumbnail
+          if (interiorImage.thumbnail === '') {
+            throw new Error(INTERIOR_MESSAGES.THUMBNAIL_IS_NOT_EXIST)
+          }
+
+          req.thumbnailInterior = interiorImage.thumbnail
           return true
         }
       }
