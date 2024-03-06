@@ -4,6 +4,8 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
+    "deploy": "concurrently \"npm run server\" \"npm run red\"",
+    "server": "npx ts-node ./src/index.ts",
     "dev": "concurrently \"npm run nodemon\" \"npm run red\"",
     "nodemon": "npx nodemon --development",
     "red": "npx ts-node ./start-node-red.ts",
