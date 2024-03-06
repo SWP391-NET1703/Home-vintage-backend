@@ -11,6 +11,7 @@ export const ORDER_MESSAGES = {
   ORDER_IS_NOT_VALID_TO_DELIVERY: 'Order is not valid to delivery',
   ORDER_IS_CANCEL: 'Order is cancel',
   ORDER_IS_NOT_VALID_TO_DELETE: 'Order is not valid to delete',
+  GET_LIST_ORDER_WAIT_CONFIRM_SUCCESS: 'Get list order wait confirm success',
   GET_LIST_ORDER_HISTORY_SUCCESS: 'Get list order history success',
   ORDER_IS_NOT_VALID_TO_REJECT: 'Order is not valid to reject',
   REJECT_ORDER_SUCCESS: 'Reject order success',
