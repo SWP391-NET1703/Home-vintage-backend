@@ -47,7 +47,6 @@ app.use('/customer-report', customerReportRouter)
 app.use('/customer-report-image', customerReportImageRouter)
 app.use('/staffs', staffRouter)
 app.use(defaultErrorHandler)
-// app.use('/send', sendEmailRouter)
 
 app.listen(PORT, () => {
   console.log(`server này đang chạy trên port:${PORT}`)

@@ -1,4 +1,5 @@
 export interface CreateInteriorReqBody {
+  interior_id: string
   interior_name: string
   description: string
   quantity: string
@@ -7,4 +8,6 @@ export interface CreateInteriorReqBody {
   category_id: string
   size: string
   color: string
+  thumbnail: string
+  images: string[]
 }
