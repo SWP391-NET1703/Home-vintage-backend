@@ -12,9 +12,11 @@ class OrderServices {
     req: Request,
     order_status: OrderStatus,
     payment_method: PaymentMethod,
-    status_payment: PaymentStatus
+    status_payment: PaymentStatus,
+    phone_number: string
   ) {
-    const { total_payment, detail }: { total_payment: string; detail: OrderDetail[] } = req.body
+    const { total_payment, detail, address }: { total_payment: string; detail: OrderDetail[]; address: string } =
+      req.body
     const { user_id } = req.decoded_authorization as TokenPayload
 
     const order_id = new ObjectId()
@@ -24,6 +26,8 @@ class OrderServices {
         customer_id: new ObjectId(user_id),
         staff_id: '',
         date_order: new Date(),
+        phone_number: phone_number,
+        address: address,
         total_payment: total_payment,
         payment_method: payment_method,
         detail: detail,

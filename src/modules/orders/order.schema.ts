@@ -6,6 +6,8 @@ interface OrderType {
   customer_id: ObjectId
   date_order: Date
   staff_id?: string
+  address?: string
+  phone_number?: string
   payment_method: PaymentMethod
   total_payment: string
   status_payment: PaymentStatus
@@ -37,6 +39,8 @@ export default class Order {
   staff_id?: string
   date_order?: Date
   payment_method: PaymentMethod
+  address?: string
+  phone_number?: string
   total_payment: string
   status_payment: PaymentStatus
   status_of_order: OrderStatus
@@ -47,6 +51,8 @@ export default class Order {
     this._id = order._id || new ObjectId()
     this.customer_id = order.customer_id
     this.staff_id = order.staff_id || ''
+    this.address = order.address || ''
+    this.phone_number = order.phone_number || ''
     this.date_order = order.date_order || date
     this.payment_method = order.payment_method
     this.total_payment = order.total_payment
