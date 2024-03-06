@@ -86,6 +86,11 @@ class OrderServices {
     const result = await databaseService.orders.find({ status_of_order: OrderStatus.Wait_for_confirm }).toArray()
     return result
   }
+
+  async getListOrderParkProduct() {
+    const result = await databaseService.orders.find({ status_of_order: OrderStatus.Pack_products }).toArray()
+    return result
+  }
 }
 
 //tách hàm này ra để còn sử dụng lại

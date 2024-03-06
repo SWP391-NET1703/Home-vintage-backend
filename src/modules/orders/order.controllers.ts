@@ -169,3 +169,11 @@ export const getListOrderWaitConfirmController = async (req: Request, res: Respo
     list_order_wait_confirm: result
   })
 }
+
+export const getListOrderParkProductController = async (req: Request, res: Response) => {
+  const result = await orderService.getListOrderParkProduct()
+  res.json({
+    message: ORDER_MESSAGES.GET_LIST_ORDER_PARK_PRODUCT_SUCCESS,
+    list_order_park_product: result
+  })
+}
