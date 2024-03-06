@@ -11,6 +11,7 @@ import Order, { OrderDetail } from './order.schema'
 import { OrderStatus, PaymentMethod, PaymentStatus } from './order.enum'
 import { TokenPayload } from '../users/User.request'
 import { callOrderController, convertQueryStringToStatusOrder } from './order.helper'
+import userServices from '../users/user.services'
 
 export const createOrderController = async (req: Request<ParamsDictionary, any, CreateOrderRequest>, res: Response) => {
   const { detail } = req.body as { detail: OrderDetail[] }
@@ -27,7 +28,12 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
   }
 
   const user_id = (req.decoded_authorization as TokenPayload).user_id
-  const isBuyFirstTime = await orderService.checkBuyFirstTime(user_id) //
+  //get user để lấy sdt
+  const user = await userServices.getMe(user_id)
+  const phone_number = user?.phone_number
+
+  //check xem user này đã từng mua hàng chưa
+  const isBuyFirstTime = await orderService.checkBuyFirstTime(user_id)
   let order_status: OrderStatus = OrderStatus.Pack_products
   let payment_method_real: PaymentMethod = PaymentMethod.COD
   let payment_status: PaymentStatus = PaymentStatus.do_not_pay
@@ -42,7 +48,13 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
     payment_status = PaymentStatus.did_pay
   }
 
-  const result = await orderService.createOrder(req, order_status, payment_method_real, payment_status)
+  const result = await orderService.createOrder(
+    req,
+    order_status,
+    payment_method_real,
+    payment_status,
+    phone_number as string
+  )
   res.json({
     message: ORDER_MESSAGES.ORDER_SUCCESSFULL,
     orderInfor: result
