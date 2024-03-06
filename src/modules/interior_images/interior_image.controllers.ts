@@ -8,6 +8,7 @@ import interiorService from '../interiors/interior.services'
 import { ErrorWithStatus } from '../errors/error.model'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { totalUploadImage, totalUploadImageThumbnail } from './interior_image.constants'
+import exp from 'constants'
 
 export const uploadImageThumbnailController = async (req: Request, res: Response) => {
   const { id } = req.query
@@ -62,5 +63,15 @@ export const deleteThumbnailInteriorController = async (req: Request, res: Respo
   res.json({
     message: INTERIOR_MESSAGES.DELETE_THUMBNAIL_SUCCESS,
     interiorImage: result
+  })
+}
+
+export const deleteImageInteriorController = async (req: Request, res: Response) => {
+  const { nameImage } = req.query as { nameImage: string }
+  const id = req.query.id as string
+  const interiorImage = await interiorImageServices.getInteriorImageByInteriorId(id)
+
+  res.json({
+    hello: 'day roi'
   })
 }

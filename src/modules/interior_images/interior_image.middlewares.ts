@@ -1,4 +1,5 @@
-import { ParamSchema, Schema, checkSchema } from 'express-validator'
+import { InteriorImage } from './interior_image.schema'
+import { ParamSchema, Schema, check, checkSchema } from 'express-validator'
 import { validate } from '~/utils/validation'
 import { INTERIOR_MESSAGES } from '../interiors/interior.messages'
 import interiorService from '../interiors/interior.services'
@@ -65,4 +66,35 @@ export const deleteThumbnailInteriorValidator = validate(
       }
     }
   })
+)
+
+export const deleteImageInteriorValidator = validate(
+  checkSchema(
+    {
+      id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: INTERIOR_MESSAGES.INTERIOR_ID_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const interiorImage = await interiorImageServices.getInteriorImageByInteriorId(value)
+            if (!interiorImage) {
+              throw new Error(INTERIOR_MESSAGES.INTERIOR_IS_NOT_EXIST)
+            }
+            req.interiorImage = interiorImage
+            return true
+          }
+        }
+      },
+      nameImage: {
+        notEmpty: true
+      }
+    },
+    ['query', 'params']
+  )
 )

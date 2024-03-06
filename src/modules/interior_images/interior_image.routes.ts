@@ -2,11 +2,13 @@ import { wrapAsync } from './../../utils/handlers'
 import { Router } from 'express'
 import { accessTokenAdminValidator } from '../users/user.middlewares'
 import {
+  deleteImageInteriorController,
   deleteThumbnailInteriorController,
   uploadImageController,
   uploadImageThumbnailController
 } from './interior_image.controllers'
 import {
+  deleteImageInteriorValidator,
   deleteThumbnailInteriorValidator,
   uploadImageThumbnailValidator,
   uploadImageValidator
@@ -45,7 +47,17 @@ interiorImageRouter.delete(
   deleteThumbnailInteriorValidator,
   wrapAsync(deleteThumbnailInteriorController)
 )
+/**
+ * url : /:id
+ * description : delete image
+ * query : index
+ */
 
-// interiorImageRouter.delete('/:id', accessTokenAdminValidator, wrapAsync(deleteThumbnailInteriorController))
+interiorImageRouter.delete(
+  '/:id',
+  // accessTokenAdminValidator,
+  deleteImageInteriorValidator,
+  wrapAsync(deleteImageInteriorController)
+)
 
 export default interiorImageRouter
