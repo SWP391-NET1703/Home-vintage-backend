@@ -35,23 +35,17 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
   //check xem user này đã từng mua hàng chưa
   const isBuyFirstTime = await orderService.checkBuyFirstTime(user_id)
   let order_status: OrderStatus = OrderStatus.Pack_products
-  let payment_method_real: PaymentMethod = PaymentMethod.COD
-  let payment_status: PaymentStatus = PaymentStatus.do_not_pay
-  const { total_payment, payment_method } = req.body
+
+  const { total_payment } = req.body
   if (!isBuyFirstTime || parseInt(total_payment) > ValueNeedToConfirmOfOrder) {
     //check xem mua lần nào chưa và giá trị đơn hàng có lớn hơn giá trị quy định của doanh nghiệp không
     order_status = OrderStatus.Wait_for_confirm
   }
 
-  if (payment_method.toString() === PaymentMethod.Paypal.toString()) {
-    payment_method_real = PaymentMethod.Paypal
-    payment_status = PaymentStatus.did_pay
-  }
-
   const result = await orderService.createOrder(
     req,
     order_status,
-    payment_method_real,
+    payment_method,
     payment_status,
     phone_number as string
   )
