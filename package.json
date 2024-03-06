@@ -10,7 +10,7 @@
     "nodemon": "npx nodemon --development",
     "red": "npx ts-node ./start-node-red.ts",
     "build": "rimraf ./dist && tsc && tsc-alias",
-    "start": "node dist/index.js --production",
+    "start": "node dist/src/index.js --production",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
