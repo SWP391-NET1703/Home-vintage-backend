@@ -22,7 +22,7 @@ class InteriorImageServices {
         const newFilePath = UPLOAD_IMAGE_DIR + '/' + newFileName
         await sharp(file.filepath).jpeg().toFile(newFilePath)
         fs.unlinkSync(file.filepath)
-        images.push(`${process.env.DB_HOST}/static/images-interiors/${newFileName}`)
+        images.push(newFileName)
         return images
       })
     )
