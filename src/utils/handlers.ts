@@ -11,4 +11,4 @@ export const wrapAsync = <P>(func: RequestHandler<P>) => {
     }
   }
 }
-//chỗ này làm curryning được nè
+//chỗ này làm currying được nè
