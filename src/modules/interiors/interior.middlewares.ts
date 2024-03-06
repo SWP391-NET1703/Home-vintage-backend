@@ -1,10 +1,11 @@
-import { ParamSchema, checkSchema } from 'express-validator'
+import { ParamSchema, check, checkSchema } from 'express-validator'
 import databaseService from '../database/database.services'
 import { validate } from '~/utils/validation'
 import { INTERIOR_MESSAGES } from './interior.messages'
 import categoryServices from '../categorys/category.services'
 import { CATEGORY_MESSAGES } from '../categorys/category.message'
 import interiorImageServices from '../interior_images/interior_image.services'
+import interiorService from './interior.services'
 
 const interiorNameSchema: ParamSchema = {
   notEmpty: {
@@ -155,4 +156,23 @@ export const createInteriorValidator = validate(
     },
     ['body']
   )
+)
+
+export const disableInteriorValidator = validate(
+  checkSchema({
+    id: {
+      notEmpty: true,
+      isLength: { options: { min: 24, max: 24 }, errorMessage: INTERIOR_MESSAGES.INTERIOR_ID_IS_NOT_VALID },
+      custom: {
+        options: async (value, { req }) => {
+          const interior = await interiorService.getInteriorById(value)
+          if (!interior) {
+            throw new Error(INTERIOR_MESSAGES.INTERIOR_IS_NOT_EXIST)
+          }
+          req.interior = interior
+          return true
+        }
+      }
+    }
+  })
 )

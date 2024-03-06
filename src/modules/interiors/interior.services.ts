@@ -1,3 +1,4 @@
+import { OrderStatus } from './../orders/order.enum'
 import { getListInterior } from './interior.controllers'
 import { ObjectId } from 'mongodb'
 import databaseService from '../database/database.services'
@@ -153,6 +154,18 @@ class InteriorService {
         }
       }
     )
+  }
+
+  async disableInterior(id: string) {
+    const result = await databaseService.interiors.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          status: InteriorStatus.Stop_bussiness
+        }
+      }
+    )
+    return result
   }
 }
 
