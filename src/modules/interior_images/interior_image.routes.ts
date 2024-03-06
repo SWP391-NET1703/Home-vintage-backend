@@ -48,7 +48,7 @@ interiorImageRouter.delete(
   wrapAsync(deleteThumbnailInteriorController)
 )
 /**
- * url : /:interior_id
+ * url : /:id
  * description : delete image
  * query : index
  */

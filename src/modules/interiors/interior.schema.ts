@@ -30,6 +30,7 @@ export default class Interior {
   material: string
   size: string
   color: string
+  thumbnail?: string
   images: string[]
   warranty?: InteriorWarranty
   number_of_sale?: string
@@ -49,6 +50,7 @@ export default class Interior {
     this.size = interior.size
     this.color = interior.color
     this.number_of_sale = interior.number_of_sale || '0'
+    this.thumbnail = interior.thumbnail || ''
     this.images = interior.image || []
     this.warranty = interior.warranty || InteriorWarranty.Six_months
     this.created_at = interior.created_at || date
