@@ -1,11 +1,12 @@
 import { Router } from 'express'
 import {
   createInteriorController,
+  disableInteriorController,
   getInteriorById,
   getListInterior,
   getListInteriorBestSeller
 } from './interior.controllers'
-import { createInteriorValidator } from './interior.middlewares'
+import { createInteriorValidator, disableInteriorValidator } from './interior.middlewares'
 import { accessTokenAdminValidator } from '../users/user.middlewares'
 import { wrapAsync } from '~/utils/handlers'
 
@@ -23,4 +24,11 @@ interiorRouter.get('/', wrapAsync(getListInterior))
 interiorRouter.get('/best-seller', wrapAsync(getListInteriorBestSeller))
 
 interiorRouter.get('/:id', wrapAsync(getInteriorById))
+
+interiorRouter.delete(
+  '/disable/:id',
+  accessTokenAdminValidator,
+  disableInteriorValidator,
+  wrapAsync(disableInteriorController)
+)
 export default interiorRouter

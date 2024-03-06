@@ -35,5 +35,6 @@ export const INTERIOR_MESSAGES = {
   INDEX_IS_NOT_VALID: 'Index is not valid',
   INTERIOR_IMAGE_IS_NOT_EXIST: 'Interior image is not exist',
   IMAGE_IS_NOT_EXIST: 'Image is not exist',
-  DELETE_IMAGE_SUCCESS: 'Delete image success'
+  DELETE_IMAGE_SUCCESS: 'Delete image success',
+  DISABLE_INTERIOR_SUCCESS: 'Disable interior success'
 } as const

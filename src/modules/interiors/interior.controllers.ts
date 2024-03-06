@@ -65,3 +65,11 @@ export const getListInteriorBestSeller = async (req: Request, res: Response) => 
     list_interior: bestSellers
   })
 }
+
+export const disableInteriorController = async (req: Request, res: Response) => {
+  const id = req.params.id as string
+  const result = await interiorService.disableInterior(id)
+  res.json({
+    message: INTERIOR_MESSAGES.DISABLE_INTERIOR_SUCCESS
+  })
+}
