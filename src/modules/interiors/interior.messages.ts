@@ -34,5 +34,6 @@ export const INTERIOR_MESSAGES = {
   THUMBNAIL_IS_NOT_EXIST: 'Thumbnail is not exist',
   INDEX_IS_NOT_VALID: 'Index is not valid',
   INTERIOR_IMAGE_IS_NOT_EXIST: 'Interior image is not exist',
-  IMAGE_IS_NOT_EXIST: 'Image is not exist'
+  IMAGE_IS_NOT_EXIST: 'Image is not exist',
+  DELETE_IMAGE_SUCCESS: 'Delete image success'
 } as const

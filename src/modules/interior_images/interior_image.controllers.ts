@@ -68,10 +68,12 @@ export const deleteThumbnailInteriorController = async (req: Request, res: Respo
 
 export const deleteImageInteriorController = async (req: Request, res: Response) => {
   const { nameImage } = req.query as { nameImage: string }
-  const id = req.query.id as string
-  const interiorImage = await interiorImageServices.getInteriorImageByInteriorId(id)
+  const id = req.params.id as string
+  await interiorImageServices.deleteInteriorSeverImage([nameImage])
+  const result = await interiorImageServices.deleteImageInterior(id, nameImage)
 
   res.json({
-    hello: 'day roi'
+    message: INTERIOR_MESSAGES.DELETE_IMAGE_SUCCESS,
+    interiorImage: result
   })
 }
