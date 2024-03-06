@@ -10,10 +10,7 @@ import interiorService from '../interiors/interior.services'
 import { InteriorImage } from './interior_image.schema'
 
 class InteriorImageServices {
-  async handleUploadImage(req: Request) {
-    const { type } = req.query
-    const size = type ? 1 : 4
-    const { id } = req.params
+  async handleUploadImage(req: Request, size: number) {
     //lưu ảnh vào trong upload
     const files = await handleUploadImage(req, size, UPLOAD_IMAGE_DIR)
     //xử lý file bằng sharp giúp tối ưu hình ảnh
@@ -25,8 +22,6 @@ class InteriorImageServices {
         const newFilePath = UPLOAD_IMAGE_DIR + '/' + newFileName
         await sharp(file.filepath).jpeg().toFile(newFilePath)
         fs.unlinkSync(file.filepath)
-        // return isProduction
-        //   ? `${process.env.HOST}/static/images/${newFileName}`
         images.push(newFileName)
         return images
       })
@@ -40,23 +35,45 @@ class InteriorImageServices {
     return interiorImage
   }
 
+  async getInteriorImageById(id: string) {
+    const interiorImage = await databaseService.interiorImage.findOne({ _id: new ObjectId(id) })
+    return interiorImage
+  }
+
   //create new interior image by thumbnail
-  async createNewInteriorThumbnail(id: string, thumbnail: string) {
+  async createNewInteriorThumbnail(thumbnail: string) {
     const result = await databaseService.interiorImage.insertOne(
       new InteriorImage({
         _id: new ObjectId(),
-        interior_id: new ObjectId(id),
+        interior_id: new ObjectId(),
         thumbnail: thumbnail
       })
     )
+    const interiorImage = this.getInteriorImageById(result.insertedId.toString())
+    return interiorImage
+  }
+
+  async updateThumbnailImageInterior(id: string, thumbnail: string) {
+    const result = await databaseService.interiorImage.updateOne(
+      {
+        interior_id: new ObjectId(id)
+      },
+      {
+        $set: {
+          thumbnail: thumbnail
+        }
+      }
+    )
+
     const interiorImage = this.getInteriorImageByInteriorId(id)
     return interiorImage
   }
+
   async importImageInterior(id: string, images: string[]) {
     for (let index = 0; index < images.length; index++) {
       const result = await databaseService.interiorImage.updateOne(
         {
-          _id: new ObjectId(id)
+          interior_id: new ObjectId(id)
         },
         {
           $push: {
@@ -65,7 +82,42 @@ class InteriorImageServices {
         }
       )
     }
-    return images
+    const imageInterior = await this.getInteriorImageByInteriorId(id)
+    return imageInterior
+  }
+
+  async createNewInteriorImage(images: string[]) {
+    const result = await databaseService.interiorImage.insertOne(
+      new InteriorImage({ _id: new ObjectId(), interior_id: new ObjectId(), images: images })
+    )
+    const interiorImage = await this.getInteriorImageById(result.insertedId.toString())
+    return interiorImage
+  }
+
+  async updateThumbnailImage(id: string, name: string) {
+    const result = await databaseService.interiorImage.updateOne(
+      { interior_id: new ObjectId(id) },
+      { $set: { thumbnail: name } }
+    )
+    const interiorImage = await this.getInteriorImageByInteriorId(id)
+    return interiorImage
+  }
+
+  async deleteInteriorSeverImage(images: string[]) {
+    images.forEach((image) => {
+      fs.unlinkSync(UPLOAD_IMAGE_DIR + '/' + image)
+    })
+    return
+  }
+
+  async deleteInteriorImage(id: string, index: string) {
+    if (!index) {
+      const result = await databaseService.interiorImage.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { thumbnail: '' } }
+      )
+      return result
+    }
   }
 }
 

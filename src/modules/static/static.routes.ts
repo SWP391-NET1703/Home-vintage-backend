@@ -1,8 +1,10 @@
 import { wrapAsync } from './../../utils/handlers'
 import { Router } from 'express'
-import { serveImageController } from './static.controllers'
+import { serveImageInteriorController, serveImageReportController } from './static.controllers'
 
 const staticRouter = Router()
-staticRouter.get('/images/:fileName', wrapAsync(serveImageController))
+staticRouter.get('/images-interiors/:fileName', wrapAsync(serveImageInteriorController))
+
+staticRouter.get('/images-report/:fileName', wrapAsync(serveImageReportController))
 
 export default staticRouter

@@ -13,7 +13,7 @@ const interiorRouter = Router()
 
 interiorRouter.post(
   '/create-interior',
-  accessTokenAdminValidator,
+  // accessTokenAdminValidator,
   createInteriorValidator,
   wrapAsync(createInteriorController)
 )

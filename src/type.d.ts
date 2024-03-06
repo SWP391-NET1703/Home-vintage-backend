@@ -5,6 +5,7 @@ import Order, { OrderDetail } from './modules/orders/order.schema'
 import { CustomerReportImage } from './customer-report/customer-report-image/customer-report-image.schema'
 import { CustomerReport } from './modules/customer-report/customer-report/customer-report.schema'
 import Interior from './modules/interiors/interior.schema'
+import { InteriorImage } from './modules/interior_images/interior_image.schema'
 
 //file này dùng để định nghĩa lại những cái có sẵn
 //trong 1 request nó có thể có users
@@ -21,5 +22,8 @@ declare module 'express' {
     detail?: OrderDetail[]
     images?: string[]
     interior?: Interior
+    interiorImage?: InteriorImage
+    imageInterior?: string[]
+    thumbnailInterior?: string
   }
 }

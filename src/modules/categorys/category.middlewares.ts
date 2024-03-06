@@ -5,6 +5,7 @@ import categoryServices from './category.services'
 import exp from 'constants'
 
 const checkIdExist: ParamSchema = {
+  optional: true,
   custom: {
     options: async (value, { req }) => {
       const isExist = await categoryServices.checkCategoryExist(value)

@@ -4,6 +4,7 @@ import { validate } from '~/utils/validation'
 import { INTERIOR_MESSAGES } from './interior.messages'
 import categoryServices from '../categorys/category.services'
 import { CATEGORY_MESSAGES } from '../categorys/category.message'
+import interiorImageServices from '../interior_images/interior_image.services'
 
 const interiorNameSchema: ParamSchema = {
   notEmpty: {
@@ -124,6 +125,25 @@ const colorSchema: ParamSchema = {
 export const createInteriorValidator = validate(
   checkSchema(
     {
+      interior_id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: INTERIOR_MESSAGES.INTERIOR_ID_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const interiorReport = await interiorImageServices.getInteriorImageByInteriorId(value)
+            if (!interiorReport) {
+              throw new Error(INTERIOR_MESSAGES.INTERIOR_IS_NOT_EXIST)
+            }
+            return true
+          }
+        }
+      },
       interior_name: interiorNameSchema,
       category_id: categoryIdSchema,
       description: descriptionSchema,
