@@ -13,6 +13,7 @@ import {
   createOrderController,
   deleteOrderController,
   getListOrderHistoryController,
+  getListOrderParkProductController,
   getListOrderWaitConfirmController,
   orderControllerTotal,
   rejectOrderController,
@@ -55,5 +56,11 @@ orderRouter.get(
   '/list-order-wait-confirm',
   accessTokenStaffOrAdminValidator,
   wrapAsync(getListOrderWaitConfirmController)
+)
+
+orderRouter.get(
+  '/list-order-park-product',
+  accessTokenStaffOrAdminValidator,
+  wrapAsync(getListOrderParkProductController)
 )
 export default orderRouter
