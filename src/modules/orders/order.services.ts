@@ -81,6 +81,11 @@ class OrderServices {
     const order = this.getOrderById(id)
     return order
   }
+
+  async getListOrderWaitConfirm() {
+    const result = await databaseService.orders.find({ status_of_order: OrderStatus.Wait_for_confirm }).toArray()
+    return result
+  }
 }
 
 //tách hàm này ra để còn sử dụng lại

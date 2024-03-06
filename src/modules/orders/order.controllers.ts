@@ -161,3 +161,11 @@ export const orderControllerTotal = async (req: Request, res: Response) => {
   console.log(controller)
   return controller
 }
+
+export const getListOrderWaitConfirmController = async (req: Request, res: Response) => {
+  const result = await orderService.getListOrderWaitConfirm()
+  res.json({
+    message: ORDER_MESSAGES.GET_LIST_ORDER_WAIT_CONFIRM_SUCCESS,
+    list_order_wait_confirm: result
+  })
+}
