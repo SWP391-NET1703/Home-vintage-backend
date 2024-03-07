@@ -176,3 +176,71 @@ export const disableInteriorValidator = validate(
     }
   })
 )
+
+export const updateInteriorValidator = validate(
+  checkSchema(
+    {
+      interior_id: {
+        notEmpty: true,
+        isLength: {
+          options: {
+            min: 24,
+            max: 24
+          },
+          errorMessage: INTERIOR_MESSAGES.INTERIOR_ID_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const interior = await interiorService.getInteriorById(value)
+            if (!interior) {
+              throw new Error(INTERIOR_MESSAGES.INTERIOR_IS_NOT_EXIST)
+            }
+            req.interior = interior
+            return true
+          }
+        }
+      },
+      interior_name: {
+        optional: true,
+        ...interiorNameSchema,
+        notEmpty: undefined
+      },
+      category_id: {
+        optional: true,
+        ...categoryIdSchema,
+        notEmpty: undefined
+      },
+      description: {
+        optional: true,
+        ...descriptionSchema,
+        notEmpty: undefined
+      },
+      quantity: {
+        optional: true,
+        ...quantitySchema,
+        notEmpty: undefined
+      },
+      price: {
+        optional: true,
+        ...priceSchema,
+        notEmpty: undefined
+      },
+      material: {
+        optional: true,
+        ...materialSchema,
+        notEmpty: undefined
+      },
+      size: {
+        optional: true,
+        ...sizeSchema,
+        notEmpty: undefined
+      },
+      color: {
+        optional: true,
+        ...colorSchema,
+        notEmpty: undefined
+      }
+    },
+    ['body', 'params']
+  )
+)

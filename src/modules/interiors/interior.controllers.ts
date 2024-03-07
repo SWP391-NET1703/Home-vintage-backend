@@ -1,6 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { Request, Response } from 'express'
-import { CreateInteriorReqBody } from './interior.request'
+import { CreateInteriorReqBody, UpdateInteriorReqBody } from './interior.request'
 import interiorService from './interior.services'
 import { INTERIOR_MESSAGES } from './interior.messages'
 import interiorImageServices from '../interior_images/interior_image.services'
@@ -71,5 +71,17 @@ export const disableInteriorController = async (req: Request, res: Response) => 
   const result = await interiorService.disableInterior(id)
   res.json({
     message: INTERIOR_MESSAGES.DISABLE_INTERIOR_SUCCESS
+  })
+}
+
+export const updateInteriorController = async (
+  req: Request<ParamsDictionary, any, UpdateInteriorReqBody>,
+  res: Response
+) => {
+  const id = req.params
+  const result = await interiorService.updateInterior(id.toString(), req.body)
+  res.json({
+    message: INTERIOR_MESSAGES.UPDATE_INTERIOR_SUCCESS,
+    result
   })
 }

@@ -11,3 +11,16 @@ export interface CreateInteriorReqBody {
   thumbnail: string
   images: string[]
 }
+
+export interface UpdateInteriorReqBody {
+  interior_name?: string
+  description?: string
+  quantity?: string
+  price?: string
+  material?: string
+  category_id?: string
+  size?: string
+  color?: string
+  thumbnail?: string
+  images?: string[]
+}

@@ -36,5 +36,6 @@ export const INTERIOR_MESSAGES = {
   INTERIOR_IMAGE_IS_NOT_EXIST: 'Interior image is not exist',
   IMAGE_IS_NOT_EXIST: 'Image is not exist',
   DELETE_IMAGE_SUCCESS: 'Delete image success',
-  DISABLE_INTERIOR_SUCCESS: 'Disable interior success'
+  DISABLE_INTERIOR_SUCCESS: 'Disable interior success',
+  UPDATE_INTERIOR_SUCCESS: 'Update interior success'
 } as const

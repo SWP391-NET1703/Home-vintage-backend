@@ -4,11 +4,14 @@ import {
   disableInteriorController,
   getInteriorById,
   getListInterior,
-  getListInteriorBestSeller
+  getListInteriorBestSeller,
+  updateInteriorController
 } from './interior.controllers'
-import { createInteriorValidator, disableInteriorValidator } from './interior.middlewares'
+import { createInteriorValidator, disableInteriorValidator, updateInteriorValidator } from './interior.middlewares'
 import { accessTokenAdminValidator } from '../users/user.middlewares'
 import { wrapAsync } from '~/utils/handlers'
+import { filterMiddleware } from '~/utils/common'
+import { UpdateInteriorReqBody } from './interior.request'
 
 const interiorRouter = Router()
 
@@ -30,5 +33,24 @@ interiorRouter.delete(
   accessTokenAdminValidator,
   disableInteriorValidator,
   wrapAsync(disableInteriorController)
+)
+
+interiorRouter.patch(
+  '/:id',
+  accessTokenAdminValidator,
+  filterMiddleware<UpdateInteriorReqBody>([
+    'interior_name',
+    'category_id',
+    'description',
+    'color',
+    'material',
+    'price',
+    'quantity',
+    'size',
+    'thumbnail',
+    'images'
+  ]),
+  updateInteriorValidator,
+  wrapAsync(updateInteriorController)
 )
 export default interiorRouter
