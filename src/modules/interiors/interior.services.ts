@@ -2,7 +2,7 @@ import { OrderStatus } from './../orders/order.enum'
 import { getListInterior } from './interior.controllers'
 import { ObjectId } from 'mongodb'
 import databaseService from '../database/database.services'
-import { CreateInteriorReqBody } from './interior.request'
+import { CreateInteriorReqBody, UpdateInteriorReqBody } from './interior.request'
 import Interior from './interior.schema'
 import { InteriorResponse } from './interior.response'
 import { InteriorStatus } from './interior.enums'
@@ -166,6 +166,33 @@ class InteriorService {
       }
     )
     return result
+  }
+
+  async updateInterior(body: UpdateInteriorReqBody) {
+    const { interior_id, category_id, ...rest } = body
+    if (!category_id) {
+      const result = await databaseService.interiors.findOneAndUpdate(
+        { _id: new ObjectId(interior_id) },
+        {
+          $set: {
+            ...rest
+          }
+        }
+      )
+      const interior = await this.getInteriorById(interior_id)
+      return interior
+    }
+    const result = await databaseService.interiors.findOneAndUpdate(
+      { _id: new ObjectId(interior_id) },
+      {
+        $set: {
+          category_id: new ObjectId(category_id),
+          ...rest
+        }
+      }
+    )
+    const interior = await this.getInteriorById(interior_id)
+    return interior
   }
 }
 
