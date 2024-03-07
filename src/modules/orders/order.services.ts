@@ -6,6 +6,7 @@ import { TokenPayload } from '../users/User.request'
 import { OrderStatus, PaymentMethod, PaymentStatus } from './order.enum'
 import { CreateOrderRequest } from './order.request'
 import interiorService from '../interiors/interior.services'
+import { OrderResponse } from './order.response'
 
 class OrderServices {
   async createOrder(
@@ -64,6 +65,7 @@ class OrderServices {
 
   async getListOrderHistory(user_id: string) {
     //vì user_id là string nên phải chuyển về ObjectId
+    //lookup với interior để lấy thông tin chi tiết của sản phẩm
     const result = await databaseService.orders.find({ customer_id: new ObjectId(user_id) }).toArray()
     return result
   }
