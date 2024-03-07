@@ -12,6 +12,8 @@ import { OrderStatus, PaymentMethod, PaymentStatus } from './order.enum'
 import { TokenPayload } from '../users/User.request'
 import { callOrderController, convertQueryStringToStatusOrder } from './order.helper'
 import userServices from '../users/user.services'
+import { OrderDetailResponse, OrderResponse } from './order.response'
+import Interior from '../interiors/interior.schema'
 
 export const createOrderController = async (req: Request<ParamsDictionary, any, CreateOrderRequest>, res: Response) => {
   const { detail } = req.body as { detail: OrderDetail[] }
@@ -130,9 +132,22 @@ export const getListOrderHistoryController = async (req: Request, res: Response)
   const { decoded_authorization } = req as { decoded_authorization: TokenPayload }
   const { user_id } = decoded_authorization
   const result = await orderService.getListOrderHistory(user_id)
+  const list_order_history: OrderResponse[] = []
+  for (let index = 0; index < result.length; index++) {
+    const { detail, ...restOrder } = result[index]
+    const newDetail: OrderDetailResponse[] = [] // Fix for problem 2
+    for (let index = 0; index < detail.length; index++) {
+      const { interior_id, ...rest } = detail[index]
+      const interior: unknown = await interiorService.getInteriorById(detail[index].interior_id.toString())
+      newDetail.push({ interior: interior as Interior, ...rest })
+    }
+    const { date_order, ...restOrderWithoutDate } = restOrder // Extract date_order property
+    const validDateOrder = date_order || new Date() // Assign a valid Date value if date_order is undefined
+    list_order_history.push({ detail: newDetail, ...restOrderWithoutDate, date_order: validDateOrder }) // Fix for problem 1
+  }
   res.json({
     message: ORDER_MESSAGES.GET_LIST_ORDER_HISTORY_SUCCESS,
-    list_order_history: result
+    list_order_history: list_order_history
   })
 }
 
