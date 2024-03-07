@@ -241,6 +241,6 @@ export const updateInteriorValidator = validate(
         notEmpty: undefined
       }
     },
-    ['body', 'params']
+    ['body']
   )
 )

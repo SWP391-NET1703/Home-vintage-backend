@@ -36,9 +36,10 @@ interiorRouter.delete(
 )
 
 interiorRouter.patch(
-  '/:id',
+  '/',
   accessTokenAdminValidator,
   filterMiddleware<UpdateInteriorReqBody>([
+    'interior_id',
     'interior_name',
     'category_id',
     'description',

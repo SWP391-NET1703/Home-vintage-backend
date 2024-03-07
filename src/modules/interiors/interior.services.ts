@@ -168,22 +168,22 @@ class InteriorService {
     return result
   }
 
-  async updateInterior(id: string, body: UpdateInteriorReqBody) {
-    const { category_id, ...rest } = body
+  async updateInterior(body: UpdateInteriorReqBody) {
+    const { interior_id, category_id, ...rest } = body
     if (!category_id) {
       const result = await databaseService.interiors.findOneAndUpdate(
-        { _id: new ObjectId(id) },
+        { _id: new ObjectId(interior_id) },
         {
           $set: {
             ...rest
           }
         }
       )
-      const interior = await this.getInteriorById(id)
+      const interior = await this.getInteriorById(interior_id)
       return interior
     }
     const result = await databaseService.interiors.findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: new ObjectId(interior_id) },
       {
         $set: {
           category_id: new ObjectId(category_id),
@@ -191,7 +191,7 @@ class InteriorService {
         }
       }
     )
-    const interior = await this.getInteriorById(id)
+    const interior = await this.getInteriorById(interior_id)
     return interior
   }
 }

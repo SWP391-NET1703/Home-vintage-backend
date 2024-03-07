@@ -13,6 +13,7 @@ export interface CreateInteriorReqBody {
 }
 
 export interface UpdateInteriorReqBody {
+  interior_id: string
   interior_name?: string
   description?: string
   quantity?: string

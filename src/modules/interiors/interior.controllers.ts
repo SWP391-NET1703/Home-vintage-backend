@@ -78,10 +78,9 @@ export const updateInteriorController = async (
   req: Request<ParamsDictionary, any, UpdateInteriorReqBody>,
   res: Response
 ) => {
-  const id = req.params
-  const result = await interiorService.updateInterior(id.toString(), req.body)
+  const result = await interiorService.updateInterior(req.body)
   res.json({
     message: INTERIOR_MESSAGES.UPDATE_INTERIOR_SUCCESS,
-    result
+    interior: result
   })
 }
