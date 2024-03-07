@@ -55,5 +55,4 @@ interiorRouter.patch(
   wrapAsync(updateInteriorController)
 )
 
-interiorRouter.get('/')
 export default interiorRouter
