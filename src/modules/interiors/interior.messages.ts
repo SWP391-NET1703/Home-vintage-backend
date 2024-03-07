@@ -4,7 +4,7 @@ export const INTERIOR_MESSAGES = {
   INTERIOR_NAME_LENGTH_MUST_BE_FROM_2_TO_50: 'Interior name length must be from 2 to 50',
   INTERIOR_DESCRIPTION_IS_REQUIRED: 'Interior description is required',
   INTERIOR_DESCRIPTION_MUST_BE_STRING: 'Interior description must be string',
-  INTERIOR_DESCRIPTION_MUST_BE_FROM_1_TO_100: 'Interior description must be from 1 to 100',
+  INTERIOR_DESCRIPTION_MUST_BE_FROM_1_TO_1000: 'Interior description must be from 1 to 1000',
   INTERIOR_QUANTITY_IS_REQUIRED: 'Interior quantity is required',
   INTERIOR_QUANTITY_MUST_BE_NUMBER: 'Interior quantity must be number',
   INTERIOR_PRICE_IS_REQUIRED: 'Interior price is required',
