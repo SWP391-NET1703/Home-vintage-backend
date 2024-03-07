@@ -239,7 +239,18 @@ class UserServices {
         iat
       })
     )
-    return { access_token, refresh_token }
+    const user = await databaseService.users.findOne(
+      { _id: new ObjectId(user_id) },
+      {
+        projection: {
+          password: 0,
+          created_at: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        }
+      }
+    )
+    return { access_token, refresh_token, user }
   }
 
   async logout(refresh_token: string) {

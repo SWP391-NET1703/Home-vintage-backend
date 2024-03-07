@@ -54,4 +54,6 @@ interiorRouter.patch(
   updateInteriorValidator,
   wrapAsync(updateInteriorController)
 )
+
+interiorRouter.get('/')
 export default interiorRouter
