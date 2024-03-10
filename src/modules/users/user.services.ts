@@ -243,14 +243,25 @@ class UserServices {
       { _id: new ObjectId(user_id) },
       {
         projection: {
-          password: 0,
+          _id: 0,
+          address: 0,
+          email: 0,
+          role: 0,
+          cccd: 0,
+          phone_number: 0,
+          date_of_birth: 0,
+          user_avatar: 0,
           created_at: 0,
+          coin: 0,
+          password: 0,
           email_verify_token: 0,
-          forgot_password_token: 0
+          forgot_password_token: 0,
+          verify_status: 0
         }
       }
     )
-    return { access_token, refresh_token, user }
+    const full_name = user?.full_name
+    return { access_token, refresh_token, full_name }
   }
 
   async logout(refresh_token: string) {

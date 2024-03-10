@@ -14,6 +14,7 @@ import { callOrderController, convertQueryStringToStatusOrder } from './order.he
 import userServices from '../users/user.services'
 import { OrderDetailResponse, OrderResponse } from './order.response'
 import Interior from '../interiors/interior.schema'
+import { InteriorResponse } from '../interiors/interior.response'
 
 export const createOrderController = async (req: Request<ParamsDictionary, any, CreateOrderRequest>, res: Response) => {
   const { detail } = req.body as { detail: OrderDetail[] }
@@ -133,18 +134,22 @@ export const getListOrderHistoryController = async (req: Request, res: Response)
   const { user_id } = decoded_authorization
   const result = await orderService.getListOrderHistory(user_id)
   const list_order_history: OrderResponse[] = []
+
+  //xử lý lấy ra interior từ order detail
   for (let index = 0; index < result.length; index++) {
     const { detail, ...restOrder } = result[index]
-    const newDetail: OrderDetailResponse[] = [] // Fix for problem 2
+    const newDetail: OrderDetailResponse[] = [] //khỏi tạo này
     for (let index = 0; index < detail.length; index++) {
       const { interior_id, ...rest } = detail[index]
-      const interior: unknown = await interiorService.getInteriorById(detail[index].interior_id.toString())
-      newDetail.push({ interior: interior as Interior, ...rest })
+      const interior: any = await interiorService.getInteriorById(detail[index].interior_id.toString())
+      newDetail.push({ interior: interior as Interior, ...rest }) //tạo ra 1 order detail response
     }
-    const { date_order, ...restOrderWithoutDate } = restOrder // Extract date_order property
-    const validDateOrder = date_order || new Date() // Assign a valid Date value if date_order is undefined
+
+    const { date_order, ...restOrderWithoutDate } = restOrder // chỗ này bị 1 bug là nó ko thể xác định date_order do lúc đầu ta để nó là optional
+    const validDateOrder = date_order || new Date()
     list_order_history.push({ detail: newDetail, ...restOrderWithoutDate, date_order: validDateOrder }) // Fix for problem 1
   }
+
   res.json({
     message: ORDER_MESSAGES.GET_LIST_ORDER_HISTORY_SUCCESS,
     list_order_history: list_order_history

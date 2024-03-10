@@ -58,9 +58,9 @@ const descriptionSchema: ParamSchema = {
   isLength: {
     options: {
       min: 1,
-      max: 100
+      max: 1000
     },
-    errorMessage: INTERIOR_MESSAGES.INTERIOR_DESCRIPTION_MUST_BE_FROM_1_TO_100
+    errorMessage: INTERIOR_MESSAGES.INTERIOR_DESCRIPTION_MUST_BE_FROM_1_TO_1000
   }
 }
 

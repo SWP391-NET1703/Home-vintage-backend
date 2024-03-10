@@ -4,6 +4,7 @@ import { CustomerReportStatus } from './customer-report.enum'
 import { ObjectId } from 'mongodb'
 import { CustomerReport } from './customer-report.schema'
 import { CUSTOMER_REPORT } from './customer-report.messages'
+import { CustomerReportResponse } from './customer-report.response'
 
 class CustomerReportService {
   async createCustomerReport(body: CreateCustomerReportReqBody, user_id: string) {
@@ -56,10 +57,38 @@ class CustomerReportService {
     return result.toArray()
   }
   async getListCustomerReportNotCheckAndValidByInteriorId(id: string) {
-    const list = await databaseService.customerReport.find({
-      interior_id: new ObjectId(id),
-      status: { $in: [CustomerReportStatus.Valid, CustomerReportStatus.Not_check] }
-    })
+    //join bảng lấy tên người dùng ra này
+    const list = await databaseService.customerReport.aggregate<CustomerReportResponse>([
+      {
+        $match: {
+          interior_id: new ObjectId(id),
+          status: { $in: [CustomerReportStatus.Not_check, CustomerReportStatus.Valid] }
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'customer_id',
+          foreignField: '_id',
+          as: 'customer'
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          interior_id: 1,
+          customer_id: 1,
+          order_id: 1,
+          rate_interior: 1,
+          description: 1,
+          images: 1,
+          status: 1,
+          reason_not_valid: 1,
+          customer_name: '$customer.full_name'
+        }
+      }
+    ])
+
     return list.toArray()
   }
 }

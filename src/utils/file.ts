@@ -51,7 +51,7 @@ export const getNameFormFullName = (fileName: string) => {
   //băm chuỗi tên file để lấy ra tên ext
   const nameArr = fileName.split('.')
   nameArr.pop()
-  return nameArr.join('.')
+  return nameArr.join('')
 }
 
 //làm hàm lấy số lượng file ảnh được truyền lên
