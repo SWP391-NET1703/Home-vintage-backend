@@ -6,11 +6,11 @@ import { registerScheduleValidator } from './schedule.middlewares'
 
 const scheduleRoutes = Router()
 
-scheduleRoutes.post(
-  '/register-schedule',
-  accessTokenValidator,
-  registerScheduleValidator,
-  wrapAsync(registerScheduleController)
-)
+// scheduleRoutes.post(
+//   '/register-schedule',
+//   accessTokenValidator,
+//   registerScheduleValidator,
+//   wrapAsync(registerScheduleController)
+// )
 
 export default scheduleRoutes
