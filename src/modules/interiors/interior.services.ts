@@ -78,9 +78,11 @@ class InteriorService {
         }
       },
       {
-        //bỏ đi trường category_id
+        //bỏ đi trường category_id và parent_id, status của category
         $project: {
-          category_id: 0
+          category_id: 0,
+          'category_detail.category_parent_id': 0,
+          'category_detail.category_status': 0
         }
       }
     ])
