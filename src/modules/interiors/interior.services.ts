@@ -140,7 +140,9 @@ class InteriorService {
       {
         //bỏ đi trường category_id
         $project: {
-          category_id: 0
+          category_id: 0,
+          'category_detail.category_parent_id': 0,
+          'category_detail.category_status': 0
         }
       }
     ])
