@@ -4,7 +4,6 @@ import {
   disableInteriorController,
   getInteriorById,
   getListInterior,
-  getListInteriorBestSeller,
   updateInteriorController
 } from './interior.controllers'
 import { createInteriorValidator, disableInteriorValidator, updateInteriorValidator } from './interior.middlewares'
@@ -23,8 +22,6 @@ interiorRouter.post(
 )
 
 interiorRouter.get('/', wrapAsync(getListInterior))
-
-interiorRouter.get('/best-seller', wrapAsync(getListInteriorBestSeller))
 
 interiorRouter.get('/:id', wrapAsync(getInteriorById))
 

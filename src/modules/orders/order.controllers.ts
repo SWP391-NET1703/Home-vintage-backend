@@ -15,10 +15,11 @@ import userServices from '../users/user.services'
 import { OrderDetailResponse, OrderResponse } from './order.response'
 import Interior from '../interiors/interior.schema'
 import { InteriorResponse } from '../interiors/interior.response'
+import { ValueNeedToConfirmOfOrder } from '~/constants/constrants.public'
 
 export const createOrderController = async (req: Request<ParamsDictionary, any, CreateOrderRequest>, res: Response) => {
   const { detail } = req.body as { detail: OrderDetail[] }
-  const ValueNeedToConfirmOfOrder: number = 5000000
+
   //check quantity
   //cho chạy for rồi lưu các lỗi vào error message
   //check error message array\

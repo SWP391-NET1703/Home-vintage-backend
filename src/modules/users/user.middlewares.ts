@@ -520,18 +520,17 @@ export const forgotPasswordValidator = validate(
             })
           }
 
-          // khác user thì k cho forgot password
           if (user.role !== UserRole.User) {
             throw new ErrorWithStatus({
-              message: USERS_MESSAGES.UNAUTHORIZED,
-              status: HTTP_STATUS.UNAUTHORIZED // 401
+              message: USERS_MESSAGES.USER_NOT_VALIDED,
+              status: HTTP_STATUS.FORBIDDEN
             })
           }
 
           if (user.verify_status === UserVerifyStatus.Banned) {
             throw new ErrorWithStatus({
               message: USERS_MESSAGES.USER_BANNED,
-              status: HTTP_STATUS.FORBIDDEN // 403
+              status: HTTP_STATUS.FORBIDDEN
             })
           }
           req.user = user // gán user vào req.user để sử dụng ở middleware tiếp theo
