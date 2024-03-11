@@ -20,6 +20,7 @@ export const createInteriorController = async (
 
 export const getInteriorById = async (req: Request, res: Response) => {
   const { id } = req.params
+  const type = req.query.type as string
   const interior = await interiorService.getInteriorById(id)
   const listReport = await customerReportService.getListCustomerReportNotCheckAndValidByInteriorId(id)
   if (interior) interior.list_report = listReport
@@ -30,40 +31,28 @@ export const getInteriorById = async (req: Request, res: Response) => {
 }
 
 export const getListInterior = async (req: Request, res: Response) => {
-  const listInterior = await interiorService.getListInterior()
-  for (let index = 0; index < listInterior.length; index++) {
-    const listReport = await customerReportService.getListCustomerReportNotCheckAndValidByInteriorId(
-      listInterior[index]._id?.toString() as string
-    )
-    listInterior[index].list_report = listReport ? listReport : []
+  const type = req.query.type as string
+  if (type === 'bestSeller') {
+    const bestSellers = await getListInteriorBestSeller()
+    return res.json({
+      message: INTERIOR_MESSAGES.GET_LIST_INTERIOR_SUCCESS,
+      list_best_sellers_interior: bestSellers
+    })
   }
-  //giờ chúng ta sẽ xử lý result thành 1 mảng mới chia làm 3 mảng con là bán chạy, mới về
-  //đầu tiên là bán chạy phải sort theo số lượng bán giảm dần và lấy 20 phần tử đầu
-  const bestSellers = listInterior
-    .sort((interior_a, interior_b) => parseInt(interior_b.number_of_sale) - parseInt(interior_a.number_of_sale))
-    .slice(0, 20)
-  const newInteriors = listInterior.filter((interior) => {
-    return interior.number_of_sale === '0'
-  })
-  //sau đó trả về client
+
+  const newInteriors = await getListNewInteriors()
   res.json({
     message: INTERIOR_MESSAGES.GET_LIST_INTERIOR_SUCCESS,
-    list_interior: {
-      best_seller: bestSellers,
-      new_interiors: newInteriors
-    }
+    list_new_interior: newInteriors
   })
 }
 
-export const getListInteriorBestSeller = async (req: Request, res: Response) => {
+const getListInteriorBestSeller = async () => {
   const listInterior = await interiorService.getListInterior()
   const bestSellers = listInterior
     .sort((interior_a, interior_b) => parseInt(interior_b.number_of_sale) - parseInt(interior_a.number_of_sale))
     .slice(0, 20)
-  res.json({
-    message: INTERIOR_MESSAGES.GET_LIST_INTERIOR_SUCCESS,
-    list_interior: bestSellers
-  })
+  return bestSellers
 }
 
 export const disableInteriorController = async (req: Request, res: Response) => {
@@ -83,4 +72,12 @@ export const updateInteriorController = async (
     message: INTERIOR_MESSAGES.UPDATE_INTERIOR_SUCCESS,
     interior: result
   })
+}
+
+const getListNewInteriors = async () => {
+  const listInterior = await interiorService.getListInterior()
+  const newInteriors = listInterior.filter((interior) => {
+    return interior.number_of_sale === '0'
+  })
+  return newInteriors
 }
