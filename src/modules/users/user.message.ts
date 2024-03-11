@@ -85,5 +85,6 @@ export const USERS_MESSAGES = {
   PHONE_NUMBER_IS_INVALID: 'Phone number is invalid',
   USER_ID_IS_REQUIRED: 'User id is required',
   DELETE_ACCOUNT_SUCCESS: 'Delete account success',
-  EMAIL_OF_ACCOUNT_IS_NOT_VERIFY: 'Email of account is not verify'
+  EMAIL_OF_ACCOUNT_IS_NOT_VERIFY: 'Email of account is not verify',
+  USER_NOT_VALIDED: 'User not validated'
 } as const
