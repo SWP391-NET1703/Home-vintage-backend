@@ -86,5 +86,6 @@ export const USERS_MESSAGES = {
   USER_ID_IS_REQUIRED: 'User id is required',
   DELETE_ACCOUNT_SUCCESS: 'Delete account success',
   EMAIL_OF_ACCOUNT_IS_NOT_VERIFY: 'Email of account is not verify',
-  UNAUTHORIZED: 'Unauthorized to access or not be allowed to use this service'
+  UNAUTHORIZED: 'Unauthorized to access or not be allowed to use this service',
+  USER_NOT_VALIDED: 'User not validated'
 } as const
