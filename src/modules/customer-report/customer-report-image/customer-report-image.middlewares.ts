@@ -7,8 +7,9 @@ import { OrderStatus } from '~/modules/orders/order.enum'
 import interiorService from '~/modules/interiors/interior.services'
 import customerReportImageService from './customer-report-image.services'
 import { forEach } from 'lodash'
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { OrderDetail } from '~/modules/orders/order.schema'
+import { CustomerReportImage } from './customer-report-image.schema'
 
 export const createCustomerReportImageValidator = validate(
   checkSchema(
@@ -60,23 +61,6 @@ export const createCustomerReportImageValidator = validate(
               throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST)
             }
 
-            const orderId = req.order._id
-            const order = await orderService.getOrderById(orderId)
-            if (order) {
-              const detail = order.detail as OrderDetail[]
-              let isExistInteriorInOrder = false
-              for (let index = 0; index < detail.length; index++) {
-                if (value === detail[index].interior_id.toString()) {
-                  isExistInteriorInOrder = true
-                  break
-                }
-              }
-
-              if (!isExistInteriorInOrder) {
-                throw new Error(CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER)
-              }
-            }
-
             return true
           }
         }
@@ -85,6 +69,29 @@ export const createCustomerReportImageValidator = validate(
     ['params', 'query']
   )
 )
+
+export const checkInteriorInOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { orderId } = req.params
+  const { interiorId } = req.query
+  const order = await orderService.getOrderById(orderId)
+  if (order) {
+    const detail = order.detail as OrderDetail[]
+    let isExistInteriorInOrder = false
+    for (let index = 0; index < detail.length; index++) {
+      if (interiorId?.toString() === detail[index].interior_id.toString()) {
+        isExistInteriorInOrder = true
+        break
+      }
+    }
+    if (!isExistInteriorInOrder) {
+      return res.status(422).json({
+        message: CUSTOMER_REPORT.INTERIOR_IS_NOT_EXIST_IN_ORDER
+      })
+    }
+  }
+
+  next()
+}
 
 export const deleteCustomerReportImageValidator = validate(
   checkSchema(
@@ -110,28 +117,31 @@ export const deleteCustomerReportImageValidator = validate(
         }
       },
       nameImage: {
-        notEmpty: true,
-        custom: {
-          options: (value, { req }) => {
-            const reportImage = req.reportImage
-            let isExistImage = false
-            for (let index = 0; index < reportImage.images.length; index++) {
-              if (value === reportImage.image[index]) {
-                isExistImage = false
-                break
-              }
-            }
-            if (!isExistImage) {
-              throw new Error(CUSTOMER_REPORT.NAME_IMAGE_IS_NOT_EXIST)
-            }
-            return true
-          }
-        }
+        notEmpty: true
       }
     },
     ['params', 'query']
   )
 )
+
+export const checkImageExist = async (req: Request, res: Response, next: NextFunction) => {
+  const { reportId } = req.params
+  const { nameImage } = req.query
+  const customerReportImage = await customerReportImageService.getReportImageByReportId(reportId)
+  let isExistImage = false
+  for (let index = 0; index < (customerReportImage as CustomerReportImage).images.length; index++) {
+    if (nameImage?.toString() === (customerReportImage as CustomerReportImage).images[index]) {
+      isExistImage = true
+      break
+    }
+  }
+  if (!isExistImage) {
+    res.status(422).json({
+      message: CUSTOMER_REPORT.REPORT_IMAGE_IS_NOT_EXIST
+    })
+  }
+  next()
+}
 
 export const deleteAllImageAndInforValidator = validate(
   checkSchema(

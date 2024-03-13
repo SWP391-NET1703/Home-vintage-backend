@@ -8,6 +8,8 @@ import {
   importReportImageController
 } from './customer-report-image.controller'
 import {
+  checkImageExist,
+  checkInteriorInOrder,
   createCustomerReportImageValidator,
   deleteAllImageAndInforValidator,
   deleteCustomerReportImageValidator,
@@ -23,9 +25,10 @@ const customerReportImageRouter = Router()
  * response : customerReportImage
  */
 customerReportImageRouter.post(
-  '/new-report-image/:orderId',
+  '/new/:orderId',
   accessTokenValidator,
   createCustomerReportImageValidator,
+  wrapAsync(checkInteriorInOrder),
   wrapAsync(createCustomerReportImageController)
 )
 
@@ -45,6 +48,7 @@ customerReportImageRouter.delete(
   '/:reportId',
   accessTokenValidator,
   deleteCustomerReportImageValidator,
+  wrapAsync(checkImageExist),
   wrapAsync(deleteCustomerReportImageController)
 )
 

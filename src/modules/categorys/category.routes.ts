@@ -22,7 +22,7 @@ categoryRouter.get('/', wrapAsync(getListCategoryController))
 
 categoryRouter.patch(
   '/update-category',
-  accessTokenValidator,
+  accessTokenAdminValidator,
   updateCategoryValidator,
   wrapAsync(updateCategoryController)
 )

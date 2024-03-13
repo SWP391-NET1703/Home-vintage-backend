@@ -51,7 +51,7 @@ class CustomerReportImageService {
 
   async deleteImage(id: string, nameImage: string) {
     const result = await databaseService.reportImage.updateOne(
-      { _id: new ObjectId(id) },
+      { report_id: new ObjectId(id) },
       {
         $pull: {
           images: { $in: [nameImage] }
