@@ -52,8 +52,9 @@ orderRouter.delete('/:id', accessTokenValidator, deleteOrderValidator, wrapAsync
 orderRouter.get('/history', accessTokenValidator, wrapAsync(getListOrderHistoryController))
 
 /**
- * query status
+ * query status === waitConfirm
+ * nếu ko có status thì là pack product
  */
 
-orderRouter.get('/list-order', accessTokenStaffOrAdminValidator, wrapAsync(getListOrder))
+orderRouter.get('', accessTokenStaffOrAdminValidator, wrapAsync(getListOrder))
 export default orderRouter

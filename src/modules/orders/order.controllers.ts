@@ -196,8 +196,8 @@ export const orderControllerTotal = async (req: Request, res: Response) => {
 }
 
 export const getListOrder = async (req: Request, res: Response) => {
-  const type = req.query.type as string
-  if (type === 'waitConfirm') {
+  const status = req.query.status as string
+  if (status === 'waitConfirm') {
     const result = await orderService.getListOrderWaitConfirm()
     return res.json({
       message: ORDER_MESSAGES.GET_LIST_ORDER_WAIT_CONFIRM_SUCCESS,
