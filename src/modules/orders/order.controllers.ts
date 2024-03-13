@@ -195,18 +195,19 @@ export const orderControllerTotal = async (req: Request, res: Response) => {
   return controller
 }
 
-export const getListOrderWaitConfirmController = async (req: Request, res: Response) => {
-  const result = await orderService.getListOrderWaitConfirm()
-  res.json({
-    message: ORDER_MESSAGES.GET_LIST_ORDER_WAIT_CONFIRM_SUCCESS,
-    list_order_wait_confirm: result
-  })
-}
+export const getListOrder = async (req: Request, res: Response) => {
+  const type = req.query.type as string
+  if (type === 'waitConfirm') {
+    const result = await orderService.getListOrderWaitConfirm()
+    return res.json({
+      message: ORDER_MESSAGES.GET_LIST_ORDER_WAIT_CONFIRM_SUCCESS,
+      list_order_wait_confirm: result
+    })
+  }
 
-export const getListOrderParkProductController = async (req: Request, res: Response) => {
   const result = await orderService.getListOrderParkProduct()
-  res.json({
+  return res.json({
     message: ORDER_MESSAGES.GET_LIST_ORDER_PARK_PRODUCT_SUCCESS,
-    list_order_park_product: result
+    list_order_wait_confirm: result
   })
 }

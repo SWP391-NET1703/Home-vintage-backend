@@ -12,9 +12,8 @@ import {
   acceptOrderController,
   createOrderController,
   deleteOrderController,
+  getListOrder,
   getListOrderHistoryController,
-  getListOrderParkProductController,
-  getListOrderWaitConfirmController,
   orderControllerTotal,
   rejectOrderController,
   shippingOrderController
@@ -52,15 +51,9 @@ orderRouter.delete('/:id', accessTokenValidator, deleteOrderValidator, wrapAsync
 
 orderRouter.get('/history', accessTokenValidator, wrapAsync(getListOrderHistoryController))
 
-orderRouter.get(
-  '/list-order-wait-confirm',
-  accessTokenStaffOrAdminValidator,
-  wrapAsync(getListOrderWaitConfirmController)
-)
+/**
+ * query status
+ */
 
-orderRouter.get(
-  '/list-order-park-product',
-  accessTokenStaffOrAdminValidator,
-  wrapAsync(getListOrderParkProductController)
-)
+orderRouter.get('/list-order', accessTokenStaffOrAdminValidator, wrapAsync(getListOrder))
 export default orderRouter
