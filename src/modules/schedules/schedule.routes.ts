@@ -1,16 +1,32 @@
 import { Router } from 'express'
 import { wrap } from 'module'
-import { accessTokenValidator } from '../users/user.middlewares'
+import { accessTokenStaffOrAdminValidator, accessTokenValidator } from '../users/user.middlewares'
 import { wrapAsync } from '~/utils/handlers'
-import { registerScheduleValidator } from './schedule.middlewares'
+import { confirmScheduleValidator, registerScheduleValidator, rejectScheduleValidator } from './schedule.middlewares'
+import {
+  confirmScheduleController,
+  getListScheduleToConfirm,
+  registerScheduleController,
+  rejectScheduleController
+} from './schedule.controllers'
 
-const scheduleRoutes = Router()
+const scheduleRouter = Router()
 
-// scheduleRoutes.post(
-//   '/register-schedule',
-//   accessTokenValidator,
-//   registerScheduleValidator,
-//   wrapAsync(registerScheduleController)
-// )
+scheduleRouter.post('/register', accessTokenValidator, registerScheduleValidator, wrapAsync(registerScheduleController))
 
-export default scheduleRoutes
+scheduleRouter.get('/list-schedule-to-confirm', accessTokenStaffOrAdminValidator, wrapAsync(getListScheduleToConfirm))
+
+scheduleRouter.post(
+  '/reject',
+  accessTokenStaffOrAdminValidator,
+  rejectScheduleValidator,
+  wrapAsync(rejectScheduleController)
+)
+
+scheduleRouter.post(
+  '/confirm',
+  accessTokenStaffOrAdminValidator,
+  confirmScheduleValidator,
+  wrapAsync(confirmScheduleController)
+)
+export default scheduleRouter

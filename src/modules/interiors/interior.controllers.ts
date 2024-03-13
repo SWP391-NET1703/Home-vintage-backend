@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import { CreateInteriorReqBody, UpdateInteriorReqBody } from './interior.request'
 import interiorService from './interior.services'
 import { INTERIOR_MESSAGES } from './interior.messages'
-import interiorImageServices from '../interior_images/interior_image.services'
 import customerReportService from '../customer-report/customer-report/customer-report.services'
 
 export const createInteriorController = async (

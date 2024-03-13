@@ -14,6 +14,7 @@ import customerReportImageRouter from './modules/customer-report/customer-report
 import staffRouter from './modules/staffs/staff.routes'
 import { config } from 'dotenv'
 import cors from 'cors'
+import scheduleRouter from './modules/schedules/schedule.routes'
 
 const options = argv(process.argv.slice(2))
 console.log(options.production)
@@ -46,6 +47,7 @@ app.use('/orders', orderRouter)
 app.use('/customer-report', customerReportRouter)
 app.use('/customer-report-image', customerReportImageRouter)
 app.use('/staffs', staffRouter)
+app.use('/schedules', scheduleRouter)
 app.use(defaultErrorHandler)
 
 app.listen(PORT, () => {
