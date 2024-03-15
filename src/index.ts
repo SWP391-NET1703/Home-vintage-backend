@@ -38,6 +38,11 @@ app.use(cors(corsOptions))
 databaseService.connect()
 
 //API Router
+app.all('*', (req, res, next) => {
+  console.log('Time', Date.now())
+  console.log(req.body)
+  next()
+})
 app.use('/users', usersRouter)
 app.use('/interiors', interiorRouter)
 app.use('/categories', categoryRouter)

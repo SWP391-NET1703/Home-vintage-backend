@@ -20,10 +20,6 @@ import interiorService from '../interiors/interior.services'
 export const createOrderValidator = validate(
   checkSchema(
     {
-      address: {
-        notEmpty: true,
-        errorMessage: ORDER_MESSAGES.ADDRESS_IS_NOT_EMPTY
-      },
       'detail.*.interior_id': {
         //check id sản phẩm nha
         notEmpty: true,
