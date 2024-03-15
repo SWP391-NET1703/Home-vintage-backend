@@ -5,4 +5,5 @@ export interface CreateOrderRequest {
   payment_method: PaymentMethod
   total_payment: string
   detail: OrderDetail[]
+  user_id: string
 }

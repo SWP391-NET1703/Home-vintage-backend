@@ -31,7 +31,7 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
     })
   }
 
-  const user_id = (req.decoded_authorization as TokenPayload).user_id
+  const { user_id } = req.body
   //get user để lấy sdt
   const user = await userServices.getMe(user_id)
   const phone_number = user?.phone_number
