@@ -16,5 +16,6 @@ export const ORDER_MESSAGES = {
   GET_LIST_ORDER_HISTORY_SUCCESS: 'Get list order history success',
   ORDER_IS_NOT_VALID_TO_REJECT: 'Order is not valid to reject',
   REJECT_ORDER_SUCCESS: 'Reject order success',
-  STATUS_IS_NOT_VALID: 'Status is not valid'
+  STATUS_IS_NOT_VALID: 'Status is not valid',
+  ADDRESS_IS_NOT_EMPTY: 'Address is not empty'
 } as const
