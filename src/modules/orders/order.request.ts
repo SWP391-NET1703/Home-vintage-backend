@@ -6,4 +6,5 @@ export interface CreateOrderRequest {
   total_payment: string
   detail: OrderDetail[]
   user_id: string
+  address: string
 }
