@@ -40,7 +40,7 @@ class InteriorService {
       })
     )
 
-    const interior = await this.getInteriorById(interior_id.toString())
+    const interior = await this.getInteriorById(id.toString())
     return interior
   }
 

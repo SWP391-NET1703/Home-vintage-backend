@@ -47,7 +47,7 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
     order_status = OrderStatus.Wait_for_confirm
   }
 
-  if (payment_method.toString() === PaymentMethod.Paypal.toString()) {
+  if (payment_method == PaymentMethod.Paypal) {
     payment_method_real = PaymentMethod.Paypal
     payment_status = PaymentStatus.did_pay
   }

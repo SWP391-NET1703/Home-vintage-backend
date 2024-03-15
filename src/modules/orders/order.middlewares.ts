@@ -59,8 +59,7 @@ export const quantityValidator = async (detail: OrderDetail[]) => {
     const item = detail[index]
     const errorMessagesLocal: string[] = []
     const { interior_id, quantity } = item
-    const idString = new ObjectId(interior_id).toString()
-    const interior = await interiorService.getInteriorById(idString)
+    const interior = await interiorService.getInteriorById(interior_id.toString())
     if ((interior && parseInt(interior.quantity) < parseInt(quantity)) || parseInt(quantity) === 0) {
       errorMessagesLocal.push(`Detail[${index}].quantity : ${ORDER_MESSAGES.QUANTITY_IS_NOT_VALID}`)
       errorMessages.push(errorMessagesLocal.join(', '))
