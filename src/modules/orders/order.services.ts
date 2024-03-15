@@ -18,7 +18,7 @@ class OrderServices {
   ) {
     const { total_payment, detail, address }: { total_payment: string; detail: OrderDetail[]; address: string } =
       req.body
-    const { user_id } = req.decoded_authorization as TokenPayload
+    const { user_id } = req.body
 
     const order_id = new ObjectId()
     const result = await databaseService.orders.insertOne(
